@@ -1,0 +1,74 @@
+{
+  "meta": {
+    "total_classes": 7,
+    "helm_wheels": [3, 5, 7],
+    "master_clock": 420,
+    "law": "Lock class = intersection of helm divisors; nearest common live-lock selects minimal sufficient class",
+    "alignment_rule": "No structural move is legal until the active live-lock is aligned"
+  },
+  "classes": [
+    {
+      "code": "L3",
+      "divisors": [3],
+      "helm": "3D current wheel only",
+      "period": 3,
+      "description": "Pure 3-wheel lock. Locks Su/Me/Sa current cycle.",
+      "resonance_band": "140-beat superphase (420/3)",
+      "escalation_from": null
+    },
+    {
+      "code": "L5",
+      "divisors": [5],
+      "helm": "5D tilt/gear wheel only",
+      "period": 5,
+      "description": "Pure 5-wheel lock. Locks barycentric tilt angle theta.",
+      "resonance_band": "84-beat segments (420/5)",
+      "escalation_from": null
+    },
+    {
+      "code": "L7",
+      "divisors": [7],
+      "helm": "7D timing wheel only",
+      "period": 7,
+      "description": "Pure 7-wheel lock. Locks Seed->Return timing cycle.",
+      "resonance_band": "60-beat segments (420/7)",
+      "escalation_from": null
+    },
+    {
+      "code": "L35",
+      "divisors": [3, 5],
+      "helm": "3D + 5D composite",
+      "period": 15,
+      "description": "Composite 3,5 lock. Both current and tilt aligned.",
+      "resonance_band": "28-beat segments (420/15)",
+      "escalation_from": ["L3", "L5"]
+    },
+    {
+      "code": "L37",
+      "divisors": [3, 7],
+      "helm": "3D + 7D composite",
+      "period": 21,
+      "description": "Composite 3,7 lock. Current and timing aligned.",
+      "resonance_band": "20-beat segments (420/21)",
+      "escalation_from": ["L3", "L7"]
+    },
+    {
+      "code": "L57",
+      "divisors": [5, 7],
+      "helm": "5D + 7D composite",
+      "period": 35,
+      "description": "Composite 5,7 lock. Tilt and timing aligned.",
+      "resonance_band": "12-beat segments (420/35)",
+      "escalation_from": ["L5", "L7"]
+    },
+    {
+      "code": "L357",
+      "divisors": [3, 5, 7],
+      "helm": "3D + 5D + 7D full crown",
+      "period": 105,
+      "description": "Full crown lock. All three wheels aligned. Maximum stability, minimum frequency.",
+      "resonance_band": "4-beat segments (420/105)",
+      "escalation_from": ["L35", "L37", "L57"]
+    }
+  ]
+}

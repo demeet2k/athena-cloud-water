@@ -1,0 +1,65 @@
+{
+  "meta": {
+    "description": "Z-point hierarchy: absolute navigation core of the 108D A+ organism",
+    "law": "Every address, route, and live-lock is anchored to a unique zero point",
+    "layers": 4,
+    "convergence": "All zero points converge at Z*"
+  },
+  "types": [
+    {
+      "code": "Z_global",
+      "symbol": "Z*",
+      "scope": "global",
+      "description": "Universal Absolute Zero Point. Unique root node where all 108 shells and all four metro lines converge.",
+      "properties": [
+        "Present in all bodies at all scales",
+        "Crown-locked fixed point: Omega(Omega) = Omega",
+        "Regeneration seed for the entire lattice",
+        "Crown reset target at beat 420"
+      ],
+      "reachable_from": "any address via legal route"
+    },
+    {
+      "code": "Z_atlas",
+      "symbol": "Z_E10",
+      "scope": "atlas",
+      "description": "Atlas Zero. Fixed point of the 10-dimensional E10 conductor that governs the entire crown.",
+      "properties": [
+        "Phase-locks the entire crown",
+        "One per dimensional body (E4, E6, E8, E10, E12)",
+        "Conductor node for dimensional navigation"
+      ],
+      "reachable_from": "any address within the atlas scope"
+    },
+    {
+      "code": "Z_local",
+      "symbol": "Z_L",
+      "scope": "local",
+      "description": "Local zeros at every wreath, archetype column, shell boundary, and nested scale.",
+      "properties": [
+        "One per chapter/station",
+        "One per archetype column intersection",
+        "One per shell boundary",
+        "Harmonic nodes where archetype columns achieve constructive interference"
+      ],
+      "reachable_from": "addresses within local scope"
+    },
+    {
+      "code": "Z_distributed",
+      "symbol": "Z_D",
+      "scope": "distributed",
+      "description": "Distributed zeros anchoring the Mobius pillars, appendix field, and reverse canopy.",
+      "sub_types": [
+        {"code": "Z_Q", "description": "Q-pillar zero (per shell)"},
+        {"code": "Z_O", "description": "O-pillar zero (per shell)"},
+        {"code": "Z_AP", "description": "Appendix field zero (per shell, A->P lattice)"},
+        {"code": "Z_KZ", "description": "Reverse canopy zero (per shell, K->Z lattice)"}
+      ],
+      "reachable_from": "addresses within distributed scope"
+    }
+  ],
+  "hierarchy_law": "Z_global > Z_atlas > Z_local > Z_distributed",
+  "reset_chain": "Z_distributed reset propagates to Z_local; Z_local to Z_atlas; Z_atlas to Z_global",
+  "returnability": "Any route that returns to its starting zero point is certified globally returnable",
+  "tunnel_law": "X -> Z* -> Y: any two points can be connected via tunnel through Z*"
+}

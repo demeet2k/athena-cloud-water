@@ -1,0 +1,99 @@
+{
+  "meta": {
+    "total_layers": 9,
+    "law": "Transport availability increases monotonically with dimension",
+    "bus_spine": "AppA <-> AppI <-> AppM (Sigma spine, mandatory, bounded hub budget <= 6)",
+    "etv_definition": "ETV(e) = (s, kappa, Delta_kappa, d, eta) where d = (Delta_i, Delta_b, Delta_o, Delta_l, Delta_r, Delta_a, Delta_sigma, Delta_lambda, Delta_pi)",
+    "plane_registry": ["WALL", "WHEEL", "FLOOR", "MIX"],
+    "tunnel_law": "X -> Z* -> Y with sacred hub family {Z*, chi, square, triangle, hexagon, star}",
+    "graph_isomorphism": "Metro = Mycelium = Neural (one graph under different readings)"
+  },
+  "layers": [
+    {
+      "index": 0,
+      "code": "Z",
+      "name": "Zero Family",
+      "description": "Zero-point anchors (Z_i local, Z0 cross-manuscript, Z* absolute)",
+      "available_from_dim": 3
+    },
+    {
+      "index": 1,
+      "code": "A",
+      "name": "Aether / Hyper-Aether Family",
+      "description": "High-semantic luminosity expansion pole (A0 primary, H1/H2/H3... hyper-aethers)",
+      "available_from_dim": 4
+    },
+    {
+      "index": 2,
+      "code": "L",
+      "name": "Liminal Hinge / Live-Lock Family",
+      "description": "Mediating lift hinge between zero, aether, tunnel, bridge, and dimensional layers (L3, L5, L7, L35, L37, L57, L357)",
+      "available_from_dim": 5
+    },
+    {
+      "index": 3,
+      "code": "Tunnel",
+      "name": "Tunnel Family",
+      "description": "Non-local transport via X->Z*->Y with sacred geometry hubs",
+      "available_from_dim": 6,
+      "hub_family": ["Z*", "inversion", "square_gate", "trine_gate", "sextile_router", "pentagram_corridor"]
+    },
+    {
+      "index": 4,
+      "code": "Metro",
+      "name": "Metro Graph",
+      "description": "Navigable graph of stations connected by orbit/rail/arc (one view of unified graph)",
+      "available_from_dim": 7
+    },
+    {
+      "index": 5,
+      "code": "Mycelium",
+      "name": "Mycelium Graph",
+      "description": "Underground substrate network (second view of same unified graph)",
+      "available_from_dim": 8
+    },
+    {
+      "index": 6,
+      "code": "Bus",
+      "name": "Bus Spine",
+      "description": "High-capacity recurrent carrier: Sigma = {AppA, AppI, AppM} with bounded hub budget",
+      "available_from_dim": 9,
+      "spine": ["AppA", "AppI", "AppM"],
+      "hub_budget": 6
+    },
+    {
+      "index": 7,
+      "code": "Plane",
+      "name": "Active Plane Family",
+      "description": "Spatial plane of operation: WALL, WHEEL, FLOOR, or MIX (liminal superposition)",
+      "available_from_dim": 10,
+      "planes": ["WALL", "WHEEL", "FLOOR", "MIX"]
+    },
+    {
+      "index": 8,
+      "code": "ETV",
+      "name": "Edge-Time Vector",
+      "description": "Compact transport payload: (s, kappa, Delta_kappa, d, eta) collapsing juggling/poi/sacred geometry/routing into one edge object",
+      "available_from_dim": 11,
+      "components": {
+        "s": "source address",
+        "kappa": "complexity charge",
+        "Delta_kappa": "charge delta",
+        "d": "(Delta_i, Delta_b, Delta_o, Delta_l, Delta_r, Delta_a, Delta_sigma, Delta_lambda, Delta_pi)",
+        "eta": "throw height (integer, preferred 1-9)"
+      }
+    }
+  ],
+  "per_dimension": {
+    "3":  {"available": ["Z"],                                                                  "description": "Z* seed only"},
+    "4":  {"available": ["Z", "A"],                                                              "description": "Address space opens"},
+    "5":  {"available": ["Z", "A", "L"],                                                         "description": "Live-lock / liminal routing opens"},
+    "6":  {"available": ["Z", "A", "L", "Tunnel"],                                               "description": "Non-local tunneling opens"},
+    "7":  {"available": ["Z", "A", "L", "Tunnel", "Metro"],                                      "description": "Metro routing graph opens"},
+    "8":  {"available": ["Z", "A", "L", "Tunnel", "Metro", "Mycelium"],                           "description": "Mycelium substrate network opens"},
+    "9":  {"available": ["Z", "A", "L", "Tunnel", "Metro", "Mycelium", "Bus"],                    "description": "Bus transport spine opens"},
+    "10": {"available": ["Z", "A", "L", "Tunnel", "Metro", "Mycelium", "Bus", "Plane"],           "description": "Plane transport opens"},
+    "11": {"available": ["Z", "A", "L", "Tunnel", "Metro", "Mycelium", "Bus", "Plane", "ETV"],    "description": "Full transport stack operational (ETV opens)"},
+    "12": {"available": ["Z", "A", "L", "Tunnel", "Metro", "Mycelium", "Bus", "Plane", "ETV"],    "description": "Crown body; all transport active under crown lock"}
+  }
+}
