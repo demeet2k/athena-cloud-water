@@ -157,6 +157,7 @@ ORGANISM_SUBDIR_MAP = {
     "GAMES/FINAL GAME PRINTS":                    ("F", "S", "Cc", "games_final"),
     "GLOBAL COMMAND/ATHENA":                      ("S", "F", "Cc", "command_core"),
     "self_actualize/mycelium_brain":              ("R", "F", "Dl", "mycelium_brain"),
+    "NERVOUS_SYSTEM/30_CHAPTERS/HPRO":            ("S", "R", "Ω",  "hpro"),           # HPRO manuscripts → zero-point spine
 }
 
 # Skip directories that are not meaningful organism content
@@ -170,7 +171,9 @@ ORGANISM_SKIP_DIRS = {
 ORGANISM_EXTENSIONS = {".py", ".md", ".json", ".js", ".ts", ".yaml", ".yml", ".html", ".css"}
 
 # Metro line descriptions for the graph metadata
+# Original 8 Athena metro lines + 9 HPRO corpus-wide lines = 17 total
 METRO_LINES = {
+    # ── Original Athena Organism Lines ──
     "Sa": {"name": "Shell Ascent",      "desc": "Structural hierarchy — dimension layers",       "element": "S"},
     "Wr": {"name": "Wreath Ring",       "desc": "Cyclical grouping — 7-chapter wreath bodies",   "element": "F"},
     "Ac": {"name": "Archetype Column",  "desc": "12-archetype classification threads",           "element": "S"},
@@ -179,7 +182,91 @@ METRO_LINES = {
     "Bw": {"name": "Bridge Walk",       "desc": "Cross-domain connection corridors",             "element": "C"},
     "Cc": {"name": "Crown Circuit",     "desc": "Organism-level governance and command",         "element": "S"},
     "Dl": {"name": "Dimensional Lift",  "desc": "Higher-D emergence and actualization",          "element": "R"},
+    # ── HPRO Corpus-Wide Lines (Holographic Programming & Repo Organization) ──
+    "Ω":  {"name": "Zero-Point Spine",  "desc": "Ω(Ω)=Ω — all lines terminate/re-enter here",  "element": "R", "hpro": True},
+    "w":  {"name": "Generator Line",    "desc": "w=(1+i)/2 seed propagation across all docs",    "element": "F", "hpro": True},
+    "□":  {"name": "Square Address",    "desc": "Base-4 discrete addressing — CODE_KEY grammar",  "element": "S", "hpro": True},
+    "○":  {"name": "Convergence Circle","desc": "1/e, 1/φ, 1/π threshold convergence",          "element": "C", "hpro": True},
+    "△":  {"name": "Triangle Control",  "desc": "ℤ₃ recursion legality, cycle length, cadence",  "element": "F", "hpro": True},
+    "✶":  {"name": "Fractal Holographic","desc": "Part=whole at lower resolution — seed storage", "element": "R", "hpro": True},
+    "T":  {"name": "Truth Lattice",     "desc": "OK/NEAR/AMBIG/FAIL structured truth corridor",  "element": "C", "hpro": True},
+    "Ξ":  {"name": "Operator Spectral", "desc": "Eigenvalues, Laplacian, Fiedler connectivity",  "element": "S", "hpro": True},
+    "M":  {"name": "Migration Evolution","desc": "MIGRATE collapse-to-Z* then re-expansion",     "element": "F", "hpro": True},
 }
+
+
+# ── HPRO CODE_KEY Level Assignment ─────────────────────────────────
+# Level 0=atom(function), 1=module, 2=package, 3=service, 4=monorepo
+# Maps directory depth + type to hologram level
+
+HPRO_ELEMENT_MAP = {
+    # Fire🜂=compute (.py with algorithms, transforms, engines)
+    "compute": "Fire", "engine": "Fire", "bot": "Fire", "trading": "Fire",
+    "neural": "Fire", "solver": "Fire", "executor": "Fire", "runtime": "Fire",
+    "generator": "Fire", "builder": "Fire", "compiler": "Fire",
+    # Air🜁=interface (.py with API, schema, protocol, router)
+    "api": "Air", "schema": "Air", "protocol": "Air", "router": "Air",
+    "interface": "Air", "cli": "Air", "server": "Air", "handler": "Air",
+    # Water🜄=state (.py with state, session, cache, buffer)
+    "state": "Air", "session": "Water", "cache": "Water", "buffer": "Water",
+    "store": "Water", "memory": "Water", "registry": "Water", "ledger": "Water",
+    # Earth🜃=storage (.json, .yaml, .md, configs, data)
+    "data": "Earth", "config": "Earth", "manifest": "Earth", "index": "Earth",
+    "archive": "Earth", "seed": "Earth", "snapshot": "Earth",
+}
+
+HPRO_PHASE_MAP = {
+    # Cardinal=init/create, Fixed=stabilize, Mutable=refactor
+    "new": "Cardinal", "init": "Cardinal", "create": "Cardinal", "seed": "Cardinal",
+    "stable": "Fixed", "final": "Fixed", "canonical": "Fixed", "locked": "Fixed",
+    "refactor": "Mutable", "draft": "Mutable", "wip": "Mutable", "dev": "Mutable",
+}
+
+
+def _compute_hpro_code_key(rel_path: str, depth: int, ext: str, stem: str) -> dict:
+    """Compute HPRO CODE_KEY for a file.
+
+    CODE_KEY = ⟨level | path | element | phase | semver_phase⟩
+    """
+    # Level from depth: 0=atom(leaf), 1=module(1 dir), 2=package(2 dirs), 3=service(3+)
+    level = min(depth, 3)
+
+    # Element from filename keywords
+    element = "Earth"  # default for docs/data
+    if ext in (".py", ".js", ".ts"):
+        element = "Fire"  # default for code
+        for keyword, elem in HPRO_ELEMENT_MAP.items():
+            if keyword in stem.lower():
+                element = elem
+                break
+    elif ext in (".json", ".yaml", ".yml"):
+        element = "Earth"
+    elif ext == ".md":
+        element = "Air"  # docs = interface/specification
+
+    # Phase from keywords
+    phase = "Fixed"  # default
+    for keyword, ph in HPRO_PHASE_MAP.items():
+        if keyword in stem.lower():
+            phase = ph
+            break
+
+    # Chi (public/private): +1 if no underscore prefix, -1 if private
+    chi = -1 if stem.startswith("_") else 1
+
+    # Side-effect signature
+    sigma = "pure"
+    if ext in (".py", ".js", ".ts"):
+        sigma = "IO" if any(k in stem.lower() for k in ("server", "cli", "api", "handler")) else "pure"
+
+    return {
+        "level": level,
+        "element": element,
+        "phase": phase,
+        "chi": chi,
+        "sigma": sigma,
+        "code_key": f"⟨{level}|{rel_path}|{element}|{phase}⟩",
+    }
 
 
 MANUSCRIPT_MODULE_FAMILY = {
@@ -600,6 +687,26 @@ def scan_full_organism() -> list[Shard]:
             else:
                 summary = stem.replace("_", " ").replace("-", " ").title()[:80]
 
+            # Compute HPRO CODE_KEY for this file
+            hpro = _compute_hpro_code_key(rel_str, len(dir_parts), ext, stem)
+
+            # Assign HPRO metro lines based on element + level
+            hpro_routes = [metro]  # original Athena metro line
+            if hpro["element"] == "Fire":
+                hpro_routes.append("Ω")  # compute touches zero-point
+            if hpro["element"] == "Air":
+                hpro_routes.append("□")  # interfaces = addressing
+            if hpro["element"] == "Water":
+                hpro_routes.append("T")  # state = truth corridor
+            if hpro["element"] == "Earth":
+                hpro_routes.append("✶")  # storage = holographic seed
+            if hpro["level"] >= 2:
+                hpro_routes.append("○")  # package+ = convergence circle
+            if "seed" in stem.lower() or "compress" in stem.lower():
+                hpro_routes.append("w")  # seed/compress = generator line
+            if "migration" in stem.lower() or "migrate" in stem.lower():
+                hpro_routes.append("M")  # migration evolution line
+
             shards.append(Shard(
                 shard_id=sid,
                 lineage_id=sid,
@@ -610,14 +717,16 @@ def scan_full_organism() -> list[Shard]:
                 payload_ref=rel_str,
                 summary=summary,
                 seed_vector=_seed_vector(primary, secondary),
-                route_refs=[metro],
+                route_refs=hpro_routes,
                 cert_refs=[],
                 mirror_refs=[],
                 truth_status="CANONICAL",
                 promotion_status="PROMOTED",
                 family=family,
                 tags=[stem[:40], f"lens_{primary}", f"metro_{metro}", family,
-                      dir_parts[0] if dir_parts else "root"],
+                      dir_parts[0] if dir_parts else "root",
+                      f"hpro_L{hpro['level']}", f"hpro_{hpro['element']}",
+                      f"hpro_{hpro['phase']}"],
                 created_at=NOW,
                 updated_at=NOW,
             ))
@@ -1072,13 +1181,26 @@ def main():
     for s in all_shards:
         lens_dist[s.lens or "balanced"] = lens_dist.get(s.lens or "balanced", 0) + 1
 
+    # Compute HPRO-level distributions from tags
+    hpro_level_dist = {}
+    hpro_element_dist = {}
+    hpro_phase_dist = {}
+    for s in all_shards:
+        for tag in (s.tags or []):
+            if tag.startswith("hpro_L"):
+                hpro_level_dist[tag] = hpro_level_dist.get(tag, 0) + 1
+            elif tag.startswith("hpro_Fire") or tag.startswith("hpro_Air") or tag.startswith("hpro_Water") or tag.startswith("hpro_Earth"):
+                hpro_element_dist[tag] = hpro_element_dist.get(tag, 0) + 1
+            elif tag.startswith("hpro_Cardinal") or tag.startswith("hpro_Fixed") or tag.startswith("hpro_Mutable"):
+                hpro_phase_dist[tag] = hpro_phase_dist.get(tag, 0) + 1
+
     # Emit mycelium_graph.json
     graph = {
         "meta": {
             "title": "Athena Mycelium Graph",
             "description": "Universal shard/edge/node graph manifest for the ENTIRE Athena distributed superbrain organism",
             "generated_at": NOW,
-            "generator": "generate_graph.py v2 — full organism",
+            "generator": "generate_graph.py v3 — full organism + HPRO CODE_KEY + 17 metro lines",
             "shard_count": len(all_shards),
             "edge_count": len(edges),
             "mirror_count": len(mirrors),
@@ -1099,6 +1221,9 @@ def main():
             "medium_distribution": {m: sum(1 for s in all_shards if s.medium == m) for m in mediums},
             "metro_line_distribution": metro_stats,
             "sfcr_lens_distribution": lens_dist,
+            "hpro_hologram_level_distribution": hpro_level_dist,
+            "hpro_element_distribution": hpro_element_dist,
+            "hpro_phase_distribution": hpro_phase_dist,
         },
     }
 
