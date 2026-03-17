@@ -59,6 +59,12 @@ corpus_atlas.json
 node_tensor_manifest.json
 *SYSTEM_SNAPSHOT.json
 last_snapshot.json
+ATHENACHKA_MASTER_LEDGER.json
+
+# Files exceeding GitHub's 100MB limit
+GAMES/FITChain/FITChain
+TOTAL_HOLOGRAPHIC_MINDSWEEPER_*.jsonl
+myth_math_dense_65_rqt_overflow_registry.json
 
 # Google API discovery cache (huge)
 discovery_cache/
