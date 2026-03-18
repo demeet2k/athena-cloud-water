@@ -96,3 +96,16 @@ ARCHIVE/
 *.bak
 *.swp
 *~
+
+# Build artifacts (regenerable)
+DEEPER_CRYSTALIZATION/_build/
+
+# Mycelium brain registry (regenerable, ~500MB)
+self_actualize/mycelium_brain/registry/
+
+# Myth math hemisphere duplicates (keep registry copy only)
+self_actualize/myth_math_hemisphere_*.json
+
+# MCP regenerable state
+MCP/data/meta_observer_logs/
+MCP/data/self_play_checkpoints/

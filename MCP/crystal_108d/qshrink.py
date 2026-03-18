@@ -17,7 +17,10 @@ Bridge law:
   - 1/8 lift: each shell compresses to 1/8 its size, preserving all 6 laws
 """
 
-from ._cache import JsonCache
+from pathlib import Path
+from typing import Any, Optional
+
+from ._cache import JsonCache, DATA_DIR
 from .constants import (
     ARCHETYPE_NAMES,
     SUPERPHASE_NAMES,
@@ -436,5 +439,222 @@ def _compression_stats() -> str:
         f"(down to {max(total_shells, math.ceil(total_nodes / LIFT_FACTOR ** len(level_names)))} nodes)",
         "- Conservation: 6 invariants preserved at all levels",
     ])
+
+    return "\n".join(lines)
+
+
+# ===========================================================================
+# Operational MCP tools — compress, decompress, scan, inspect
+# ===========================================================================
+
+def _get_weight_store() -> Any:
+    """Lazily load the FractalWeightStore (may not have data yet)."""
+    try:
+        from .crystal_weights import FractalWeightStore
+        store = FractalWeightStore()
+        store.load_from_json()
+        return store
+    except Exception:
+        return None
+
+
+def qshrink_compress(path: str, lossless: bool = True) -> str:
+    """Compress a file to .qshr with embedded crystal weight metadata.
+
+    Args:
+        path: File path to compress (relative to MCP/data/ or absolute).
+        lossless: If True, use lossless compression (default).
+
+    Returns a summary of compression results including crystal coordinate
+    and weight seed status.
+    """
+    from .qshrink_pipeline import compress_file
+
+    p = Path(path)
+    if not p.is_absolute():
+        p = DATA_DIR / path
+    if not p.exists():
+        return f"File not found: {p}"
+
+    store = _get_weight_store()
+    out_path, stats = compress_file(p, lossless=lossless, weight_store=store)
+
+    lines = [
+        "## QSHR Compression Complete\n",
+        f"- **Source**: `{p.name}`",
+        f"- **Output**: `{out_path.name}`",
+        f"- **Original size**: {stats['original_size']:,} bytes",
+        f"- **Compressed size**: {stats['compressed_size']:,} bytes",
+        f"- **Ratio**: {stats['ratio']:.1f}x",
+        f"- **Savings**: {stats['savings_pct']:.1f}%",
+        f"- **Crystal coordinate**: `{stats['coordinate']}`",
+        f"- **Shell**: S{stats['shell']}",
+        f"- **Weight seeds embedded**: {'Yes' if stats['has_weight_seeds'] else 'No (hollow envelope)'}",
+        f"- **Lossless**: {'Yes' if lossless else 'No'}",
+    ]
+    return "\n".join(lines)
+
+
+def qshrink_decompress(path: str) -> str:
+    """Decompress a .qshr file and report embedded crystal metadata.
+
+    Args:
+        path: Path to .qshr file (relative to MCP/data/ or absolute).
+
+    Returns decompression results and crystal weight metadata summary.
+    """
+    from .qshrink_pipeline import decompress_file
+
+    p = Path(path)
+    if not p.is_absolute():
+        p = DATA_DIR / path
+    if not p.exists():
+        return f"File not found: {p}"
+
+    out_path, stats = decompress_file(p)
+
+    lines = [
+        "## QSHR Decompression Complete\n",
+        f"- **Source**: `{p.name}`",
+        f"- **Output**: `{out_path.name}`",
+        f"- **Compressed size**: {stats['compressed_size']:,} bytes",
+        f"- **Restored size**: {stats['restored_size']:,} bytes",
+        f"- **Crystal coordinate**: `{stats['coordinate']}`",
+        f"- **Weight seeds present**: {'Yes' if stats['has_weight_seeds'] else 'No'}",
+    ]
+    return "\n".join(lines)
+
+
+def qshrink_scan(directory: str = "") -> str:
+    """Scan a directory for files that would benefit from QSHR compression.
+
+    Args:
+        directory: Directory to scan (default: MCP/data/).
+
+    Returns a table of compressible files with estimated savings.
+    """
+    from .qshrink_pipeline import scan_directory
+
+    d = Path(directory) if directory else DATA_DIR
+    if not d.exists():
+        return f"Directory not found: {d}"
+
+    results = scan_directory(d)
+    if not results:
+        return f"No compressible files found in `{d}`"
+
+    lines = [
+        f"## QSHR Compression Scan: `{d.name}/`\n",
+        f"Found **{len(results)}** compressible files.\n",
+        "| File | Size | Est. Compressed | Est. Savings | Shell | Coordinate |",
+        "|------|------|----------------|-------------|-------|------------|",
+    ]
+
+    total_size = 0
+    total_savings = 0
+    for r in results[:30]:  # cap at 30 rows
+        fname = Path(r["path"]).name
+        total_size += r["size"]
+        est_savings_bytes = int(r["size"] * (1 - 1 / r["est_ratio"]))
+        total_savings += est_savings_bytes
+        lines.append(
+            f"| {fname} | {r['size_human']} | {r['est_compressed']} | "
+            f"{r['est_savings']} | S{r['shell']} | `{r['coordinate']}` |"
+        )
+
+    if len(results) > 30:
+        lines.append(f"| ... | *{len(results) - 30} more files* | | | | |")
+
+    lines.extend([
+        "",
+        f"### Total: {len(results)} files, "
+        f"{total_size / 1024 / 1024:.1f}MB → "
+        f"~{(total_size - total_savings) / 1024 / 1024:.1f}MB "
+        f"(est. {total_savings / 1024 / 1024:.1f}MB savings)",
+    ])
+
+    return "\n".join(lines)
+
+
+def qshrink_inspect(path: str) -> str:
+    """Read crystal weight metadata from a .qshr file WITHOUT decompressing.
+
+    O(1) metadata read — returns the embedded crystal coordinate, weight
+    seeds, learnable parameters, and conservation hash.
+
+    Args:
+        path: Path to .qshr file (relative to MCP/data/ or absolute).
+    """
+    from .qshrink_pipeline import inspect_qshr
+
+    p = Path(path)
+    if not p.is_absolute():
+        p = DATA_DIR / path
+    if not p.exists():
+        return f"File not found: {p}"
+
+    meta = inspect_qshr(p)
+    if meta is None:
+        return f"No crystal metadata found in `{p.name}` (not a valid .qshr file)"
+
+    lines = [
+        f"## Crystal Weight Metadata: `{p.name}`\n",
+        "### Identity\n",
+        f"- **Coordinate**: `{meta.coordinate}`",
+        f"- **Shell**: S{meta.shell}",
+        f"- **Wreath**: W{meta.wreath}",
+        f"- **Archetype**: A{meta.archetype} ({ARCHETYPE_NAMES[meta.archetype - 1] if 1 <= meta.archetype <= 12 else '?'})",
+        f"- **Face**: {meta.face}",
+        f"- **Mirror shell**: S{meta.mirror_shell}",
+        "",
+        "### Holographic Regeneration\n",
+        f"- **w**: ({meta.holographic_w_real} + {meta.holographic_w_imag}i)",
+        f"- **Conservation hash**: `{meta.conservation_hash}`",
+        "",
+        "### Neural Parameters\n",
+        f"- **Path weights**: {meta.path_weights}",
+        f"- **Resonance weights**: {meta.resonance_weights}",
+        f"- **Desire weights**: {meta.desire_weights}",
+        f"- **Bridge modulation**: {meta.bridge_modulation}",
+    ]
+
+    if meta.shell_seed:
+        ss = meta.shell_seed
+        lines.extend([
+            "",
+            f"### Shell Seed (1/8 lift — S{ss.shell})\n",
+            f"- **Mean**: {ss.mean:.4f} | **Std**: {ss.std:.4f}",
+            f"- **Count**: {ss.count} | **Range**: [{ss.min_val:.2f}, {ss.max_val:.2f}]",
+            f"- **Element dist**: {ss.element_dist}",
+            f"- **Gate means**: {ss.gate_means}",
+        ])
+
+    if meta.archetype_seed:
+        ars = meta.archetype_seed
+        lines.extend([
+            "",
+            f"### Archetype Seed (1/64 lift — A{ars.archetype} {ars.name})\n",
+            f"- **Mean**: {ars.mean:.4f} | **Std**: {ars.std:.4f}",
+            f"- **Count**: {ars.count}",
+            f"- **Wreath means**: {ars.wreath_means}",
+        ])
+
+    if meta.nano_seed:
+        ns = meta.nano_seed
+        lines.extend([
+            "",
+            "### Nano Seed (1/512 lift — global)\n",
+            f"- **Global mean**: {ns.global_mean:.4f} | **Std**: {ns.global_std:.4f}",
+            f"- **Skew**: {ns.skew:.4f} | **Kurtosis**: {ns.kurtosis:.4f}",
+            f"- **Total count**: {ns.total_count}",
+            f"- **Element means**: {ns.element_means}",
+            f"- **Gate means**: {ns.gate_means}",
+        ])
+
+    if not meta.shell_seed and not meta.archetype_seed and not meta.nano_seed:
+        lines.extend([
+            "",
+            "### Weight Seeds: **HOLLOW** (identity-only envelope, no weight data)",
+        ])
 
     return "\n".join(lines)

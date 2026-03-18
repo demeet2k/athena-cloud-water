@@ -29,6 +29,11 @@ shard_families:
   - angel_geometry
   - inverse
   - mycelium
+  - guild_hall
+  - corpus_weights
+  - hologram_chapters
+  - appendix
+  - google_docs
 
 mirrors:
   - id: athena-core-gdoc
@@ -43,6 +48,18 @@ mirrors:
     type: google_doc
     doc_id: "1LJEMi-OmqSfSqJTc585nxlf5zGF0rfyqbygNlYYB6J4"
     description: "ATHENA CRYSTAL 108+ HOLOGRAM — Full 108D organism spec"
+  - id: emergence-master-plan-gdoc
+    type: google_doc
+    doc_id: "1qdn2gJ3YW-bL9s3nvA7P8bS98XTRX3KeNYgG9Vb-zV4"
+    description: "EMERGENCE MASTER PLAN — 4D→6D emergence roadmap"
+  - id: athena-skills-gdoc
+    type: google_doc
+    doc_id: "1ASkqLI3IYNcyAaa09__qDqAAp3bd91JAmSPK_FrdUdA"
+    description: "ATHENA SKILLS — Skills corpus"
+  - id: brain-stem-gdoc
+    type: google_doc
+    doc_id: "1Bn9Doo_NCPJ6FAjPzSVTB62_b0Zoz2lBC_eNU8wvOxM"
+    description: "BRAIN STEM — Brain stem architecture"
 
 bridges:
   - type: docs_to_github
@@ -74,8 +91,9 @@ sync_sources:
   - "https://github.com/demeet2k/athena-flower-fire"
   - "https://github.com/demeet2k/athena-cloud-water"
   - "https://github.com/demeet2k/athena-fractal-air"
+  - "https://github.com/demeet2k/manuscript-being"
 
 github_repo: "https://github.com/demeet2k/athena-mcp-server"
 
-tool_count: 68
+tool_count: 77
 resource_count: 21

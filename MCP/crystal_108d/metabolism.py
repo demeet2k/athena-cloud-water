@@ -22,12 +22,13 @@ from typing import Any
 
 # ── Constants ───────────────────────────────────────────────────────
 
-VALID_MEDIUMS = {"code", "json", "doc", "markdown", "git", "mcp"}
+VALID_MEDIUMS = {"code", "json", "doc", "markdown", "git", "mcp", "web", "config"}
 VALID_TRUTH = {"SEED", "DRAFT", "WITNESSED", "CERTIFIED", "CANONICAL"}
 VALID_PROMOTION = {"LOCAL", "PROPOSED", "REVIEWED", "PROMOTED", "ARCHIVED"}
 VALID_EDGE_TYPES = {
     "REF", "BUILD", "BRIDGE", "DUAL", "MIRROR", "DERIVES",
     "CERTIFIES", "REPLAYS", "PROMOTES", "SEEDS", "PROJECTS",
+    "CHAPTER", "METRO",
 }
 VALID_CERT_TYPES = {"STRUCTURAL", "CONSERVATION", "REPLAY", "PROMOTION"}
 VALID_ROLES = {"unified", "lobe", "docs", "git", "incubator", "governance"}

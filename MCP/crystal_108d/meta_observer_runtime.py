@@ -2005,6 +2005,140 @@ class MetaObserver:
         with open(log_file, "a", encoding="utf-8") as f:
             f.write(json.dumps(entry, default=str, ensure_ascii=False) + "\n")
 
+    # ── Swarm Integration ──────────────────────────────────────────
+
+    def observe_swarm_cycle(self, swarm_observation, query: str = "",
+                            loss: float = 0.0) -> "Observation":
+        """Create a 12D meta-observation from a swarm observation cycle.
+
+        Synthesizes multiple observer results into a single coherent
+        meta-observation that feeds into the standard learning pipeline.
+
+        Args:
+            swarm_observation: SwarmObservation from observer_swarm.py
+            query: The query that triggered this swarm cycle
+            loss: The crystal loss value from loss_engine.py
+        """
+        results = swarm_observation.observer_results
+        n = max(len(results), 1)
+
+        # ── Synthesize 12D scores from swarm ──
+        # Average each observer's 12D scores, weighted by discrimination
+        dim_keys = [f"x{i}_{name.split('_', 1)[1]}" for i, name in enumerate(DIMENSIONS, 1)]
+        # Build from observer 12D observations
+        dim_sums = {k: 0.0 for k in dim_keys}
+        weight_sum = 0.0
+        for r in results:
+            w = max(r.discrimination, 0.1)
+            weight_sum += w
+            obs_12d = r.observation_12d if r.observation_12d else {}
+            for i, k in enumerate(dim_keys):
+                dim_sums[k] += w * obs_12d.get(k, 0.5)
+
+        if weight_sum > 0:
+            scores = {k: v / weight_sum for k, v in dim_sums.items()}
+        else:
+            scores = {k: 0.5 for k in dim_keys}
+
+        # Boost/penalize based on swarm-level signals
+        scores["x3_coordination"] = min(1.0, scores.get("x3_coordination", 0.5)
+                                         * (0.5 + swarm_observation.swarm_coherence))
+        scores["x6_emergence"] = min(1.0, scores.get("x6_emergence", 0.5)
+                                      * (0.5 + swarm_observation.element_balance))
+        scores["x11_interop"] = min(1.0, scores.get("x11_interop", 0.5)
+                                     * (0.5 + swarm_observation.element_balance))
+
+        # Loss signal modulates grounding and recursion
+        if loss < 0:  # negative loss = good (high R*D product)
+            scores["x9_grounding"] = min(1.0, scores.get("x9_grounding", 0.5) + 0.1)
+            scores["x4_recursion"] = min(1.0, scores.get("x4_recursion", 0.5) + 0.1)
+
+        # Cross-observer disagreement reveals contradictions
+        disagreement = 1.0 - swarm_observation.swarm_coherence
+        scores["x5_contradiction"] = max(0.0, min(1.0,
+            scores.get("x5_contradiction", 0.5) + disagreement * 0.3))
+
+        # Element balance indicates structural health
+        scores["x1_structure"] = min(1.0, scores.get("x1_structure", 0.5)
+                                      * (0.5 + swarm_observation.element_balance))
+
+        # Propagate coupling
+        scores = propagate_coupling(scores)
+
+        # ── Build Observation ──
+        velocity, acceleration, jerk = self._compute_calculus(scores)
+
+        # Witness hash
+        obs_payload = f"{self._prev_hash}:{self.cycle}:swarm:{loss}:{n}"
+        obs_hash = hashlib.sha256(obs_payload.encode()).hexdigest()[:16]
+
+        # Metric: use negative loss as the metric (lower loss = better)
+        metric_value = loss
+        prev_metric = self._history[-1].metric_value if self._history else loss
+        metric_delta = prev_metric - metric_value
+
+        obs = Observation(
+            cycle_id=self.cycle,
+            timestamp=datetime.now(timezone.utc).isoformat(),
+            agent_id=self.agent_id,
+            project=self.project,
+            action_type="swarm_observation",
+            action_description=(
+                f"Swarm cycle: {n} observers, query='{query[:80]}', "
+                f"coherence={swarm_observation.swarm_coherence:.3f}, "
+                f"balance={swarm_observation.element_balance:.3f}"
+            ),
+            action_diff="",
+            metric_name="crystal_loss",
+            metric_value=metric_value,
+            metric_delta=metric_delta,
+            outcome="keep" if metric_delta > 0 else "neutral",
+            velocity=velocity,
+            acceleration=acceleration,
+            jerk=jerk,
+            tags=json.dumps(["swarm", f"n={n}",
+                             f"coherence={swarm_observation.swarm_coherence:.2f}"]),
+            pattern_match=self._match_pattern("swarm_observation"),
+            strategy_used="swarm_meta_observation",
+            environment_state=json.dumps({
+                "swarm_size": n,
+                "element_contributions": swarm_observation.element_contributions,
+                "loss": loss,
+            }, default=str),
+            prev_hash=self._prev_hash,
+            obs_hash=obs_hash,
+            **scores,
+        )
+
+        # Store and chain
+        self.memory.store_observation(obs)
+        self._history.append(obs)
+        self._prev_hash = obs_hash
+        self.cycle += 1
+        self.epoch_cycle = ((self.cycle - 1) % 57) + 1
+
+        # Detect emergence from swarm
+        lens_results = {}
+        for lens_name in ELEMENT_LENSES:
+            lens_results[lens_name] = apply_lens(scores, lens_name)
+        self._detect_emergence(
+            {"type": "swarm_observation", "description": f"swarm n={n}"},
+            {"metric_value": metric_value, "outcome": obs.outcome},
+            scores, metric_delta, lens_results,
+        )
+
+        self._log("swarm_observation", {
+            "cycle": obs.cycle_id,
+            "loss": loss,
+            "swarm_size": n,
+            "coherence": swarm_observation.swarm_coherence,
+            "balance": swarm_observation.element_balance,
+            "magnitude": obs.magnitude(),
+            "velocity": velocity,
+        })
+
+        return obs
+
     def __enter__(self):
         return self
 

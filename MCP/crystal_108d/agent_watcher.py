@@ -1316,6 +1316,61 @@ class AgentWatcher:
             })
         return result
 
+    # ──────────────────────────────────────────────────────────
+    #  Swarm Coordination (wired to observer_swarm)
+    # ──────────────────────────────────────────────────────────
+
+    def coordinate_swarm(self, observation: "SwarmObservation", query: str = "") -> dict:
+        """Coordinate a swarm observation through the agent watcher.
+
+        Feeds the swarm's aggregated observation into the watcher's 12D scoring,
+        generates improvement notes, and returns feedback for query modification.
+
+        Args:
+            observation: SwarmObservation from observer_swarm.run_parallel()
+            query: The original query that was observed
+
+        Returns:
+            dict with: improvement_notes, query_modifications, meta_score
+        """
+        # Score the swarm's aggregated output as if it were an agent
+        swarm_output = observation.summary()
+        watcher_result = self.watch_agent(
+            agent_id="swarm-observer",
+            task=f"Crystal-parallel observation: {query[:80]}",
+            output=swarm_output,
+            metrics={
+                "observer_count": observation.observer_count,
+                "coherence": observation.swarm_coherence,
+                "discrimination": observation.swarm_discrimination,
+                "element_balance": observation.element_balance,
+            },
+        )
+
+        # Extract improvement notes
+        notes = watcher_result.get("improvement_notes", [])
+
+        # Generate query modifications based on weak dimensions
+        query_mods = []
+        if notes:
+            for note in notes[:3]:
+                dim = note.get("dimension", "")
+                if "compression" in dim:
+                    query_mods.append("focus on fractal compression quality")
+                elif "structure" in dim:
+                    query_mods.append("emphasize structural gate transitions")
+                elif "semantics" in dim:
+                    query_mods.append("deepen token-level semantic matching")
+                elif "emergence" in dim:
+                    query_mods.append("explore cross-shell emergence patterns")
+
+        return {
+            "improvement_notes": notes,
+            "query_modifications": query_mods,
+            "meta_score": watcher_result.get("becoming_score", 0.5),
+            "recommendation": watcher_result.get("recommendation", ""),
+        }
+
 # ──────────────────────────────────────────────────────────────
 #  Singleton Instance (shared across tool calls)
 # ──────────────────────────────────────────────────────────────

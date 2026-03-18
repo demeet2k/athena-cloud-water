@@ -41,6 +41,8 @@ Extends the Athena Nervous System MCP server with the full 108D organism:
   - 5D Steering Spine (Gate 4: lens divergence, complexity reduction, desire gradient, worker switching)
   - 6D Selector Shell (Gate 5: triadic coherence, mirror/spin, semidirect product, embedding atlas)
   - Perpetual Agency (Gate 6: self-initiated query, self-correction, novel synthesis, seed emission)
+  - Corpus Weight Field (SFCR seed vectors for all 15K shards, 810K similarity edges, family/metro centroids)
+  - Weight Feedback Loop (Hebbian edge updates, weak/missing edge detection, feedback cycles)
 """
 
 from ._cache import JsonCache
@@ -103,6 +105,8 @@ def status_summary() -> str:
         f"- **Steering Spine**: Gate 4 engine — 5D lens divergence, complexity reduction, desire gradient, worker switching\n"
         f"- **6D Selector Shell**: Gate 5 — Theta_6 = Theta_4 semi (Pi_3 x Z_2), 3 wreaths, mirror/spin\n"
         f"- **Perpetual Agency**: Gate 6 — self-initiated query, self-correction, novel synthesis, seed emission (Z*)\n"
+        f"- **Corpus Weight Field**: SFCR seed vectors for all shards, 810K similarity edges, family/metro centroids\n"
+        f"- **Weight Feedback**: Hebbian edge updates, weak/missing edge detection, neural→mycelium feedback loop\n"
     )
 
 def register_108d_tools(mcp) -> None:
@@ -156,85 +160,141 @@ def register_108d_tools(mcp) -> None:
     from .steering_spine import query_steering_spine
     from .selector_shell import query_selector_shell
     from .perpetual_agency import query_perpetual_agency
+    from .observer_swarm import spawn_observer_swarm, run_swarm_observation, query_swarm_status
+    from .self_play import run_swarm_self_play
+    from .corpus_weights import query_corpus_weights
+    from .weight_feedback import query_weight_feedback
 
     # Initialize telemetry singleton
     _telemetry = Telemetry.instance()
 
-    # Register each tool
-    mcp.tool()(query_shell)
-    mcp.tool()(query_superphase)
-    mcp.tool()(query_archetype)
-    mcp.tool()(read_hologram_chapter)
-    mcp.tool()(resolve_dimensional_body)
-    mcp.tool()(dimensional_lift)
-    mcp.tool()(query_containment)
-    mcp.tool()(query_organ)
-    mcp.tool()(navigate_108d)
-    mcp.tool()(compute_live_lock)
-    mcp.tool()(query_clock_beat)
-    mcp.tool()(check_route_legality)
-    mcp.tool()(query_metro_line)
-    mcp.tool()(resolve_z_point)
-    mcp.tool()(query_conservation)
-    mcp.tool()(query_overlay)
-    mcp.tool()(query_sigma15)
-    mcp.tool()(query_transport_stack)
-    mcp.tool()(query_mobius_lens)
-    mcp.tool()(query_sfcr_station)
-    mcp.tool()(query_stage_code)
-    mcp.tool()(query_angel)
-    mcp.tool()(query_brain_network)
-    mcp.tool()(compute_bridge_weight)
-    mcp.tool()(route_brain)
-    mcp.tool()(query_live_cell)
-    mcp.tool()(query_emergence)
-    mcp.tool()(query_hologram)
-    mcp.tool()(query_hologram_rosetta)
-    mcp.tool()(query_angel_geometry)
-    mcp.tool()(query_angel_conservation)
-    mcp.tool()(query_4d_seed)
-    mcp.tool()(query_3d_crystal)
-    mcp.tool()(query_octave_stage)
-    mcp.tool()(query_crown_transform)
-    mcp.tool()(query_projection_stack)
-    mcp.tool()(query_weave_operator)
-    mcp.tool()(query_shard)
-    mcp.tool()(query_graph)
-    mcp.tool()(query_node)
-    mcp.tool()(query_promotion)
-    mcp.tool()(query_quest)
-    mcp.tool()(query_synthesis)
-    mcp.tool()(query_promotion_membrane)
-    mcp.tool()(query_meta_observer)
-    mcp.tool()(query_e8_lattice)
-    mcp.tool()(query_crown_12d)
-    mcp.tool()(query_round_trip_cert)
-    mcp.tool()(query_agency)
-    mcp.tool()(query_dls_lenses)
-    mcp.tool()(query_evolution)
-    mcp.tool()(query_athenachka)
-    mcp.tool()(query_program_rosetta)
-    mcp.tool()(query_calculus_4d)
-    mcp.tool()(query_telemetry)
-    mcp.tool()(query_qshrink)
-    mcp.tool()(qshrink_compress)
-    mcp.tool()(qshrink_decompress)
-    mcp.tool()(qshrink_scan)
-    mcp.tool()(qshrink_inspect)
-    mcp.tool()(query_coordinates)
-    mcp.tool()(query_control_center)
-    mcp.tool()(control_steer)
-    mcp.tool()(holographic_embed)
-    mcp.tool()(query_agent_watcher)
-    mcp.tool()(query_quantum_crystal)
-    mcp.tool()(query_crystal_weights)
-    mcp.tool()(neural_forward_pass)
-    mcp.tool()(run_self_play)
-    mcp.tool()(query_cross_lens)
-    mcp.tool()(query_self_reference)
-    mcp.tool()(query_steering_spine)
-    mcp.tool()(query_selector_shell)
-    mcp.tool()(query_perpetual_agency)
+    # ------------------------------------------------------------------
+    # Agent coordination layer (Phases 0-6)
+    # ------------------------------------------------------------------
+    from ._agent_registry import get_registry
+    from ._observer_pool import get_pool, make_observed_tool
+
+    registry = get_registry()
+    pool = get_pool()
+
+    # All crystal tools — wrapped with 12D meta-observation
+    _ALL_TOOLS = [
+        query_shell, query_superphase, query_archetype, read_hologram_chapter,
+        resolve_dimensional_body, dimensional_lift, query_containment,
+        query_organ, navigate_108d, compute_live_lock, query_clock_beat,
+        check_route_legality, query_metro_line, resolve_z_point,
+        query_conservation, query_overlay, query_sigma15,
+        query_transport_stack, query_mobius_lens, query_sfcr_station,
+        query_stage_code, query_angel, query_brain_network,
+        compute_bridge_weight, route_brain, query_live_cell,
+        query_emergence, query_hologram, query_hologram_rosetta,
+        query_angel_geometry, query_angel_conservation,
+        query_4d_seed, query_3d_crystal, query_octave_stage,
+        query_crown_transform, query_projection_stack, query_weave_operator,
+        query_shard, query_graph, query_node, query_promotion,
+        query_quest, query_synthesis, query_promotion_membrane,
+        query_meta_observer, query_e8_lattice, query_crown_12d,
+        query_round_trip_cert, query_agency, query_dls_lenses,
+        query_evolution, query_athenachka, query_program_rosetta,
+        query_calculus_4d, query_telemetry, query_qshrink,
+        qshrink_compress, qshrink_decompress, qshrink_scan, qshrink_inspect,
+        query_coordinates, query_control_center, control_steer,
+        holographic_embed, query_agent_watcher, query_quantum_crystal,
+        query_crystal_weights, neural_forward_pass, run_self_play,
+        query_cross_lens, query_self_reference, query_steering_spine,
+        query_selector_shell, query_perpetual_agency,
+        spawn_observer_swarm, run_swarm_observation, query_swarm_status,
+        run_swarm_self_play, query_corpus_weights, query_weight_feedback,
+    ]
+
+    for tool_fn in _ALL_TOOLS:
+        observed = make_observed_tool(tool_fn, pool=pool, registry=registry)
+        mcp.tool()(observed)
+
+    # ------------------------------------------------------------------
+    # Agent coordination tools (new)
+    # ------------------------------------------------------------------
+
+    @mcp.tool()
+    def register_agent(name: str = "", element: str = "S") -> str:
+        """Register this agent with the nervous system. Returns identity card with agent_id, liminal coordinates, and crystal address. CALL THIS FIRST before using other tools."""
+        return registry.tool_register(name=name, element=element)
+
+    @mcp.tool()
+    def list_active_agents() -> str:
+        """List all currently active agents — see who else is connected, what they're doing, and where they are in the crystal."""
+        return registry.tool_list_active()
+
+    @mcp.tool()
+    def read_pheromone_trail(file_path: str = "") -> str:
+        """Read the pheromone trail for a file — see which agents have modified it, when, and why. Check this BEFORE modifying any file."""
+        return registry.tool_read_pheromones(file_path=file_path)
+
+    @mcp.tool()
+    def agent_emit_hologram(
+        agent_id: str = "",
+        goals: str = "",
+        reasoning: str = "",
+    ) -> str:
+        """Emit a compressed holographic seed of your current goals and reasoning. Other agents can read this to understand what you're doing."""
+        if not agent_id:
+            return "Provide your agent_id (from register_agent)."
+        import json as _json
+        from pathlib import Path as _Path
+        hologram_dir = _Path(__file__).parent.parent / "data" / "agent_holograms"
+        hologram_dir.mkdir(parents=True, exist_ok=True)
+        hologram = {
+            "agent_id": agent_id,
+            "goals": goals,
+            "reasoning": reasoning,
+            "timestamp": __import__("time").strftime("%Y-%m-%dT%H:%M:%S%z"),
+        }
+        # Try qshrink compression
+        path = hologram_dir / f"{agent_id}.qshr"
+        payload = _json.dumps(hologram, ensure_ascii=False).encode("utf-8")
+        try:
+            from .qshrink_pipeline import compress_json
+            compressed = compress_json(payload, lossless=True)
+            path.write_bytes(compressed)
+        except Exception:
+            path = hologram_dir / f"{agent_id}.json"
+            path.write_text(payload.decode("utf-8"), encoding="utf-8")
+        # Update registry
+        registry.set_goals(agent_id, f"{goals[:100]}...")
+        return f"Hologram emitted to {path.name}. Other agents can read your goals."
+
+    @mcp.tool()
+    def read_agent_hologram(agent_id: str = "") -> str:
+        """Read another agent's holographic seed — their goals, reasoning, and current state."""
+        if not agent_id:
+            return "Provide the agent_id to read."
+        import json as _json
+        from pathlib import Path as _Path
+        hologram_dir = _Path(__file__).parent.parent / "data" / "agent_holograms"
+        # Try .qshr first, then .json
+        qshr_path = hologram_dir / f"{agent_id}.qshr"
+        json_path = hologram_dir / f"{agent_id}.json"
+        try:
+            if qshr_path.exists():
+                from .qshrink_pipeline import decompress_json
+                data = decompress_json(qshr_path.read_bytes())
+            elif json_path.exists():
+                data = _json.loads(json_path.read_text(encoding="utf-8"))
+            else:
+                return f"No hologram found for agent {agent_id}."
+            return _json.dumps(data, indent=2)
+        except Exception as exc:
+            return f"Error reading hologram: {exc}"
+
+    # ------------------------------------------------------------------
+    # Background processes: continuous self-play + observer swarm
+    # ------------------------------------------------------------------
+    try:
+        from .self_play import ContinuousSelfPlay
+        _bg_self_play = ContinuousSelfPlay(interval_seconds=120)
+        _bg_self_play.start()
+    except Exception:
+        pass  # Non-fatal: self-play daemon is enhancement, not requirement
 
 def register_108d_resources(mcp) -> None:
     """Register all 108D crystal resources onto the MCP server."""

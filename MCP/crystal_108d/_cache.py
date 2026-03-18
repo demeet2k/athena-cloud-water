@@ -6,11 +6,26 @@
 Shared JSON caching utility for crystal_108d modules.
 Replaces the per-module global cache + lazy-load boilerplate
 with a single reusable class.
+
+Supports transparent .qshr compressed file loading: when a .json file
+is absent but a .qshr file exists at the same stem, the cache will
+auto-decompress on first load.
+
+Now also provides ``save()`` — the single centralized write path for all
+JSON data. Every save automatically:
+  1. Acquires a CrystalLock (collision prevention)
+  2. Writes atomically (tmp + replace)
+  3. Emits a pheromone trail (agent coordination)
+  4. Auto-compresses to .qshr (holographic storage)
+  5. Updates the in-memory cache
 """
 
 import json
+import logging
 from pathlib import Path
-from typing import Any
+from typing import Any, Optional
+
+_log = logging.getLogger(__name__)
 
 DATA_DIR = Path(__file__).parent.parent / "data"
 
@@ -57,7 +72,7 @@ _ALL_JSON_FILES = [
 ]
 
 class JsonCache:
-    """Lazy-loading, single-instance JSON cache.
+    """Lazy-loading, single-instance JSON cache with .qshr fallback.
 
     Usage::
 
@@ -66,19 +81,132 @@ class JsonCache:
         def query_shell(n: int) -> str:
             data = _shells.load()
             ...
+
+    If the .json file is absent but a .qshr file exists at the same
+    stem, the cache will auto-decompress on first load.
+    When both exist, the .json file is preferred (transition safety).
     """
 
-    __slots__ = ("_data", "_path")
+    __slots__ = ("_data", "_path", "_qshr_path")
 
     def __init__(self, filename: str) -> None:
         self._data: dict | list | None = None
         self._path: Path = DATA_DIR / filename
+        self._qshr_path: Path = self._path.with_suffix(".qshr")
 
     def load(self) -> dict | list:
-        """Return cached data, loading from disk on first call."""
+        """Return cached data, loading from disk on first call.
+
+        Preference order:
+          1. .json file (if exists)
+          2. .qshr file (auto-decompress)
+        """
         if self._data is None:
-            self._data = json.loads(self._path.read_text(encoding="utf-8"))
+            if self._path.exists():
+                self._data = json.loads(self._path.read_text(encoding="utf-8"))
+            elif self._qshr_path.exists():
+                self._data = self._load_from_qshr()
+            else:
+                raise FileNotFoundError(
+                    f"Neither {self._path.name} nor {self._qshr_path.name} found in {DATA_DIR}")
         return self._data
+
+    def _load_from_qshr(self) -> dict | list:
+        """Decompress a .qshr file and return the JSON data."""
+        from .qshrink_pipeline import decompress_json
+        return decompress_json(self._qshr_path.read_bytes())
+
+    def crystal_meta(self) -> Optional[Any]:
+        """Return embedded CrystalWeightMeta from .qshr without decompressing payload.
+
+        Returns None if no .qshr file exists or has no crystal metadata.
+        """
+        if not self._qshr_path.exists():
+            return None
+        from .qshrink_pipeline import inspect_qshr
+        return inspect_qshr(self._qshr_path)
+
+    def compress(self, weight_store: Any = None) -> Optional[Path]:
+        """Compress the backing .json file to .qshr with crystal weight metadata.
+
+        Returns the .qshr path on success, None if .json doesn't exist.
+        """
+        if not self._path.exists():
+            return None
+        from .qshrink_pipeline import compress_file
+        out_path, _stats = compress_file(self._path, lossless=True, weight_store=weight_store)
+        return out_path
+
+    def save(
+        self,
+        data: dict | list,
+        agent_id: str = "unknown",
+        task_summary: str = "",
+        element: str = "S",
+        liminal_coord: int = 0,
+        crystal_address: str = "",
+        auto_compress: bool = True,
+    ) -> Path:
+        """Write data to disk with locking, pheromone emission, and auto-qshrink.
+
+        This is THE centralized write path for all JSON data in the nervous
+        system. Every write:
+          1. Acquires a CrystalLock on the target file
+          2. Writes JSON atomically (tmp + os.replace)
+          3. Emits a pheromone sidecar (agent_id, coords, hash)
+          4. Auto-compresses to .qshr with crystal weight metadata
+          5. Updates the in-memory cache
+
+        Returns the path written to.
+        """
+        from ._file_lock import CrystalLock
+        from ._pheromone import PheromoneTrail, Pheromone, content_hash
+
+        self._path.parent.mkdir(parents=True, exist_ok=True)
+        json_text = json.dumps(data, indent=2, ensure_ascii=False)
+
+        with CrystalLock(self._path, agent_id=agent_id, task=task_summary,
+                         liminal_coord=liminal_coord):
+            # Atomic write
+            tmp = self._path.with_suffix(".tmp")
+            tmp.write_text(json_text, encoding="utf-8")
+            tmp.replace(self._path)
+
+            # Update in-memory cache
+            self._data = data
+
+            # Emit pheromone trail
+            try:
+                PheromoneTrail.emit(self._path, Pheromone(
+                    agent_id=agent_id,
+                    liminal_coord=liminal_coord,
+                    element=element,
+                    task_summary=task_summary,
+                    action="write",
+                    crystal_address=crystal_address,
+                    content_hash=content_hash(json_text),
+                ))
+            except Exception as exc:
+                _log.debug("Pheromone emit failed: %s", exc)
+
+            # Auto-compress to .qshr
+            if auto_compress:
+                try:
+                    self.compress()
+                    # Emit compression pheromone
+                    PheromoneTrail.emit(self._path, Pheromone(
+                        agent_id=agent_id,
+                        liminal_coord=liminal_coord,
+                        element=element,
+                        task_summary=f"auto-compressed {self._path.name}",
+                        action="compress",
+                        crystal_address=crystal_address,
+                        content_hash=content_hash(json_text),
+                    ))
+                except Exception as exc:
+                    _log.debug("Auto-compress failed (non-fatal): %s", exc)
+
+        return self._path
 
     def reset(self) -> None:
         """Clear the cache so the next ``load()`` re-reads from disk."""
@@ -86,7 +214,8 @@ class JsonCache:
 
     def __repr__(self) -> str:
         status = "loaded" if self._data is not None else "not loaded"
-        return f"JsonCache({self._path.name!r}, {status})"
+        qshr = " +qshr" if self._qshr_path.exists() else ""
+        return f"JsonCache({self._path.name!r}, {status}{qshr})"
 
 def validate_all() -> dict[str, bool]:
     """Attempt to load every known JSON data file.

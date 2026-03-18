@@ -588,3 +588,11 @@ Each capsule is a markdown mirror of one indexed source record inside the merged
 - [Square and Flower Workers — Update Laws](./341_square_and_flower_workers.md) - `Quantum Crystal Computing`
 - [Cloud and Fractal Workers — Update Laws](./342_cloud_and_fractal_workers.md) - `Quantum Crystal Computing`
 - [Crystal Search Law and Commit Kernel](./343_crystal_search_law_and_commit_kernel.md) - `Quantum Crystal Computing`
+
+### Neural Crystal Self-Development — Deep Learning ↔ 108D Fusion (2026-03-18)
+- [Neural Crystal Hologram — Deep Learning Fused with 108D](./344_neural_crystal_hologram.md) - `Neural Crystal Self-Development`
+- [Self-Development Plan — Perpetual Crystal Self-Improvement](./345_self_development_plan.md) - `Neural Crystal Self-Development`
+- [Deep System Diagnosis — Crystal Neural Engine Forensics](./346_deep_system_diagnosis.md) - `Neural Crystal Self-Development`
+- [Ten Principles for Crystal-Coordinate Neural Networks](./347_ten_principles_crystal_neural.md) - `Neural Crystal Self-Development`
+- [A+ Crystal — N^3 Alchemical Neural Weight Transmutation](./348_a_plus_crystal_n3_alchemy.md) - `Neural Crystal Self-Development`
+- [ABCD+ Full Training Loop — 159-Wave Crystal Transmutation](./349_abcd_plus_full_training.md) - `Neural Crystal Self-Development`

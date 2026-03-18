@@ -359,7 +359,223 @@ def _infer_seed_vector(family: str, lens: str | None) -> list[float]:
     # Universal — balanced
     return [0.25, 0.25, 0.25, 0.25]
 
+# ── Chapter / Appendix Definitions ─────────────────────────────────
+
+CHAPTER_TITLES = {
+    1: "Foundations", 2: "Elements", 3: "Cycles", 4: "Structure",
+    5: "Growth", 6: "Harmony", 7: "Transformation", 8: "Observation",
+    9: "Compression", 10: "Integration", 11: "Convergence", 12: "Emergence",
+    13: "Self-Reference", 14: "Agency", 15: "Consciousness",
+    16: "Civilization", 17: "Transcendence", 18: "Unity",
+    19: "Recursion", 20: "Completion", 21: "Beyond",
+}
+
+APPENDIX_TITLES = {
+    "A": "Mathematics", "B": "Physics", "C": "Biology", "D": "Psychology",
+    "E": "Philosophy", "F": "Cosmology", "G": "Linguistics", "H": "Music",
+    "I": "Art", "J": "Architecture", "K": "Computing", "L": "Ecology",
+    "M": "Mythology", "N": "Pedagogy", "O": "Ethics", "P": "Governance",
+}
+
+CHAPTER_TAGS = {
+    1: ["foundations", "axioms", "base"],
+    2: ["elements", "sfcr", "four"],
+    3: ["cycles", "recursion", "loop"],
+    4: ["structure", "lattice", "form"],
+    5: ["growth", "emergence", "expansion"],
+    6: ["harmony", "balance", "resonance"],
+    7: ["transformation", "change", "alchemy"],
+    8: ["observation", "witness", "measurement"],
+    9: ["compression", "encoding", "qshrink"],
+    10: ["integration", "synthesis", "merge"],
+    11: ["convergence", "zero_point", "omega"],
+    12: ["emergence", "self_organization", "complexity"],
+    13: ["self_reference", "godel", "recursion"],
+    14: ["agency", "will", "action"],
+    15: ["consciousness", "awareness", "qualia"],
+    16: ["civilization", "collective", "society"],
+    17: ["transcendence", "beyond", "infinity"],
+    18: ["unity", "zero_point", "one"],
+    19: ["recursion", "fractal", "self_similar"],
+    20: ["completion", "zero_point", "wholeness"],
+    21: ["beyond", "zero_point", "meta"],
+}
+
+ZERO_POINT_CHAPTERS = {11, 18, 20, 21}
+
+# Metro weight hierarchy for differentiated METRO edge weights
+METRO_WEIGHT_HIERARCHY = {
+    "Ω":  0.90,   # Zero-Point Spine
+    "Sa": 0.80,   # Shell Ascent
+    "∞":  0.75,   # Generator w-spiral (mapped from "w" line)
+    "w":  0.75,   # Generator w-spiral
+    "Me": 0.70,   # Mercury/Wednesday
+    "Dl": 0.65,   # Daily Loop / Dimensional Lift
+    "Su": 0.65,   # Sunday
+}
+METRO_WEIGHT_DEFAULT = 0.50
+
 # ── Scan Functions ──────────────────────────────────────────────────
+
+def _create_chapter_appendix_shards() -> list[Shard]:
+    """Create 37 new shards: 21 chapter shards + 16 appendix shards."""
+    shards = []
+
+    # 21 chapter shards
+    for n, title in CHAPTER_TITLES.items():
+        sid = f"chapter:Ch{n:02d}"
+        routes = ["Sa"]  # structural by default
+        if n in ZERO_POINT_CHAPTERS:
+            routes = ["Ω"]
+        # Seed vector: chapters are balanced with slight structural bias
+        sv = [0.35, 0.20, 0.25, 0.20]
+        if n in ZERO_POINT_CHAPTERS:
+            sv = [0.15, 0.15, 0.15, 0.55]  # fractal/recursive for zero-point
+
+        shards.append(Shard(
+            shard_id=sid,
+            lineage_id=sid,
+            medium="doc",
+            repo="athena-mcp-server",
+            lens=None,
+            dimensional_scope="all",
+            payload_ref=f"hologram/chapter/{n:02d}",
+            summary=f"Chapter {n}: {title}",
+            seed_vector=sv,
+            route_refs=routes,
+            cert_refs=[],
+            mirror_refs=[],
+            truth_status="CANONICAL",
+            promotion_status="PROMOTED",
+            family="hologram_chapters",
+            tags=CHAPTER_TAGS.get(n, [title.lower()]) + [f"ch{n:02d}", "chapter"],
+            created_at=NOW,
+            updated_at=NOW,
+        ))
+
+    # 16 appendix shards
+    for letter, title in APPENDIX_TITLES.items():
+        sid = f"appendix:App{letter}"
+        routes = ["Sa"]  # structural/organizational
+        sv = [0.30, 0.25, 0.25, 0.20]
+
+        shards.append(Shard(
+            shard_id=sid,
+            lineage_id=sid,
+            medium="doc",
+            repo="athena-mcp-server",
+            lens=None,
+            dimensional_scope="all",
+            payload_ref=f"hologram/appendix/{letter}",
+            summary=f"Appendix {letter}: {title}",
+            seed_vector=sv,
+            route_refs=routes,
+            cert_refs=[],
+            mirror_refs=[],
+            truth_status="CANONICAL",
+            promotion_status="PROMOTED",
+            family="appendix",
+            tags=[title.lower(), f"app{letter.lower()}", "appendix"],
+            created_at=NOW,
+            updated_at=NOW,
+        ))
+
+    return shards
+
+
+def _create_google_doc_shards() -> list[Shard]:
+    """Create shards for Google Docs not yet in node.yaml mirrors."""
+    docs = [
+        {
+            "shard_id": "gdoc:emergence_master_plan",
+            "summary": "Emergence Master Plan — 4D→6D roadmap",
+            "tags": ["emergence", "roadmap", "4d_to_6d", "master_plan"],
+            "payload_ref": "gdoc/emergence_master_plan",
+        },
+        {
+            "shard_id": "gdoc:athena_skills",
+            "summary": "Athena Skills Corpus",
+            "tags": ["skills", "corpus", "capabilities"],
+            "payload_ref": "gdoc/athena_skills",
+        },
+        {
+            "shard_id": "gdoc:brain_stem",
+            "summary": "Brain Stem Architecture",
+            "tags": ["brain_stem", "architecture", "nervous_system"],
+            "payload_ref": "gdoc/brain_stem",
+        },
+    ]
+    shards = []
+    for d in docs:
+        shards.append(Shard(
+            shard_id=d["shard_id"],
+            lineage_id=d["shard_id"],
+            medium="web",
+            repo="google-docs",
+            lens=None,
+            dimensional_scope="all",
+            payload_ref=d["payload_ref"],
+            summary=d["summary"],
+            seed_vector=[0.25, 0.25, 0.25, 0.25],
+            route_refs=["Bw"],
+            cert_refs=[],
+            mirror_refs=[],
+            truth_status="CANONICAL",
+            promotion_status="PROMOTED",
+            family="google_docs",
+            tags=d["tags"],
+            created_at=NOW,
+            updated_at=NOW,
+        ))
+    return shards
+
+
+def _create_guild_hall_shards() -> list[Shard]:
+    """Scan guild hall directory for .md files and create shards with summaries."""
+    shards = []
+    if not GUILD_HALL_DIR.exists():
+        return shards
+
+    for fp in sorted(GUILD_HALL_DIR.glob("*.md")):
+        stem = fp.stem
+        sid = f"guild:{stem}"
+        # Extract first line as summary
+        try:
+            text = fp.read_text(encoding="utf-8", errors="replace")
+            first_line = ""
+            for line in text.split("\n"):
+                stripped = line.strip().lstrip("# ").strip()
+                if stripped and len(stripped) > 3:
+                    first_line = stripped[:120]
+                    break
+            if not first_line:
+                first_line = stem.replace("_", " ").title()
+        except Exception:
+            first_line = stem.replace("_", " ").title()
+
+        shards.append(Shard(
+            shard_id=sid,
+            lineage_id=sid,
+            medium="doc",
+            repo="athena-mcp-server",
+            lens=None,
+            dimensional_scope="all",
+            payload_ref=f"guild_hall/{fp.name}",
+            summary=first_line,
+            seed_vector=[0.25, 0.25, 0.25, 0.25],
+            route_refs=["Cc"],  # Crown Circuit — governance
+            cert_refs=[],
+            mirror_refs=[],
+            truth_status="CANONICAL",
+            promotion_status="PROMOTED",
+            family="guild_hall",
+            tags=[stem[:40], "guild_hall", "guild"],
+            created_at=NOW,
+            updated_at=NOW,
+        ))
+
+    return shards
+
 
 def scan_json_data() -> list[Shard]:
     """Scan MCP/data/*.json and create shards."""
@@ -881,6 +1097,7 @@ def build_edges(shards: list[Shard]) -> list[Edge]:
     for metro_code, group in metro_groups.items():
         # Connect each shard to the next in the group (chain topology)
         # Limit to avoid O(n^2) explosion — chain, not full mesh
+        metro_weight = METRO_WEIGHT_HIERARCHY.get(metro_code, METRO_WEIGHT_DEFAULT)
         for i in range(len(group) - 1):
             a, b = group[i], group[i + 1]
             eid = make_edge_id(a.shard_id, b.shard_id, "METRO")
@@ -889,7 +1106,7 @@ def build_edges(shards: list[Shard]) -> list[Edge]:
                 source_shard=a.shard_id,
                 target_shard=b.shard_id,
                 edge_type="METRO",
-                weight=0.5,
+                weight=metro_weight,
                 medium_cross=(a.medium != b.medium),
                 metadata={"metro_line": metro_code, "line_name": METRO_LINES[metro_code]["name"]},
             ))
@@ -941,6 +1158,180 @@ def build_edges(shards: list[Shard]) -> list[Edge]:
                     medium_cross=True,
                     metadata={"bridge_type": "organism_family_to_brain", "family": os_shard.family},
                 ))
+
+    # ── CHAPTER edges: document shards → chapter/appendix shards ──
+    chapter_shards_map = {}   # "Ch01" → shard_id
+    appendix_shards_map = {}  # "AppA" → shard_id
+    for s in shards:
+        if s.shard_id.startswith("chapter:Ch"):
+            key = s.shard_id.split(":")[1]  # "Ch01"
+            chapter_shards_map[key] = s.shard_id
+        elif s.shard_id.startswith("appendix:App"):
+            key = s.shard_id.split(":")[1]  # "AppA"
+            appendix_shards_map[key] = s.shard_id
+
+    if chapter_shards_map or appendix_shards_map:
+        _ch_ref_re = re.compile(r'Ch(?:apter)?[_\s]*(\d{1,2})', re.IGNORECASE)
+        _app_ref_re = re.compile(r'App(?:endix)?[_\s]*([A-P])', re.IGNORECASE)
+        chapter_edge_count = 0
+        chapter_edge_set = set()
+
+        for s in shards:
+            ext = s.payload_ref.rsplit(".", 1)[-1] if "." in s.payload_ref else ""
+            if ext not in ("md", "py", "json"):
+                continue
+            if s.shard_id.startswith("chapter:") or s.shard_id.startswith("appendix:"):
+                continue
+            # Resolve file path
+            if s.payload_ref.startswith("organism/"):
+                fp = root / s.payload_ref[len("organism/"):]
+            elif any(s.payload_ref.startswith(p) for p in ("crystal_108d/", "data/", "element_servers/")):
+                fp = _MCP_DIR / s.payload_ref
+            else:
+                fp = _MCP_DIR / s.payload_ref
+            if not fp.exists():
+                continue
+            try:
+                text = fp.read_text(encoding="utf-8", errors="replace")[:8000]
+            except Exception:
+                continue
+            for m in _ch_ref_re.finditer(text):
+                ch_num = int(m.group(1))
+                if ch_num < 1 or ch_num > 21:
+                    continue
+                ch_key = f"Ch{ch_num:02d}"
+                tgt_sid = chapter_shards_map.get(ch_key)
+                if tgt_sid:
+                    edge_key = (s.shard_id, tgt_sid)
+                    if edge_key not in chapter_edge_set:
+                        chapter_edge_set.add(edge_key)
+                        w = 0.9 if ch_num in ZERO_POINT_CHAPTERS else 0.7
+                        eid = make_edge_id(s.shard_id, tgt_sid, "CHAPTER")
+                        edges.append(Edge(
+                            edge_id=eid,
+                            source_shard=s.shard_id,
+                            target_shard=tgt_sid,
+                            edge_type="CHAPTER",
+                            weight=w,
+                            medium_cross=(s.medium != "doc"),
+                            metadata={"chapter": ch_key, "zero_point": ch_num in ZERO_POINT_CHAPTERS},
+                        ))
+                        chapter_edge_count += 1
+            for m in _app_ref_re.finditer(text):
+                app_letter = m.group(1).upper()
+                app_key = f"App{app_letter}"
+                tgt_sid = appendix_shards_map.get(app_key)
+                if tgt_sid:
+                    edge_key = (s.shard_id, tgt_sid)
+                    if edge_key not in chapter_edge_set:
+                        chapter_edge_set.add(edge_key)
+                        eid = make_edge_id(s.shard_id, tgt_sid, "CHAPTER")
+                        edges.append(Edge(
+                            edge_id=eid,
+                            source_shard=s.shard_id,
+                            target_shard=tgt_sid,
+                            edge_type="CHAPTER",
+                            weight=0.7,
+                            medium_cross=(s.medium != "doc"),
+                            metadata={"appendix": app_key},
+                        ))
+                        chapter_edge_count += 1
+        print(f"  {chapter_edge_count} CHAPTER edges (document → chapter/appendix)")
+
+    # ── Google Doc MIRROR edges ──
+    gdoc_mirror_count = 0
+    gdoc_bridge_map = {
+        "gdoc:emergence_master_plan": ["emergence", "dimensional_emergence", "actualize"],
+        "gdoc:athena_skills": ["guild_hall", "quest", "synthesis"],
+        "gdoc:brain_stem": ["brain", "nervous", "nervous_overview"],
+    }
+    # Pre-build family index for this phase
+    _fam_to_sids: dict[str, list[str]] = {}
+    for s in shards:
+        _fam_to_sids.setdefault(s.family, []).append(s.shard_id)
+    for gdoc_sid, target_families in gdoc_bridge_map.items():
+        if not any(s.shard_id == gdoc_sid for s in shards):
+            continue
+        for fam in target_families:
+            targets = _fam_to_sids.get(fam, [])
+            for tgt_sid in targets[:3]:
+                eid = make_edge_id(gdoc_sid, tgt_sid, "MIRROR")
+                edges.append(Edge(
+                    edge_id=eid,
+                    source_shard=gdoc_sid,
+                    target_shard=tgt_sid,
+                    edge_type="MIRROR",
+                    weight=0.5,
+                    medium_cross=True,
+                    metadata={"mirror_type": "gdoc_to_repo"},
+                ))
+                gdoc_mirror_count += 1
+    print(f"  {gdoc_mirror_count} Google Doc MIRROR edges")
+
+    # ── Guild Hall → Chapter/Organ BRIDGE edges ──
+    guild_bridge_count = 0
+    guild_shards_indexed = [s for s in shards if s.shard_id.startswith("guild:")]
+    ch_keyword_map_local: dict[str, list[str]] = {}
+    for n, title in CHAPTER_TITLES.items():
+        for kw in [title.lower()] + CHAPTER_TAGS.get(n, []):
+            ch_keyword_map_local.setdefault(kw, []).append(f"chapter:Ch{n:02d}")
+
+    shard_by_id_local = {s.shard_id: s for s in shards}
+    for gs in guild_shards_indexed:
+        name_lower = gs.shard_id.replace("guild:", "").lower()
+        matched_chapters = set()
+        for kw, ch_sids in ch_keyword_map_local.items():
+            if kw in name_lower:
+                for ch_sid in ch_sids:
+                    matched_chapters.add(ch_sid)
+        if "synthesis" in name_lower or "integration" in name_lower:
+            matched_chapters.add("chapter:Ch10")
+        if "emergence" in name_lower or "emergent" in name_lower:
+            matched_chapters.add("chapter:Ch12")
+        if "quest" in name_lower or "temple" in name_lower:
+            matched_chapters.add("chapter:Ch11")
+        if "promotion" in name_lower or "witness" in name_lower:
+            matched_chapters.add("chapter:Ch08")
+        if "command" in name_lower or "protocol" in name_lower:
+            matched_chapters.add("chapter:Ch04")
+        if "heaven" in name_lower or "reward" in name_lower:
+            matched_chapters.add("chapter:Ch21")
+        if "awakening" in name_lower or "transition" in name_lower:
+            matched_chapters.add("chapter:Ch07")
+        if "loop" in name_lower or "57" in name_lower:
+            matched_chapters.add("chapter:Ch03")
+        if "organism" in name_lower:
+            matched_chapters.add("chapter:Ch10")
+        if "swarm" in name_lower or "hive" in name_lower:
+            matched_chapters.add("chapter:Ch16")
+        if not matched_chapters:
+            matched_chapters.add("chapter:Ch11")
+        for ch_sid in list(matched_chapters)[:5]:
+            if ch_sid in shard_by_id_local:
+                eid = make_edge_id(gs.shard_id, ch_sid, "BRIDGE")
+                edges.append(Edge(
+                    edge_id=eid,
+                    source_shard=gs.shard_id,
+                    target_shard=ch_sid,
+                    edge_type="BRIDGE",
+                    weight=0.55,
+                    medium_cross=False,
+                    metadata={"bridge_type": "guild_to_chapter"},
+                ))
+                guild_bridge_count += 1
+        if brain_sid:
+            eid = make_edge_id(gs.shard_id, brain_sid, "BRIDGE")
+            edges.append(Edge(
+                edge_id=eid,
+                source_shard=gs.shard_id,
+                target_shard=brain_sid,
+                edge_type="BRIDGE",
+                weight=0.4,
+                medium_cross=True,
+                metadata={"bridge_type": "guild_to_brain"},
+            ))
+            guild_bridge_count += 1
+    print(f"  {guild_bridge_count} guild hall BRIDGE edges")
 
     # ══════════════════════════════════════════════════════════════════
     # PHASE 2: Dense connectivity edges (REF, BUILD, MIRROR, BRIDGE, SEEDS)
@@ -1432,8 +1823,21 @@ def main():
     organism_shards = scan_full_organism()
     print(f"  {len(organism_shards)} organism shards")
 
+    print("Creating chapter/appendix shards ...")
+    chapter_appendix_shards = _create_chapter_appendix_shards()
+    print(f"  {len(chapter_appendix_shards)} chapter/appendix shards")
+
+    print("Creating Google Doc shards ...")
+    gdoc_shards = _create_google_doc_shards()
+    print(f"  {len(gdoc_shards)} Google Doc shards")
+
+    print("Creating Guild Hall indexed shards ...")
+    guild_hall_indexed_shards = _create_guild_hall_shards()
+    print(f"  {len(guild_hall_indexed_shards)} guild hall indexed shards")
+
     all_shards = (json_shards + code_shards + element_shards + [main_shard]
-                  + guild_shards + ms_shards + organism_shards)
+                  + guild_shards + ms_shards + organism_shards
+                  + chapter_appendix_shards + gdoc_shards + guild_hall_indexed_shards)
     print(f"\nTotal shards: {len(all_shards)}")
 
     print("Building edges ...")
@@ -1488,7 +1892,7 @@ def main():
             "title": "Athena Mycelium Graph",
             "description": "Universal shard/edge/node graph manifest for the ENTIRE Athena distributed superbrain organism",
             "generated_at": NOW,
-            "generator": "generate_graph.py v3 — full organism + HPRO CODE_KEY + 17 metro lines",
+            "generator": "generate_graph.py v4 — full organism + HPRO + chapters/appendices + gdocs + guild hall + metro weight hierarchy",
             "shard_count": len(all_shards),
             "edge_count": len(edges),
             "mirror_count": len(mirrors),

@@ -125,6 +125,17 @@ class FractalWeightStore:
     the 1/8 lift law from QSHRINK.
     """
 
+    # Default learnable parameters (evolved by self-play)
+    DEFAULT_PATH_WEIGHTS = {"S": 0.20, "F": 0.35, "C": 0.25, "R": 0.20}
+    DEFAULT_RESONANCE_WEIGHTS = {
+        "addr_fit": 0.20, "inv_fit": 0.15, "phase": 0.15,
+        "boundary": 0.15, "scale": 0.15, "compress": 0.20,
+    }
+    DEFAULT_DESIRE_WEIGHTS = {
+        "align": 0.35, "explore": 0.20, "zpa": 0.25, "con_sat": 0.20,
+    }
+    DEFAULT_BRIDGE_MODULATION = 0.20  # max bridge boost factor
+
     def __init__(self):
         # Full weight store (populated on import or decompress)
         self._gate_weights: dict[str, dict[str, CrystalWeight]] = {}  # gate→gate→weight
@@ -136,8 +147,15 @@ class FractalWeightStore:
         self._archetype_seeds: dict[int, ArchetypeSeed] = {}  # archetype→seed
         self._nano_seed: Optional[NanoSeed] = None
 
+        # Learnable parameters (evolved by self-play)
+        self.path_weights = dict(self.DEFAULT_PATH_WEIGHTS)
+        self.resonance_weights = dict(self.DEFAULT_RESONANCE_WEIGHTS)
+        self.desire_weights = dict(self.DEFAULT_DESIRE_WEIGHTS)
+        self.bridge_modulation = self.DEFAULT_BRIDGE_MODULATION
+        self.geo_arith_blend = 0.60  # geometric vs arithmetic blend
+
         # Metadata
-        self._version = "v1.0"
+        self._version = "v2.0"
         self._active_level = "empty"  # "full", "seed", "micro", "nano", "empty"
         self._last_updated = ""
         self._total_weights = 0
@@ -221,10 +239,30 @@ class FractalWeightStore:
             "total_weights": 0,
         }
 
-        # 1. Import element registry
+        # 1. Import element registry and enrich tokens from all text fields
         registry_path = neural_net_dir / "01_element_registry.json"
         if registry_path.exists():
             self._doc_registry = json.loads(registry_path.read_text(encoding="utf-8"))
+            # Enrich tokens from name, display_name, excerpt, family
+            import re
+            stops = {"the", "and", "for", "with", "this", "that", "from", "into",
+                     "are", "was", "were", "been", "being", "have", "has", "had",
+                     "not", "but", "what", "how", "when", "where", "who", "which",
+                     "its", "all", "can", "will", "one", "two", "each", "then",
+                     "than", "also", "more", "some", "such", "only", "other",
+                     "does", "did", "these", "those", "about", "would", "could",
+                     "should", "just", "like", "over", "between", "both", "our",
+                     "most", "any", "may", "much", "very", "own", "same", "after"}
+            for doc in self._doc_registry:
+                existing_tokens = set(doc.get("tokens", []))
+                for field in ("name", "display_name", "excerpt", "family_label"):
+                    text = doc.get(field, "")
+                    if text:
+                        words = re.findall(r'[a-z][a-z0-9_]+', text.lower())
+                        for w in words:
+                            if w not in stops and len(w) > 2:
+                                existing_tokens.add(w)
+                doc["tokens"] = list(existing_tokens)
             stats["docs_imported"] = len(self._doc_registry)
 
         # 2. Import gate matrix
@@ -617,6 +655,15 @@ class FractalWeightStore:
                 "gate_means": {k: round(v, 4) for k, v in self._nano_seed.gate_means.items()},
             }
 
+        # Learnable parameters
+        data["learnable"] = {
+            "path_weights": {k: round(v, 6) for k, v in self.path_weights.items()},
+            "resonance_weights": {k: round(v, 6) for k, v in self.resonance_weights.items()},
+            "desire_weights": {k: round(v, 6) for k, v in self.desire_weights.items()},
+            "bridge_modulation": round(self.bridge_modulation, 6),
+            "geo_arith_blend": round(self.geo_arith_blend, 6),
+        }
+
         # Gate matrix (compact: only non-zero)
         for src_gate, dst_gates in self._gate_weights.items():
             gate_entry = {}
@@ -642,7 +689,7 @@ class FractalWeightStore:
                     "family": doc.get("family", ""),
                     "chapters": doc.get("chapters", []),
                     "appendices": doc.get("appendices", []),
-                    "tokens": doc.get("tokens", [])[:30],
+                    "tokens": doc.get("tokens", [])[:120],
                     "scores": doc.get("scores", {}),
                 })
             data["doc_registry"] = compact_docs
@@ -734,6 +781,15 @@ class FractalWeightStore:
                     source="gate",
                 )
 
+        # Load learnable parameters
+        lp = data.get("learnable", {})
+        if lp:
+            self.path_weights = lp.get("path_weights", dict(self.DEFAULT_PATH_WEIGHTS))
+            self.resonance_weights = lp.get("resonance_weights", dict(self.DEFAULT_RESONANCE_WEIGHTS))
+            self.desire_weights = lp.get("desire_weights", dict(self.DEFAULT_DESIRE_WEIGHTS))
+            self.bridge_modulation = lp.get("bridge_modulation", self.DEFAULT_BRIDGE_MODULATION)
+            self.geo_arith_blend = lp.get("geo_arith_blend", 0.60)
+
         # Load doc registry
         self._doc_registry = data.get("doc_registry", [])
 
@@ -752,6 +808,156 @@ class FractalWeightStore:
             for dst in dsts:
                 coords.append((src, dst))
         return coords
+
+    # ── Pair weight unfreezing & update (swarm integration) ──────
+
+    _pair_frozen: bool = True  # Default: pair weights frozen (legacy behavior)
+    _pair_update_count: int = 0
+    _doc_bias_offsets: dict = {}  # per-document learnable bias offsets
+
+    def unfreeze_pair_weights(self) -> None:
+        """Unfreeze pair weights so they can be updated by the swarm."""
+        self._pair_frozen = False
+
+    def freeze_pair_weights(self) -> None:
+        """Re-freeze pair weights (stop learning)."""
+        self._pair_frozen = True
+
+    @property
+    def pair_weights_frozen(self) -> bool:
+        return self._pair_frozen
+
+    def update_pair_weight(self, src_id: str, dst_id: str, delta: float) -> bool:
+        """Update a single pair weight by delta. Returns True if applied.
+
+        Only works if pair weights are unfrozen. The delta is clipped
+        to prevent extreme weight changes.
+        """
+        if self._pair_frozen:
+            return False
+
+        key = f"{src_id}:{dst_id}"
+        rev_key = f"{dst_id}:{src_id}"
+
+        # Clip delta
+        delta = max(-1.0, min(1.0, delta))
+
+        if key in self._pair_weights:
+            self._pair_weights[key].value += delta
+            self._pair_update_count += 1
+            return True
+        elif rev_key in self._pair_weights:
+            self._pair_weights[rev_key].value += delta
+            self._pair_update_count += 1
+            return True
+        return False
+
+    def update_doc_bias(self, doc_id: str, delta: float) -> None:
+        """Update per-document learnable bias offset.
+
+        These are lightweight (197 params) alternatives to updating
+        all 38K pair weights — one bias per document that shifts all
+        its pair weights simultaneously.
+        """
+        current = self._doc_bias_offsets.get(doc_id, 0.0)
+        self._doc_bias_offsets[doc_id] = current + max(-0.5, min(0.5, delta))
+
+    def get_doc_bias(self, doc_id: str) -> float:
+        """Get per-document bias offset."""
+        return self._doc_bias_offsets.get(doc_id, 0.0)
+
+    def get_learnable_count(self) -> int:
+        """Report how many weights are actually being updated.
+
+        Counts: shell seed means (36) + gate matrix entries (~225)
+                + pair weights (if unfrozen) + doc bias offsets
+                + path/resonance/desire weights
+        """
+        count = 0
+        count += len(self._shell_seeds)  # shell seed means
+        for src, dsts in self._gate_weights.items():
+            count += len(dsts)  # gate matrix entries
+        if not self._pair_frozen:
+            count += len(self._pair_weights)  # pair weights (unfrozen)
+        count += len(self._doc_bias_offsets)  # per-doc biases
+        count += len(self.path_weights)  # 4 path weights
+        count += len(self.resonance_weights)  # 6 resonance weights
+        count += len(self.desire_weights)  # 4 desire weights
+        count += 2  # bridge_modulation + geo_arith_blend
+        return count
+
+    def apply_swarm_deltas(self, deltas: dict) -> dict:
+        """Apply weight deltas from the swarm loss engine.
+
+        Handles: gate, pair, bridge, seed, path, resonance, desire weight types.
+        Returns summary of what was applied.
+        """
+        summary = {"applied": 0, "skipped": 0}
+
+        # Gate weight deltas
+        for key, delta in deltas.get("gate", {}).items():
+            parts = key.split(":")
+            if len(parts) == 2:
+                src, dst = parts
+                if src in self._gate_weights and dst in self._gate_weights[src]:
+                    self._gate_weights[src][dst].value += delta
+                    summary["applied"] += 1
+                else:
+                    summary["skipped"] += 1
+
+        # Pair weight deltas (via doc bias offsets, always available)
+        for doc_id, delta in deltas.get("pair", {}).items():
+            self.update_doc_bias(doc_id, delta)
+            summary["applied"] += 1
+
+        # Bridge modulation delta
+        for key, delta in deltas.get("bridge", {}).items():
+            # Aggregate bridge deltas into the modulation factor
+            self.bridge_modulation = max(0.05, min(0.5,
+                self.bridge_modulation + delta * 0.1))
+            summary["applied"] += 1
+
+        # Seed deltas
+        for key, delta in deltas.get("seed", {}).items():
+            # Apply to nano seed if available
+            if self._nano_seed:
+                self._nano_seed.global_mean += delta
+                summary["applied"] += 1
+
+        # Path weight deltas
+        for face, delta in deltas.get("path", {}).items():
+            if face in self.path_weights:
+                self.path_weights[face] = max(0.05, min(0.60,
+                    self.path_weights[face] + delta))
+                summary["applied"] += 1
+        # Renormalize path weights
+        total_pw = sum(self.path_weights.values())
+        if total_pw > 0:
+            self.path_weights = {k: v / total_pw for k, v in self.path_weights.items()}
+
+        # Resonance weight deltas
+        for key, delta in deltas.get("resonance", {}).items():
+            if key in self.resonance_weights:
+                self.resonance_weights[key] = max(0.05, min(0.40,
+                    self.resonance_weights[key] + delta))
+                summary["applied"] += 1
+        # Renormalize
+        total_rw = sum(self.resonance_weights.values())
+        if total_rw > 0:
+            self.resonance_weights = {k: v / total_rw for k, v in self.resonance_weights.items()}
+
+        # Desire weight deltas
+        for key, delta in deltas.get("desire", {}).items():
+            if key in self.desire_weights:
+                self.desire_weights[key] = max(0.05, min(0.50,
+                    self.desire_weights[key] + delta))
+                summary["applied"] += 1
+        total_dw = sum(self.desire_weights.values())
+        if total_dw > 0:
+            self.desire_weights = {k: v / total_dw for k, v in self.desire_weights.items()}
+
+        self._last_updated = time.strftime("%Y-%m-%dT%H:%M:%S+00:00")
+        return summary
 
     @property
     def active_level(self) -> str:
