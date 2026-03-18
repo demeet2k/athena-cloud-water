@@ -115,7 +115,7 @@ ORGANISM_DIR_MAP = {
     "Athena FLEET":         ("R", "F", "Cc", "fleet"),          # Fractal: fleet coordination, recursive org
     "Athenachka Collective Books": ("S", "C", "Ac", "books"),   # Square: structured knowledge corpus
     "CLEAN":                ("C", "S", "Bw", "manuscript"),     # Cloud: distilled/purified manuscripts
-    "DEEPER CRYSTALIZATION": ("S", "R", "Dl", "crystal"),       # Square: deep structural crystallization
+    "DEEPER_CRYSTALIZATION": ("S", "R", "Dl", "crystal"),       # Square: deep structural crystallization
     "ECOSYSTEM":            ("F", "C", "Wr", "ecosystem"),      # Flower: living ecosystem dynamics
     "FRESH":                ("C", "F", "Me", "manuscript"),     # Cloud: fresh perspective, new captures
     "GAMES":                ("F", "S", "Me", "games"),          # Flower: game dynamics, play
@@ -138,9 +138,9 @@ ORGANISM_DIR_MAP = {
 
 # Subdirectory overrides for deeper SFCR precision
 ORGANISM_SUBDIR_MAP = {
-    "DEEPER CRYSTALIZATION/13_ACCEPTED_INPUTS":   ("C", "S", "Bw", "accepted"),
-    "DEEPER CRYSTALIZATION/CRYSTAL_SEEDS":        ("R", "S", "Mt", "seed"),
-    "DEEPER CRYSTALIZATION/MANUSCRIPTS":          ("S", "C", "Ac", "manuscript"),
+    "DEEPER_CRYSTALIZATION/13_ACCEPTED_INPUTS":   ("C", "S", "Bw", "accepted"),
+    "DEEPER_CRYSTALIZATION/CRYSTAL_SEEDS":        ("R", "S", "Mt", "seed"),
+    "DEEPER_CRYSTALIZATION/MANUSCRIPTS":          ("S", "C", "Ac", "manuscript"),
     "MATH/FINAL FORM":                            ("S", "R", "Cc", "math_final"),
     "MATH/lp57omega":                             ("F", "S", "Wr", "lp57"),
     "NERUAL NETWORK/ATHENA Neural Network":       ("C", "F", "Dl", "neural_core"),

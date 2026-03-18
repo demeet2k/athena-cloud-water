@@ -423,7 +423,7 @@ def family_code_for_path(relative_path: str) -> str:
         return "W2"
     if rel.startswith("Trading Bot\\"):
         return "F1"
-    if rel.startswith("DEEPER CRYSTALIZATION\\"):
+    if rel.startswith("DEEPER_CRYSTALIZATION\\"):
         return "F2"
     if rel.startswith("ECOSYSTEM\\"):
         return "F4"

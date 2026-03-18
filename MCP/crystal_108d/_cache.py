@@ -38,6 +38,9 @@ _ALL_JSON_FILES = [
     "inverse_crystal_complete.json",
     "mycelium_graph.json",
     "node_registry.json",
+    "meta_observer_swarm.json",
+    "e8_lattice.json",
+    "crown_12d.json",
 ]
 
 

@@ -186,7 +186,7 @@ BRIDGE_APPENDICES = {
 }
 BASIS = [
     ("01", "The Holographic Manuscript Brain", "Water", "Diagnose", "manuscript substrate", "FRESH/The Holographic Manuscript Brain.docx", ["AppE", "AppF", "AppG", "AppM"]),
-    ("02", "Self-Routing Meta-Framework", "Earth", "Diagnose", "routing and search", "DEEPER CRYSTALIZATION/Self-Routing Meta-Framework...", ["AppE", "AppI", "AppL", "AppM"]),
+    ("02", "Self-Routing Meta-Framework", "Earth", "Diagnose", "routing and search", "DEEPER_CRYSTALIZATION/Self-Routing Meta-Framework...", ["AppE", "AppI", "AppL", "AppM"]),
     ("03", "QBD-4", "Air", "Diagnose", "quad logic bits", "MATH/...QBD-4", ["AppB", "AppC", "AppM"]),
     ("04", "Quad Holographic Rotation", "Air", "Refine", "holographic transport", "MATH/...Quad Holographic Rotation", ["AppE", "AppF", "AppM"]),
     ("05", "The Holographic Kernel", "Air", "Synthesize", "holographic compression", "MATH/...The Holographic Kernel", ["AppB", "AppC", "AppN"]),

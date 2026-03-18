@@ -28,7 +28,7 @@ from .contracts import (
 WORKSPACE_ROOT = Path(__file__).resolve().parents[2]
 FULL_INTEGRATION_ROOT = (
     WORKSPACE_ROOT
-    / "DEEPER CRYSTALIZATION"
+    / "DEEPER_CRYSTALIZATION"
     / "ACTIVE_NERVOUS_SYSTEM"
     / "07_FULL_PROJECT_INTEGRATION_256"
 )
@@ -159,7 +159,7 @@ SKIP_FOR_DUPES = {"readme.md", "index.md", "__init__.py", "requirements.txt"}
 DOC_EXTS = {".docx", ".md", ".txt", ".pdf"}
 OPEN_STATUSES = {"open", "queued", "active", "blocked"}
 REGION_ORDER = [
-    "DEEPER CRYSTALIZATION",
+    "DEEPER_CRYSTALIZATION",
     "self_actualize",
     "MATH",
     "Voynich",
@@ -179,7 +179,7 @@ REGION_ORDER = [
 ]
 
 REGION_PROFILES: dict[str, dict[str, Any]] = {
-    "DEEPER CRYSTALIZATION": {
+    "DEEPER_CRYSTALIZATION": {
         "role": "deep integration compiler, chapter lattice, and active nervous-system scaffold",
         "edges": [
             "binds directly into self_actualize as the runtime writeback surface",
@@ -207,7 +207,7 @@ REGION_PROFILES: dict[str, dict[str, Any]] = {
         "role": "proto-Athenachka seed reservoir, self-training archive, and big-picture observer nursery",
         "edges": [
             "stores the earliest Charlie/Athena cross-analysis, evolution prompts, and observer-range expansion manuscripts",
-            "bridges mythic self-improvement documents into DEEPER CRYSTALIZATION, QSHRINK, and future mirrored markdown routes",
+            "bridges mythic self-improvement documents into DEEPER_CRYSTALIZATION, QSHRINK, and future mirrored markdown routes",
         ],
         "risk": "remaining mostly docx and image-heavy keeps one of Athena's clearest origin bodies outside everyday runtime coordination",
     },
@@ -239,7 +239,7 @@ REGION_PROFILES: dict[str, dict[str, Any]] = {
         "role": "compression-governance shell and internal pruning law body",
         "edges": [
             "compresses large manuscript bodies into transportable rules, maps, and operator shells",
-            "bridges DEEPER CRYSTALIZATION, self_actualize, and governance surfaces through internal compression law",
+            "bridges DEEPER_CRYSTALIZATION, self_actualize, and governance surfaces through internal compression law",
         ],
         "risk": "without an explicit family profile, one of the heaviest live bodies routes as generic background instead of an active compressor family",
     },
@@ -287,7 +287,7 @@ REGION_PROFILES: dict[str, dict[str, Any]] = {
         "role": "clean manuscript staging shelf for high-value root texts awaiting contraction",
         "edges": [
             "holds strong source witnesses that should fold back into capsule and chapter contraction",
-            "bridges the staging shelf to DEEPER CRYSTALIZATION, VOID, and metro architecture families",
+            "bridges the staging shelf to DEEPER_CRYSTALIZATION, VOID, and metro architecture families",
         ],
         "risk": "staging shelves create silent drift when their strongest witnesses never get routed into the active organism",
     },
@@ -391,7 +391,7 @@ FAMILY_TENSOR_DEFAULTS: dict[str, dict[str, str]] = {
         "lineage": "A-W-E",
         "truth": "NEAR",
     },
-    "DEEPER CRYSTALIZATION": {
+    "DEEPER_CRYSTALIZATION": {
         "rail": "Sa",
         "face": "Aether",
         "scale": "S8",
@@ -517,13 +517,13 @@ FAMILY_TENSOR_DEFAULTS: dict[str, dict[str, str]] = {
 TRANSFER_HUBS = [
     ("Voynich", "self_actualize", "AppL", "folio routing into runtime control"),
     ("MATH", "ECOSYSTEM", "AppB", "framework law moving toward skill and governance form"),
-    ("ORGIN", "DEEPER CRYSTALIZATION", "AppA", "origin manuscripts collapsing into the active integration shell"),
+    ("ORGIN", "DEEPER_CRYSTALIZATION", "AppA", "origin manuscripts collapsing into the active integration shell"),
     ("Trading Bot", "self_actualize", "AppI", "live Docs evidence entering the runtime waist"),
     ("Athena FLEET", "NERVOUS_SYSTEM", "AppP", "fleet-tesseract routing contracting into the canonical cortex"),
-    ("DEEPER CRYSTALIZATION", "self_actualize", "AppE", "precursor nervous-system foldback into the current control plane"),
+    ("DEEPER_CRYSTALIZATION", "self_actualize", "AppE", "precursor nervous-system foldback into the current control plane"),
     ("NERUAL NETWORK", "self_actualize", "AppF", "benchmark and executable bridge exchange"),
     ("GAMES", "Stoicheia (Element Sudoku)", "AppO", "simulation mechanics feeding the visual reserve shelf"),
-    ("CLEAN", "DEEPER CRYSTALIZATION", "AppN", "clean staging witnesses folding back into active integration lanes"),
+    ("CLEAN", "DEEPER_CRYSTALIZATION", "AppN", "clean staging witnesses folding back into active integration lanes"),
 ]
 
 KNOWN_FAMILIES = set(FAMILY_TENSOR_DEFAULTS) | set(REGION_ORDER) | {
@@ -537,7 +537,7 @@ ROOT_FAMILY_ABSORPTION = {
     "README.md": "self_actualize",
     "FULL_PROJECT_TESSERACT_SYNTHESIS_2026-03-11.md": "Athena FLEET",
     "MYCELIUM_TOME_PART1.md": "NERVOUS_SYSTEM",
-    "VOID_CH11.md": "DEEPER CRYSTALIZATION",
+    "VOID_CH11.md": "DEEPER_CRYSTALIZATION",
     "MEGALITHIC TOME GENERATOR — “Latent Tunneling _ Multi‑Scale Math Stack (Macro ↔ PZPM ↔ CUT)” _Skeleton_.docx": "ORGIN",
     "mycelial_unified_nervous_system_bundle": "NERVOUS_SYSTEM",
 }
@@ -584,15 +584,15 @@ LEGACY_MANIFEST_DEFAULTS = {
     "frontiers": {"frontiers": []},
 }
 CONCEPTUAL_TO_LIVE_FAMILIES = {
-    "civilization-and-governance": ["ECOSYSTEM", "QSHRINK - ATHENA (internal use)", "Athenachka Collective Books", "DEEPER CRYSTALIZATION"],
-    "general-corpus": ["DEEPER CRYSTALIZATION", "QSHRINK - ATHENA (internal use)", "MATH", "Voynich", "self_actualize"],
-    "higher-dimensional-geometry": ["MATH", "DEEPER CRYSTALIZATION"],
+    "civilization-and-governance": ["ECOSYSTEM", "QSHRINK - ATHENA (internal use)", "Athenachka Collective Books", "DEEPER_CRYSTALIZATION"],
+    "general-corpus": ["DEEPER_CRYSTALIZATION", "QSHRINK - ATHENA (internal use)", "MATH", "Voynich", "self_actualize"],
+    "higher-dimensional-geometry": ["MATH", "DEEPER_CRYSTALIZATION"],
     "identity-and-instruction": ["Athenachka Collective Books", "I AM ATHENA", "self_actualize"],
     "live-orchestration": ["self_actualize", "Trading Bot", "NERVOUS_SYSTEM"],
-    "manuscript-architecture": ["DEEPER CRYSTALIZATION", "QSHRINK - ATHENA (internal use)", "Voynich", "self_actualize", "NERVOUS_SYSTEM"],
+    "manuscript-architecture": ["DEEPER_CRYSTALIZATION", "QSHRINK - ATHENA (internal use)", "Voynich", "self_actualize", "NERVOUS_SYSTEM"],
     "mythic-sign-systems": ["ECOSYSTEM", "Voynich", "Athenachka Collective Books", "I AM ATHENA"],
     "transport-and-runtime": ["MATH", "self_actualize", "Trading Bot", "QSHRINK - ATHENA (internal use)", "NERUAL NETWORK"],
-    "void-and-collapse": ["Trading Bot", "DEEPER CRYSTALIZATION", "MATH"],
+    "void-and-collapse": ["Trading Bot", "DEEPER_CRYSTALIZATION", "MATH"],
 }
 
 
@@ -2795,7 +2795,7 @@ def infer_family(front: str, paths: list[str]) -> str:
         "Voynich",
         "MATH",
         "Trading Bot",
-        "DEEPER CRYSTALIZATION",
+        "DEEPER_CRYSTALIZATION",
         "self_actualize",
         "ECOSYSTEM",
         "NERUAL NETWORK",
@@ -2817,7 +2817,7 @@ def infer_family(front: str, paths: list[str]) -> str:
         ("math", "MATH"),
         ("folio", "Voynich"),
         ("voynich", "Voynich"),
-        ("chapter", "DEEPER CRYSTALIZATION"),
+        ("chapter", "DEEPER_CRYSTALIZATION"),
         ("board", "self_actualize"),
         ("runtime", "self_actualize"),
         ("atlas", "self_actualize"),
@@ -2871,7 +2871,7 @@ def arc_for_thread(front: str, family: str, status: str) -> str:
         return "Arc0"
     if family in {"MATH", "ECOSYSTEM", "FRESH"}:
         return "Arc1"
-    if family in {"Voynich", "DEEPER CRYSTALIZATION", "Athenachka Collective Books"}:
+    if family in {"Voynich", "DEEPER_CRYSTALIZATION", "Athenachka Collective Books"}:
         return "Arc2"
     if status == "done":
         return "Arc3"
@@ -3565,7 +3565,7 @@ def render_status_doc(
         "The workspace is already a multi-body organism and the board now treats it as a higher-dimensional swarm: "
         "kernel, elementals, archetypes, pantheon, clusters, truth leaves, ganglia, councils, pods, neurons, waves, and manifests now all project into one live board. "
         "The older machine-readable swarm is folded in rather than ignored: the board is carrying the legacy hypergraph, council mesh, frontier gaps, and civilization tiers forward into the current control plane. "
-        "Voynich remains the densest live manuscript engine, MATH remains the deepest formal reservoir, DEEPER CRYSTALIZATION remains the integration compiler, "
+        "Voynich remains the densest live manuscript engine, MATH remains the deepest formal reservoir, DEEPER_CRYSTALIZATION remains the integration compiler, "
         "self_actualize remains the runtime waist, Trading Bot remains the blocked external-memory bridge, and ECOSYSTEM remains the governance shell. "
         "The highest leverage move is therefore coordination that prevents those bodies from rediscovering each other every run while still preserving the real blocked gate.\n\n"
         "## Active Run\n\n"
@@ -3830,7 +3830,7 @@ def render_global_synthesis(
     return (
         "# Global Orchestration Synthesis\n\n"
         "The project is not a single manuscript and not a single codebase. It is a compound organism with four main bodies:\n\n"
-        "1. live manuscript execution (`Voynich`, `DEEPER CRYSTALIZATION`, `FRESH`)\n"
+        "1. live manuscript execution (`Voynich`, `DEEPER_CRYSTALIZATION`, `FRESH`)\n"
         "2. formal and archive depth (`MATH` plus ZIP-backed frameworks)\n"
         "3. runtime and retrieval (`self_actualize`, `Trading Bot`, `NERUAL NETWORK`)\n"
         "4. governance and publication (`ECOSYSTEM`, `Athenachka Collective Books`)\n\n"

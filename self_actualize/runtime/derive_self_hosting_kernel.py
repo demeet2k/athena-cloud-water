@@ -127,7 +127,7 @@ SELF_BEARING_ROOTS = {
     "NERVOUS_SYSTEM",
     "self_actualize",
     "ECOSYSTEM",
-    "DEEPER CRYSTALIZATION",
+    "DEEPER_CRYSTALIZATION",
     "MATH",
     "Voynich",
     "Trading Bot",

@@ -98,7 +98,7 @@ def verify_region_coverage() -> dict[str, Any]:
     regions = policy["region_assignments"]
     required = {
         "self_actualize",
-        "DEEPER CRYSTALIZATION",
+        "DEEPER_CRYSTALIZATION",
         "Voynich",
         "MATH",
         "Athena FLEET",

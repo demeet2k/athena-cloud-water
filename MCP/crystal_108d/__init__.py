@@ -67,6 +67,9 @@ def status_summary() -> str:
         f"- **Inverse Crystal**: 14-stage octave lift (3D->108D->A+), 3D seed (14 components), 2D boundary\n"
         f"- **Mycelium Graph**: Universal shard/edge/node schema, promotion state machine\n"
         f"- **Guild Hall**: Social coordination organ, quest boards, promotion membrane\n"
+        f"- **Meta Observer**: 57-cycle swarm synthesis protocol (4-element × 12D observation)\n"
+        f"- **E₈ Lattice**: Crystalline hybrid mathematics (dual-body, 73 files, 402 pages)\n"
+        f"- **12D Crown**: B₁₂=W₉(B₁₀), odd-weave 2→3→5→7→9, RoundTripCertPack\n"
     )
 
 
@@ -97,6 +100,9 @@ def register_108d_tools(mcp) -> None:
     from .inverse_complete import query_projection_stack, query_weave_operator
     from .mycelium import query_shard, query_graph, query_node, query_promotion
     from .guild_hall import query_quest, query_synthesis, query_promotion_membrane
+    from .meta_observer import query_meta_observer
+    from .e8_lattice import query_e8_lattice
+    from .crown_12d import query_crown_12d, query_round_trip_cert
 
     # Register each tool
     mcp.tool()(query_shell)
@@ -143,6 +149,10 @@ def register_108d_tools(mcp) -> None:
     mcp.tool()(query_quest)
     mcp.tool()(query_synthesis)
     mcp.tool()(query_promotion_membrane)
+    mcp.tool()(query_meta_observer)
+    mcp.tool()(query_e8_lattice)
+    mcp.tool()(query_crown_12d)
+    mcp.tool()(query_round_trip_cert)
 
 
 def register_108d_resources(mcp) -> None:

@@ -20,14 +20,14 @@ CANONICAL_BASIS: list[dict[str, Any]] = [
         "id": "01",
         "title": "The Holographic Manuscript Brain",
         "phrases": ["holographic manuscript brain", "manuscript brain", "neural tissue"],
-        "top_levels": ["FRESH", "DEEPER CRYSTALIZATION"],
+        "top_levels": ["FRESH", "DEEPER_CRYSTALIZATION"],
         "appendices": ["AppE", "AppF", "AppG", "AppM"],
     },
     {
         "id": "02",
         "title": "Self-Routing Meta-Framework",
         "phrases": ["self-routing", "meta-framework", "recursive search", "metro map"],
-        "top_levels": ["DEEPER CRYSTALIZATION", "ECOSYSTEM", "self_actualize", "NERVOUS_SYSTEM"],
+        "top_levels": ["DEEPER_CRYSTALIZATION", "ECOSYSTEM", "self_actualize", "NERVOUS_SYSTEM"],
         "appendices": ["AppE", "AppI", "AppL", "AppM"],
     },
     {
@@ -166,7 +166,7 @@ CORPUS_BODY_NODES: dict[str, dict[str, Any]] = {
         "transfer_hubs": ["AppC", "AppF", "AppP"],
         "feeds_basis": ["07", "08", "10", "16"],
     },
-    "DEEPER CRYSTALIZATION": {
+    "DEEPER_CRYSTALIZATION": {
         "body_id": "B06",
         "station_role": "manuscript_incubator",
         "entry_line": "Manuscript Line",

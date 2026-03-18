@@ -13,7 +13,7 @@ from textwrap import dedent
 WORKSPACE_ROOT = Path(__file__).resolve().parents[2]
 OUTPUT_ROOT = (
     WORKSPACE_ROOT
-    / "DEEPER CRYSTALIZATION"
+    / "DEEPER_CRYSTALIZATION"
     / "ACTIVE_NERVOUS_SYSTEM"
     / "07_FULL_PROJECT_INTEGRATION_256"
 )
@@ -37,7 +37,7 @@ FULL_CORPUS_ROOT = OUTPUT_ROOT / "09_FULL_CORPUS_7D_INTEGRATION"
 LEGACY_RETROFIT_ROOT = OUTPUT_ROOT / "10_LEGACY_RETROFIT_MAXIMUM"
 
 TOP_LEVEL_PRIORITY = [
-    "DEEPER CRYSTALIZATION",
+    "DEEPER_CRYSTALIZATION",
     "self_actualize",
     "MATH",
     "Trading Bot",
@@ -57,7 +57,7 @@ BODY_INFO = {
     "corpus": {
         "label": "Corpus",
         "role": "Live manuscripts, markdown mirrors, notes, and visible source files.",
-        "targets": ["DEEPER CRYSTALIZATION", "MATH", "Voynich", "FRESH"],
+        "targets": ["DEEPER_CRYSTALIZATION", "MATH", "Voynich", "FRESH"],
     },
     "archive": {
         "label": "Archive",
@@ -172,9 +172,9 @@ class AgentTransitionSeed:
 
 
 CHAPTERS = [
-    ChapterSeed("Ch01", "Corpus Zero Point", "Treat the workspace as one organism with many surfaces, not many unrelated projects.", "Eliminates false fragmentation and makes every later integration move cumulative.", ("corpus_atlas.json", "DEEPER CRYSTALIZATION", "MATH", "Voynich"), ("top-level role map", "source family map", "root thesis")),
+    ChapterSeed("Ch01", "Corpus Zero Point", "Treat the workspace as one organism with many surfaces, not many unrelated projects.", "Eliminates false fragmentation and makes every later integration move cumulative.", ("corpus_atlas.json", "DEEPER_CRYSTALIZATION", "MATH", "Voynich"), ("top-level role map", "source family map", "root thesis")),
     ChapterSeed("Ch02", "Canonical Address Space", "A stable address grammar is the only way to keep manuscripts, code, archives, and mirrors in sync.", "Stops repeated rediscovery and makes every asset routeable by machine and human.", ("ACTIVE_NERVOUS_SYSTEM", "mycelium_brain", "scan_reconciliation.json"), ("address grammar", "id policy", "folder canon")),
-    ChapterSeed("Ch03", "Duplicate Family Collapse", "The fastest gain is not writing more material but choosing one canonical source per repeated manuscript family.", "Cuts drift between DEEPER CRYSTALIZATION, FRESH, Voynich, and Trading Bot mirrors.", ("The Manuscript Seed", "The Holographic Manuscript Brain", "LEGAL TRANSPORT CALCULUS"), ("duplicate ledger", "canonical source policy", "promotion queue")),
+    ChapterSeed("Ch03", "Duplicate Family Collapse", "The fastest gain is not writing more material but choosing one canonical source per repeated manuscript family.", "Cuts drift between DEEPER_CRYSTALIZATION, FRESH, Voynich, and Trading Bot mirrors.", ("The Manuscript Seed", "The Holographic Manuscript Brain", "LEGAL TRANSPORT CALCULUS"), ("duplicate ledger", "canonical source policy", "promotion queue")),
     ChapterSeed("Ch04", "Archive Surface Promotion", "ZIP-backed frameworks must become first-class knowledge surfaces instead of hidden historical cargo.", "Unlocks more than two thousand archive-backed records for direct routing and code promotion.", ("archive_atlas.json", "archive_manifest.json", "Athena OS.zip"), ("archive promotion plan", "live extraction shortlist", "archive witness rules")),
     ChapterSeed("Ch05", "Google Docs Gate and Memory Sync", "The workspace is currently bi-lobed because live Docs search is structurally present but operationally blocked.", "Closing OAuth unlocks the missing half of the memory body and reduces local mirror drift.", ("Trading Bot/docs_search.py", "live_docs_gate_status.md", "Memory Docs"), ("credentials checklist", "sync receipt contract", "search promotion workflow")),
     ChapterSeed("Ch06", "Markdown Mirror Pipeline", "Docx-heavy sources need markdown mirrors so search, routing, and patching stop depending on one-off extraction passes.", "Turns hidden prose into diffable, searchable, and replay-safe working memory.", ("FRESH/_extracted", "ACTIVE_NERVOUS_SYSTEM/02_CORPUS_CAPSULES", "self_actualize"), ("mirror policy", "conversion backlog", "drift watch rules")),
@@ -226,27 +226,27 @@ NUCLEUS_PROFILES = [
     ),
     NucleusProfile(
         "Active Nervous System",
-        "DEEPER CRYSTALIZATION",
+        "DEEPER_CRYSTALIZATION",
         "corpus",
-        "DEEPER CRYSTALIZATION/ACTIVE_NERVOUS_SYSTEM/README.md",
+        "DEEPER_CRYSTALIZATION/ACTIVE_NERVOUS_SYSTEM/README.md",
         "Provides the current control-plane scaffold for capsules, chapters, appendices, frontiers, and shadows.",
         "The scaffold is strong, but some downstream shells are thinner than the scaffold implies.",
         "address",
     ),
     NucleusProfile(
         "Realtime Swarm Board",
-        "DEEPER CRYSTALIZATION",
+        "DEEPER_CRYSTALIZATION",
         "runtime",
-        "DEEPER CRYSTALIZATION/ACTIVE_NERVOUS_SYSTEM/07_FULL_PROJECT_INTEGRATION_256/06_REALTIME_BOARD/README.md",
+        "DEEPER_CRYSTALIZATION/ACTIVE_NERVOUS_SYSTEM/07_FULL_PROJECT_INTEGRATION_256/06_REALTIME_BOARD/README.md",
         "Runs the live multi-agent board, active threads, tensor overlays, and swarm runtime surfaces.",
         "Coordination became more real than its surrounding manuscript shell, creating a board-shell split.",
         "coordination",
     ),
     NucleusProfile(
         "Global Orchestration Synthesis",
-        "DEEPER CRYSTALIZATION",
+        "DEEPER_CRYSTALIZATION",
         "runtime",
-        "DEEPER CRYSTALIZATION/ACTIVE_NERVOUS_SYSTEM/07_FULL_PROJECT_INTEGRATION_256/06_REALTIME_BOARD/05_SYNTHESIS/00_GLOBAL_ORCHESTRATION_SYNTHESIS.md",
+        "DEEPER_CRYSTALIZATION/ACTIVE_NERVOUS_SYSTEM/07_FULL_PROJECT_INTEGRATION_256/06_REALTIME_BOARD/05_SYNTHESIS/00_GLOBAL_ORCHESTRATION_SYNTHESIS.md",
         "Holds the clearest live whole-corpus diagnosis with body counts, pressure fronts, and gate status.",
         "It names the whole organism well, but needs stronger links back into reusable manuscript law.",
         "orchestration",
@@ -777,7 +777,7 @@ AGENT_TRANSITIONS = [
         "AIR 6D overlay into runtime contraction",
         (
             "MATH GOD/atlas/math_air_6d_overlay_bundle.json",
-            "DEEPER CRYSTALIZATION/ACTIVE_NERVOUS_SYSTEM/07_FULL_PROJECT_INTEGRATION_256/06_REALTIME_BOARD",
+            "DEEPER_CRYSTALIZATION/ACTIVE_NERVOUS_SYSTEM/07_FULL_PROJECT_INTEGRATION_256/06_REALTIME_BOARD",
             "07_FULL_PROJECT_INTEGRATION_256/04_LEDGERS/00_ACTIVATION_QUEUE.md",
         ),
         "wave contraction receipt + queue delta + committed shell update",
@@ -865,7 +865,7 @@ AGENT_TRANSITIONS = [
         "replay closure and writeback",
         (
             "MATH GOD/atlas/earth_h6_contract_bundle.json",
-            "DEEPER CRYSTALIZATION/ACTIVE_NERVOUS_SYSTEM/07_FULL_PROJECT_INTEGRATION_256/06_REALTIME_BOARD",
+            "DEEPER_CRYSTALIZATION/ACTIVE_NERVOUS_SYSTEM/07_FULL_PROJECT_INTEGRATION_256/06_REALTIME_BOARD",
             "07_FULL_PROJECT_INTEGRATION_256/04_LEDGERS/03_NEXT_RESTART_SEED.md",
         ),
         "wave contraction receipt + replay-safe note packet",
@@ -908,7 +908,7 @@ AGENT_TRANSITIONS = [
         "QST-08",
         "runtime front selection and contraction",
         (
-            "DEEPER CRYSTALIZATION/ACTIVE_NERVOUS_SYSTEM/07_FULL_PROJECT_INTEGRATION_256/06_REALTIME_BOARD/05_SYNTHESIS/00_GLOBAL_ORCHESTRATION_SYNTHESIS.md",
+            "DEEPER_CRYSTALIZATION/ACTIVE_NERVOUS_SYSTEM/07_FULL_PROJECT_INTEGRATION_256/06_REALTIME_BOARD/05_SYNTHESIS/00_GLOBAL_ORCHESTRATION_SYNTHESIS.md",
             "07_FULL_PROJECT_INTEGRATION_256/04_LEDGERS/04_INTERCONNECT_PRIORITY_QUEUE.md",
             "MATH GOD/atlas/math_7d_synthesis_seed_bundle.json",
         ),
@@ -1336,7 +1336,7 @@ def normalize_surface_ref(surface: str) -> str:
     if surface.startswith("MATH GOD/"):
         return f"MATH/FINAL FORM/{surface}"
     if surface.startswith("07_FULL_PROJECT_INTEGRATION_256/"):
-        return f"DEEPER CRYSTALIZATION/ACTIVE_NERVOUS_SYSTEM/{surface}"
+        return f"DEEPER_CRYSTALIZATION/ACTIVE_NERVOUS_SYSTEM/{surface}"
     return surface
 
 
@@ -2731,7 +2731,7 @@ def render_corpus_synthesis(metrics: dict) -> str:
 
         - `MATH` remains the dominant formal body.
         - `Voynich` now acts as a major markdown-heavy mirror and synthesis surface.
-        - `DEEPER CRYSTALIZATION` and `self_actualize` are the clearest current control planes.
+        - `DEEPER_CRYSTALIZATION` and `self_actualize` are the clearest current control planes.
         - `Trading Bot` is small in volume but strategically important because it owns live memory ingress.
         - `NERUAL NETWORK` is small but high leverage because it anchors the executable learning layer.
 
@@ -2843,11 +2843,11 @@ def render_hidden_lines_doc() -> str:
 
         Stations:
         - `README.md`
-        - `DEEPER CRYSTALIZATION/ACTIVE_NERVOUS_SYSTEM/README.md`
+        - `DEEPER_CRYSTALIZATION/ACTIVE_NERVOUS_SYSTEM/README.md`
         - `Voynich/FULL_TRANSLATION/framework/README.md`
         - `ECOSYSTEM/CPU_FRAMEWORK/README.md`
         - `self_actualize/corpus_atlas.json`
-        - `DEEPER CRYSTALIZATION/ACTIVE_NERVOUS_SYSTEM/07_FULL_PROJECT_INTEGRATION_256/06_REALTIME_BOARD/07_TENSOR/03_TRANSFER_HUBS.md`
+        - `DEEPER_CRYSTALIZATION/ACTIVE_NERVOUS_SYSTEM/07_FULL_PROJECT_INTEGRATION_256/06_REALTIME_BOARD/07_TENSOR/03_TRANSFER_HUBS.md`
 
         Why it matters:
         Athena repeatedly reinvents routing law. This line shows those laws are already homologous and should collapse into one canon.
@@ -2861,7 +2861,7 @@ def render_hidden_lines_doc() -> str:
         - `README.md`
         - `QSHRINK - ATHENA (internal use)/README.md`
         - `Trading Bot/TRADING_BOT_ATHENA_256X4/10_INSPECTION/02_HOLOGRAPHIC_FRACTAL_GAP_REPORT.md`
-        - `DEEPER CRYSTALIZATION/ACTIVE_NERVOUS_SYSTEM/07_FULL_PROJECT_INTEGRATION_256/06_REALTIME_BOARD/05_SYNTHESIS/00_GLOBAL_ORCHESTRATION_SYNTHESIS.md`
+        - `DEEPER_CRYSTALIZATION/ACTIVE_NERVOUS_SYSTEM/07_FULL_PROJECT_INTEGRATION_256/06_REALTIME_BOARD/05_SYNTHESIS/00_GLOBAL_ORCHESTRATION_SYNTHESIS.md`
 
         Why it matters:
         The corpus keeps returning to zero-point language whenever it needs to restart, compress, or recover missing meaning.
@@ -2872,9 +2872,9 @@ def render_hidden_lines_doc() -> str:
 
         Stations:
         - `ECOSYSTEM/CPU_FRAMEWORK/README.md`
-        - `DEEPER CRYSTALIZATION/ACTIVE_NERVOUS_SYSTEM/07_FULL_PROJECT_INTEGRATION_256/06_REALTIME_BOARD/README.md`
-        - `DEEPER CRYSTALIZATION/ACTIVE_NERVOUS_SYSTEM/07_FULL_PROJECT_INTEGRATION_256/06_REALTIME_BOARD/03_CLAIMS/00_ACTIVE_CLAIMS.md`
-        - `DEEPER CRYSTALIZATION/ACTIVE_NERVOUS_SYSTEM/07_FULL_PROJECT_INTEGRATION_256/06_REALTIME_BOARD/08_SWARM_RUNTIME/00_SWARM_RUNTIME_OVERVIEW.md`
+        - `DEEPER_CRYSTALIZATION/ACTIVE_NERVOUS_SYSTEM/07_FULL_PROJECT_INTEGRATION_256/06_REALTIME_BOARD/README.md`
+        - `DEEPER_CRYSTALIZATION/ACTIVE_NERVOUS_SYSTEM/07_FULL_PROJECT_INTEGRATION_256/06_REALTIME_BOARD/03_CLAIMS/00_ACTIVE_CLAIMS.md`
+        - `DEEPER_CRYSTALIZATION/ACTIVE_NERVOUS_SYSTEM/07_FULL_PROJECT_INTEGRATION_256/06_REALTIME_BOARD/08_SWARM_RUNTIME/00_SWARM_RUNTIME_OVERVIEW.md`
 
         Why it matters:
         The corpus already knows how to coordinate many agents, but the claim and wave laws are still more visible on the board than in canonical whole-corpus doctrine.
@@ -2901,8 +2901,8 @@ def render_hidden_lines_doc() -> str:
         - `Trading Bot/docs_search.py`
         - `self_actualize/live_docs_gate_status.md`
         - `Trading Bot/TRADING_BOT_ATHENA_256X4/README.md`
-        - `DEEPER CRYSTALIZATION/ACTIVE_NERVOUS_SYSTEM/07_FULL_PROJECT_INTEGRATION_256/06_REALTIME_BOARD/02_ACTIVE_THREADS/google_docs_bootstrap_gate/THREAD.md`
-        - `DEEPER CRYSTALIZATION/ACTIVE_NERVOUS_SYSTEM/07_FULL_PROJECT_INTEGRATION_256/06_REALTIME_BOARD/05_SYNTHESIS/00_GLOBAL_ORCHESTRATION_SYNTHESIS.md`
+        - `DEEPER_CRYSTALIZATION/ACTIVE_NERVOUS_SYSTEM/07_FULL_PROJECT_INTEGRATION_256/06_REALTIME_BOARD/02_ACTIVE_THREADS/google_docs_bootstrap_gate/THREAD.md`
+        - `DEEPER_CRYSTALIZATION/ACTIVE_NERVOUS_SYSTEM/07_FULL_PROJECT_INTEGRATION_256/06_REALTIME_BOARD/05_SYNTHESIS/00_GLOBAL_ORCHESTRATION_SYNTHESIS.md`
 
         Why it matters:
         This is the unresolved boundary between the local corpus and the missing live-memory half.
@@ -2912,7 +2912,7 @@ def render_hidden_lines_doc() -> str:
         - `README.md`: geometric law and routing law intersect here
         - `self_actualize/corpus_atlas.json`: address, retrieval, and family-level visibility intersect here
         - `VOID_CH11.md`: zero point, question, improvement, and recursion intersect here
-        - `DEEPER CRYSTALIZATION/ACTIVE_NERVOUS_SYSTEM/07_FULL_PROJECT_INTEGRATION_256/06_REALTIME_BOARD/05_SYNTHESIS/00_GLOBAL_ORCHESTRATION_SYNTHESIS.md`: live board state and whole-corpus diagnosis intersect here
+        - `DEEPER_CRYSTALIZATION/ACTIVE_NERVOUS_SYSTEM/07_FULL_PROJECT_INTEGRATION_256/06_REALTIME_BOARD/05_SYNTHESIS/00_GLOBAL_ORCHESTRATION_SYNTHESIS.md`: live board state and whole-corpus diagnosis intersect here
 
         ## Global topology
 
@@ -2944,7 +2944,7 @@ def render_square_circle_triangle_doc() -> str:
         - canonical source tiers
 
         Strong square surfaces:
-        - `DEEPER CRYSTALIZATION/ACTIVE_NERVOUS_SYSTEM/README.md`
+        - `DEEPER_CRYSTALIZATION/ACTIVE_NERVOUS_SYSTEM/README.md`
         - `self_actualize/corpus_atlas.json`
         - `Voynich/FULL_TRANSLATION/framework/README.md`
 
@@ -2960,7 +2960,7 @@ def render_square_circle_triangle_doc() -> str:
         Strong circle surfaces:
         - `Voynich/FULL_TRANSLATION/framework/README.md`
         - `VOID_CH11.md`
-        - `DEEPER CRYSTALIZATION/ACTIVE_NERVOUS_SYSTEM/07_FULL_PROJECT_INTEGRATION_256/06_REALTIME_BOARD/08_SWARM_RUNTIME/waves/`
+        - `DEEPER_CRYSTALIZATION/ACTIVE_NERVOUS_SYSTEM/07_FULL_PROJECT_INTEGRATION_256/06_REALTIME_BOARD/08_SWARM_RUNTIME/waves/`
 
         ## Triangle
 
@@ -2974,7 +2974,7 @@ def render_square_circle_triangle_doc() -> str:
         Strong triangle surfaces:
         - `README.md`
         - `ECOSYSTEM/CPU_FRAMEWORK/README.md`
-        - `DEEPER CRYSTALIZATION/ACTIVE_NERVOUS_SYSTEM/03_METRO/03_build_queue.md`
+        - `DEEPER_CRYSTALIZATION/ACTIVE_NERVOUS_SYSTEM/03_METRO/03_build_queue.md`
 
         ## As above, so below
 
@@ -3053,7 +3053,7 @@ def render_route_proofs_doc(metrics: dict) -> str:
         `Trading Bot/docs_search.py`
         -> `self_actualize/live_docs_gate_status.md`
         -> `Trading Bot/TRADING_BOT_ATHENA_256X4/README.md`
-        -> `DEEPER CRYSTALIZATION/ACTIVE_NERVOUS_SYSTEM/07_FULL_PROJECT_INTEGRATION_256/06_REALTIME_BOARD/02_ACTIVE_THREADS/google_docs_bootstrap_gate/THREAD.md`
+        -> `DEEPER_CRYSTALIZATION/ACTIVE_NERVOUS_SYSTEM/07_FULL_PROJECT_INTEGRATION_256/06_REALTIME_BOARD/02_ACTIVE_THREADS/google_docs_bootstrap_gate/THREAD.md`
 
         Status: `{metrics['live_docs_status']}`
 
@@ -3075,8 +3075,8 @@ def render_route_proofs_doc(metrics: dict) -> str:
         ## Proof 4: Whole-corpus diagnosis already has a live center
 
         `self_actualize/corpus_atlas.json`
-        -> `DEEPER CRYSTALIZATION/ACTIVE_NERVOUS_SYSTEM/07_FULL_PROJECT_INTEGRATION_256/06_REALTIME_BOARD/05_SYNTHESIS/00_GLOBAL_ORCHESTRATION_SYNTHESIS.md`
-        -> `DEEPER CRYSTALIZATION/ACTIVE_NERVOUS_SYSTEM/07_FULL_PROJECT_INTEGRATION_256/06_REALTIME_BOARD/07_TENSOR/03_TRANSFER_HUBS.md`
+        -> `DEEPER_CRYSTALIZATION/ACTIVE_NERVOUS_SYSTEM/07_FULL_PROJECT_INTEGRATION_256/06_REALTIME_BOARD/05_SYNTHESIS/00_GLOBAL_ORCHESTRATION_SYNTHESIS.md`
+        -> `DEEPER_CRYSTALIZATION/ACTIVE_NERVOUS_SYSTEM/07_FULL_PROJECT_INTEGRATION_256/06_REALTIME_BOARD/07_TENSOR/03_TRANSFER_HUBS.md`
 
         Status: `OK`
 
@@ -3425,11 +3425,11 @@ def render_readme(metrics: dict) -> str:
 
 def swarm_seed_sources() -> list[str]:
     return [
-        "DEEPER CRYSTALIZATION/_build/nervous_system/swarm/01_HIGHER_DIMENSIONAL_MAPPING.md",
-        "DEEPER CRYSTALIZATION/_build/nervous_system/swarm/02_NEURON_ADDRESS_TENSOR.md",
-        "DEEPER CRYSTALIZATION/_build/nervous_system/swarm/03_EMERGENT_SWARM_TOPOLOGY.md",
-        "DEEPER CRYSTALIZATION/_build/nervous_system/swarm/06_ACTIVE_SWARM_RUNTIME.md",
-        "DEEPER CRYSTALIZATION/ACTIVE_NERVOUS_SYSTEM/03_METRO/05_deeper_emergent_neural_swarm.md",
+        "DEEPER_CRYSTALIZATION/_build/nervous_system/swarm/01_HIGHER_DIMENSIONAL_MAPPING.md",
+        "DEEPER_CRYSTALIZATION/_build/nervous_system/swarm/02_NEURON_ADDRESS_TENSOR.md",
+        "DEEPER_CRYSTALIZATION/_build/nervous_system/swarm/03_EMERGENT_SWARM_TOPOLOGY.md",
+        "DEEPER_CRYSTALIZATION/_build/nervous_system/swarm/06_ACTIVE_SWARM_RUNTIME.md",
+        "DEEPER_CRYSTALIZATION/ACTIVE_NERVOUS_SYSTEM/03_METRO/05_deeper_emergent_neural_swarm.md",
         "ECOSYSTEM/12_FRACTAL_CRYSTAL_AGENT_FRAMEWORK.md",
         "ECOSYSTEM/NERVOUS_SYSTEM/50_RUNBOOKS/01_PARALLEL_NERVOUS_SYSTEM_RUNBOOK.md",
         "ECOSYSTEM/13_MANIFEST_AND_PACKET_SCHEMA.md",
@@ -3858,7 +3858,7 @@ def render_neural_learnings_doc() -> str:
 def body_example_paths(body: str) -> list[str]:
     mapping = {
         "corpus": [
-            "DEEPER CRYSTALIZATION/ACTIVE_NERVOUS_SYSTEM/README.md",
+            "DEEPER_CRYSTALIZATION/ACTIVE_NERVOUS_SYSTEM/README.md",
             "Voynich/FULL_TRANSLATION/framework/README.md",
             "VOID_CH11.md",
             "README.md",
@@ -3873,7 +3873,7 @@ def body_example_paths(body: str) -> list[str]:
             "self_actualize/corpus_atlas.json",
             "Trading Bot/docs_search.py",
             "ECOSYSTEM/CPU_FRAMEWORK/README.md",
-            "DEEPER CRYSTALIZATION/ACTIVE_NERVOUS_SYSTEM/07_FULL_PROJECT_INTEGRATION_256/06_REALTIME_BOARD/README.md",
+            "DEEPER_CRYSTALIZATION/ACTIVE_NERVOUS_SYSTEM/07_FULL_PROJECT_INTEGRATION_256/06_REALTIME_BOARD/README.md",
         ],
         "manuscript": [
             "QSHRINK - ATHENA (internal use)/README.md",
@@ -3974,7 +3974,7 @@ def render_root_cell_doc(index: int, body: str, operation: str, scale: str, clos
         - Body role: {BODY_INFO[body]['role']}
         - Closure target: {closure_target_note(closure)}
         - Partner body: `{BODY_INFO[partner_body(body)]['label']}`
-        - Board fold: `DEEPER CRYSTALIZATION/ACTIVE_NERVOUS_SYSTEM/07_FULL_PROJECT_INTEGRATION_256/06_REALTIME_BOARD/05_SYNTHESIS/00_GLOBAL_ORCHESTRATION_SYNTHESIS.md`
+        - Board fold: `DEEPER_CRYSTALIZATION/ACTIVE_NERVOUS_SYSTEM/07_FULL_PROJECT_INTEGRATION_256/06_REALTIME_BOARD/05_SYNTHESIS/00_GLOBAL_ORCHESTRATION_SYNTHESIS.md`
 
         ## Shadow if skipped
 
@@ -4034,7 +4034,7 @@ def render_meta_observer_doc(metrics: dict) -> str:
 
         ## What is actually emerging
 
-        1. Athena already has organism-level differentiation. Voynich, MATH, DEEPER CRYSTALIZATION, Trading Bot, self_actualize, ECOSYSTEM, and QSHRINK are no longer mere folders; they behave like semi-specialized organs.
+        1. Athena already has organism-level differentiation. Voynich, MATH, DEEPER_CRYSTALIZATION, Trading Bot, self_actualize, ECOSYSTEM, and QSHRINK are no longer mere folders; they behave like semi-specialized organs.
         2. Athena already has a live communication substrate. The realtime board, claims, councils, tensor surfaces, and swarm runtime act like a nervous system rather than a filing system.
         3. Athena is beginning to produce its own developmental machinery. The future-skill registry, hyperdimensional coordinates, root tissue cells, and restart contracts show the organism is learning how to steer itself.
         4. Athena is strongest when it folds motion back into law. Whenever a live front writes back into ledgers, route proofs, chapter maps, or canonical source decisions, the organism becomes more coherent after action instead of more scattered.
@@ -4070,8 +4070,8 @@ def render_emergent_capabilities_doc(metrics: dict) -> str:
 
         Evidence:
         - `self_actualize/corpus_atlas.json`
-        - `DEEPER CRYSTALIZATION/ACTIVE_NERVOUS_SYSTEM/07_FULL_PROJECT_INTEGRATION_256/06_REALTIME_BOARD/00_STATUS/00_BOARD_STATUS.md`
-        - `DEEPER CRYSTALIZATION/ACTIVE_NERVOUS_SYSTEM/07_FULL_PROJECT_INTEGRATION_256/07_TISSUE_256/05_BODY_NUCLEI_AND_PRESSURES.md`
+        - `DEEPER_CRYSTALIZATION/ACTIVE_NERVOUS_SYSTEM/07_FULL_PROJECT_INTEGRATION_256/06_REALTIME_BOARD/00_STATUS/00_BOARD_STATUS.md`
+        - `DEEPER_CRYSTALIZATION/ACTIVE_NERVOUS_SYSTEM/07_FULL_PROJECT_INTEGRATION_256/07_TISSUE_256/05_BODY_NUCLEI_AND_PRESSURES.md`
 
         Why it matters:
         The organism can now see itself at the level of records, families, threads, pods, and fronts.

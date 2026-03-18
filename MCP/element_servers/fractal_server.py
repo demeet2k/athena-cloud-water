@@ -70,7 +70,7 @@ def fractal_guild_status() -> str:
 
 # ── Core fractal/compression tools ────────────────────────────────
 ATHENA_ROOT = Path(os.environ["ATHENA_ROOT"])
-NS_ROOT = ATHENA_ROOT / "DEEPER CRYSTALIZATION" / "ACTIVE_NERVOUS_SYSTEM"
+NS_ROOT = ATHENA_ROOT / "DEEPER_CRYSTALIZATION" / "ACTIVE_NERVOUS_SYSTEM"
 BOARD_DIR = NS_ROOT / "07_FULL_PROJECT_INTEGRATION_256" / "06_REALTIME_BOARD"
 
 

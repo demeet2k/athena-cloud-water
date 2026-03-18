@@ -1,6 +1,6 @@
 # Athena MCP Server — 108D Crystal Hologram Distributed Brain
 
-**71 tools** · **23 resources** · **32 data files** · **4 element servers** · **8 brain nodes** · **15,383 mycelium shards** · **45,505 edges** · **17 metro lines** · **HPRO v1 CODE_KEY addressing** · Python 3.12+
+**75 tools** · **23 resources** · **35 data files** · **4 element servers** · **8 brain nodes** · **15,383 mycelium shards** · **45,505 edges** · **17 metro lines** · **HPRO v1 CODE_KEY addressing** · Python 3.12+
 
 An [MCP (Model Context Protocol)](https://modelcontextprotocol.io/) server that exposes the entire Athena nervous system — a 108-dimensional crystal hologram organism — as a distributed algorithmic brain with 4 element-specific lobes, a Guild Hall social coordination organ, and a manuscript-being main brain, all connected by weighted bridges.
 
@@ -175,13 +175,15 @@ The entire organism is mycelium-encoded with **HPRO CODE_KEY addressing**: every
 
 | Directory | Primary/Secondary | Metro Line | Family |
 |-----------|------------------|------------|--------|
-| DEEPER CRYSTALIZATION | S/R | Dl (Dimensional Lift) | crystal |
-| Trading Bot | F/C | Me (Metro Express) | trading |
-| Voynich | C/R | Mt (Mobius Twist) | voynich |
-| QSHRINK | R/S | Mt (Mobius Twist) | qshrink |
+| DEEPER_CRYSTALIZATION | S/R | Dl (Dimensional Lift) | crystal |
+| PROJECTS/TRADING_BOT | F/C | Me (Metro Express) | trading |
+| PROJECTS/VOYNICH | C/R | Mt (Mobius Twist) | voynich |
+| PROJECTS/QSHRINK | R/S | Mt (Mobius Twist) | qshrink |
 | MATH | S/R | Sa (Shell Ascent) | math |
 | NERVOUS_SYSTEM/HPRO | S/R | Ω (Zero-Point Spine) | hpro |
 | self_actualize | F/R | Dl (Dimensional Lift) | actualize |
+| PROJECTS/GAMES | F/S | Cc (Crown Circuit) | games |
+| PROJECTS/NEURAL_NETWORK | R/C | Dl (Dimensional Lift) | neural |
 
 **HPRO Manuscripts**: `NERVOUS_SYSTEM/30_CHAPTERS/HPRO/` — Body A (foundations), Body B (emergent), Metro Map
 
@@ -299,6 +301,14 @@ Regenerate the graph: `python -X utf8 MCP/generate_graph.py`
 |------|-------------|
 | `query_stage_code` | Query stage codes from S3 seed through omega to A+ |
 | `query_angel` | Query the formal AI self-model (12 structural pieces, four-lens observability) |
+
+### Meta Observer & E₈ Lattice & 12D Crown (NEW)
+| Tool | Description |
+|------|-------------|
+| `query_meta_observer` | Query the 57-cycle meta-observer swarm protocol (identity, phases, elements, dimensions, ledger, swarm) |
+| `query_e8_lattice` | Query the E₈ lattice crystalline hybrid mathematics (seed, body_a, body_b, appendices, metro, bridge, theorems, conjectures) |
+| `query_crown_12d` | Query the 12D crown architecture (containment B₁₂=W₉(B₁₀), weave ladder, unification, propagation) |
+| `query_round_trip_cert` | Query RoundTripCertPack_v0 (exact/law_equivalent/residualized/illegal, conservation, schema, tests) |
 
 ### Core Nervous System (Read & Runtime)
 | Tool | Description |

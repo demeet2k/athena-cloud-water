@@ -133,7 +133,7 @@ ROUTE_SURFACE_CANDIDATES: Dict[str, List[str]] = {
     "A01": ["NERVOUS_SYSTEM\\95_MANIFESTS\\ROOT_BASIS_MAP.md"],
     "A02": ["self_actualize\\mycelium_brain\\nervous_system\\00_active_nervous_system_index.md"],
     "A03": ["ECOSYSTEM\\NERVOUS_SYSTEM\\README.md"],
-    "A04": ["DEEPER CRYSTALIZATION\\ACTIVE_NERVOUS_SYSTEM\\00_RECEIPTS\\01_build_receipt.md"],
+    "A04": ["DEEPER_CRYSTALIZATION\\ACTIVE_NERVOUS_SYSTEM\\00_RECEIPTS\\01_build_receipt.md"],
     "A05": ["self_actualize\\mycelium_brain\\nervous_system\\ganglia\\GANGLION_math.md"],
     "A06": ["Voynich\\FULL_TRANSLATION\\rosetta_machine\\README.md"],
     "A07": ["self_actualize\\mycelium_brain\\nervous_system\\families\\FAMILY_trading_bot_route_map.md", "Trading Bot\\README.md"],

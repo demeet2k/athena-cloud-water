@@ -880,7 +880,7 @@ HISTORICAL_EARTH_SURFACES = {
 HISTORICAL_MIRROR_ROOTS = [
     WORKSPACE_ROOT / "self_actualize" / "mycelium_brain" / "DEEPER_INTEGRATED_NEURAL_NETWORK",
     WORKSPACE_ROOT / "self_actualize" / "mycelium_brain" / "DEEPER_INTEGRATED_NEURAL_NET_ATHENA",
-    WORKSPACE_ROOT / "DEEPER CRYSTALIZATION" / "ACTIVE_NERVOUS_SYSTEM" / "13_DEEPER_NEURAL_NET",
+    WORKSPACE_ROOT / "DEEPER_CRYSTALIZATION" / "ACTIVE_NERVOUS_SYSTEM" / "13_DEEPER_NEURAL_NET",
 ]
 FAMILY_LOCAL_BOUNDARY_SKILLS = [
     "NERUAL NETWORK/.../integrated-neural-network-orchestrator",
@@ -896,7 +896,7 @@ EARTH_NATIVE_DRIVERS = [
         "cluster": "routing and search",
         "anchor": "routing and search",
         "contribution": "decides how the corpus searches itself",
-        "source_hint": "DEEPER CRYSTALIZATION\\Self-Routing Meta-Framework...",
+        "source_hint": "DEEPER_CRYSTALIZATION\\Self-Routing Meta-Framework...",
         "appendix_stack": ["AppE", "AppI", "AppL", "AppM"],
     },
     {
@@ -1185,7 +1185,7 @@ WATER_TRANSLATED_SUPPORT = [
         "element": "Earth",
         "cluster": "routing and search",
         "contribution": "decides how the corpus searches itself",
-        "source_hint": "DEEPER CRYSTALIZATION\\Self-Routing Meta-Framework...",
+        "source_hint": "DEEPER_CRYSTALIZATION\\Self-Routing Meta-Framework...",
         "appendix_stack": ["AppE", "AppI", "AppL", "AppM"],
     },
     {
@@ -1398,7 +1398,7 @@ AIR_TRANSLATED_SUPPORT = [
         "element": "Earth",
         "cluster": "routing and search",
         "contribution": "decides how the corpus searches itself",
-        "source_hint": "DEEPER CRYSTALIZATION\\Self-Routing Meta-Framework...",
+        "source_hint": "DEEPER_CRYSTALIZATION\\Self-Routing Meta-Framework...",
         "appendix_stack": ["AppE", "AppI", "AppL", "AppM"],
     },
     {

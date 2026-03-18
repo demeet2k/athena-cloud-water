@@ -21,7 +21,7 @@ OK_THEOREM_PATH = FAMILIES_ROOT / "VOID_CH11_OK_THEOREM.md"
 
 MIRROR_FAMILY_PATH = (
     WORKSPACE_ROOT
-    / "DEEPER CRYSTALIZATION"
+    / "DEEPER_CRYSTALIZATION"
     / "_build"
     / "nervous_system"
     / "families"
@@ -29,7 +29,7 @@ MIRROR_FAMILY_PATH = (
 )
 MIRROR_NODE_PATH = (
     WORKSPACE_ROOT
-    / "DEEPER CRYSTALIZATION"
+    / "DEEPER_CRYSTALIZATION"
     / "_build"
     / "nervous_system"
     / "families"
@@ -37,7 +37,7 @@ MIRROR_NODE_PATH = (
 )
 MIRROR_CHAPTER_PATH = (
     WORKSPACE_ROOT
-    / "DEEPER CRYSTALIZATION"
+    / "DEEPER_CRYSTALIZATION"
     / "ACTIVE_NERVOUS_SYSTEM"
     / "04_CHAPTERS"
     / "Ch11_0022_void_book_and_restart_token_tunneling.md"

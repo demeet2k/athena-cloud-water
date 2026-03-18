@@ -101,7 +101,7 @@ FALLBACK_FAMILIES = [
     ("A01", "NERVOUS_SYSTEM", "live", "canonical cortex"),
     ("A02", "self_actualize", "live", "runtime hub"),
     ("A03", "ECOSYSTEM", "live", "governance mirror"),
-    ("A04", "DEEPER CRYSTALIZATION", "historical-absorbed", "historical lineage"),
+    ("A04", "DEEPER_CRYSTALIZATION", "historical-absorbed", "historical lineage"),
     ("A05", "MATH", "live", "formal reservoir"),
     ("A06", "Voynich", "live", "manuscript engine"),
     ("A07", "Trading Bot", "live", "external memory gate"),

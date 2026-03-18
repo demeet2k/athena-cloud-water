@@ -80,8 +80,8 @@ CORPUS_BODIES = [
         "hubs": ["AppC", "AppF", "AppP"],
     },
     {
-        "name": "DEEPER CRYSTALIZATION",
-        "top_level": "DEEPER CRYSTALIZATION",
+        "name": "DEEPER_CRYSTALIZATION",
+        "top_level": "DEEPER_CRYSTALIZATION",
         "macro": "Water",
         "role": "manuscript-brain incubation layer and swarm/metro build history",
         "metro_line": "Manuscript Line",
@@ -156,7 +156,7 @@ DOCUMENT_BASIS = [
     },
     {
         "name": "Self-Routing Meta-Framework",
-        "relative_path": r"DEEPER CRYSTALIZATION\Self-Routing Meta-Framework for Manuscripts, Metro Maps, and Infinite Recursive Search.docx",
+        "relative_path": r"DEEPER_CRYSTALIZATION\Self-Routing Meta-Framework for Manuscripts, Metro Maps, and Infinite Recursive Search.docx",
         "macro": "Earth",
         "cluster": "routing and search",
         "role": "treats metro maps, manuscripts, and recursive search as one self-routing object",
@@ -551,7 +551,7 @@ def render_framework_synthesis(atlas: dict, archive_atlas: dict, satellite_recor
         "# Whole-Project Framework Synthesis\n\n"
         "The project is not a loose pile of books, math notes, and experiments. It is a routed manuscript organism trying to make meaning addressable, admissible, witness-bearing, replayable, and eventually executable across one shared corpus.\n\n"
         "## Whole-Corpus Reading\n\n"
-        f'The live corpus contains `{atlas["record_count"]}` indexed files, dominated by markdown and Word manuscripts, with `MATH`, `Voynich`, `DEEPER CRYSTALIZATION`, `NERVOUS_SYSTEM`, `self_actualize`, `NERUAL NETWORK`, and `Trading Bot` acting as the main bodies. The archive layer adds `{archive_atlas["record_count"]}` ZIP-backed records, mostly code, which means the project is not only theorized as a compute surface: a large amount of its implementation substrate is preserved in archive-backed Python, TypeScript, and JavaScript.\n\n'
+        f'The live corpus contains `{atlas["record_count"]}` indexed files, dominated by markdown and Word manuscripts, with `MATH`, `Voynich`, `DEEPER_CRYSTALIZATION`, `NERVOUS_SYSTEM`, `self_actualize`, `NERUAL NETWORK`, and `Trading Bot` acting as the main bodies. The archive layer adds `{archive_atlas["record_count"]}` ZIP-backed records, mostly code, which means the project is not only theorized as a compute surface: a large amount of its implementation substrate is preserved in archive-backed Python, TypeScript, and JavaScript.\n\n'
         "## The Main Stack\n\n"
         "1. Address and route law through `QBD-4`, `MYCELIUM_TOME_PART1`, and `ECOSYSTEM/05_MYCELIUM_ROUTING.md`.\n"
         "2. Holographic transport and compression through `QUAD HOLOGRAPHIC ROTATION` and `The Holographic Kernel`.\n"
@@ -667,7 +667,7 @@ def render_unified_framework(corpus_basis: list[dict], document_basis: list[dict
 def render_metro_crosswalk() -> str:
     rows = [
         ["Kernel Line", "MATH + ECOSYSTEM + NERVOUS_SYSTEM", "QBD-4 + Self-Routing + Holographic Manuscript Brain", "2-ball / 3-ball", "address law becomes routeable memory"],
-        ["Manuscript Line", "DEEPER CRYSTALIZATION + Voynich + Athenachka", "Holographic Manuscript Brain + VOYNICHVM + TORAT HA-MISPAR", "5-ball / 7-ball", "text becomes staged computation"],
+        ["Manuscript Line", "DEEPER_CRYSTALIZATION + Voynich + Athenachka", "Holographic Manuscript Brain + VOYNICHVM + TORAT HA-MISPAR", "5-ball / 7-ball", "text becomes staged computation"],
         ["Runtime Line", "NERUAL NETWORK + MATH + Trading Bot", "Athena Neural Network + Quantum Computing + Crystal Computing", "4-ball / 6-ball", "theorem and runtime remain coupled"],
         ["Void Line", "VOID_CH11 + FRESH + Trading Bot", "Zero-Point Computing + Time Fractal + Quad Rotation", "8-ball / 9-ball", "blocked regions reopen through zero-point routing"],
         ["Mythic Compression Line", "Voynich + MATH myth layer + I AM ATHENA", "VOYNICHVM + TORAT HA-MISPAR + UCO", "11-ball to 13-ball", "mythic corpora become operator dictionaries"],

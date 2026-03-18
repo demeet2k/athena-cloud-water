@@ -93,8 +93,8 @@ BODIES = [
         "slug": "nervous_body",
         "role": "active routing shell, metro surfaces, swarm maps, and witness ledgers",
         "refs": [
-            "DEEPER CRYSTALIZATION/ACTIVE_NERVOUS_SYSTEM",
-            "DEEPER CRYSTALIZATION/_build/nervous_system/swarm",
+            "DEEPER_CRYSTALIZATION/ACTIVE_NERVOUS_SYSTEM",
+            "DEEPER_CRYSTALIZATION/_build/nervous_system/swarm",
             "self_actualize",
             "ECOSYSTEM",
         ],
@@ -251,8 +251,8 @@ CHAPTER_SPECS = [
         "role": "define the private QSHRINK2.0 charter, legend, and parse-safe opening",
         "hubs": ["AppA", "AppC", "AppI", "AppM"],
         "capsules": [
-            "DEEPER CRYSTALIZATION/ACTIVE_NERVOUS_SYSTEM/03_METRO/00_core_metro_map.md",
-            "DEEPER CRYSTALIZATION/ACTIVE_NERVOUS_SYSTEM/03_METRO/04_higher_dimensional_tensor_map.md",
+            "DEEPER_CRYSTALIZATION/ACTIVE_NERVOUS_SYSTEM/03_METRO/00_core_metro_map.md",
+            "DEEPER_CRYSTALIZATION/ACTIVE_NERVOUS_SYSTEM/03_METRO/04_higher_dimensional_tensor_map.md",
             "MATH/FINAL FORM/Q shrink/Q-SHRINK MASTER TOME.docx",
         ],
     },
@@ -263,8 +263,8 @@ CHAPTER_SPECS = [
         "role": "state the base-4 coordinate law joining root cells, manuscript families, and replayable paths",
         "hubs": ["AppA", "AppB", "AppC", "AppI", "AppM"],
         "capsules": [
-            "DEEPER CRYSTALIZATION/_build/nervous_system/swarm/02_NEURON_ADDRESS_TENSOR.md",
-            "DEEPER CRYSTALIZATION/ACTIVE_NERVOUS_SYSTEM/05_APPENDICES/AppA_addressing_symbols_parsing_grammar.md",
+            "DEEPER_CRYSTALIZATION/_build/nervous_system/swarm/02_NEURON_ADDRESS_TENSOR.md",
+            "DEEPER_CRYSTALIZATION/ACTIVE_NERVOUS_SYSTEM/05_APPENDICES/AppA_addressing_symbols_parsing_grammar.md",
             "MATH/FINAL FORM/Q shrink/Q-Shrink MASTER SKELETON.docx",
         ],
     },
@@ -275,7 +275,7 @@ CHAPTER_SPECS = [
         "role": "bind compression to admissibility, witness, replay, and certificate obligations",
         "hubs": ["AppI", "AppJ", "AppL", "AppM"],
         "capsules": [
-            "DEEPER CRYSTALIZATION/ACTIVE_NERVOUS_SYSTEM/05_APPENDICES/AppI_corridors_and_truth_lattice.md",
+            "DEEPER_CRYSTALIZATION/ACTIVE_NERVOUS_SYSTEM/05_APPENDICES/AppI_corridors_and_truth_lattice.md",
             "MATH/FINAL FORM/Q shrink/Q-SHRINK VOLUME III.docx",
             "MATH/FINAL FORM/Q shrink/Q-SHRINK — Volume IV.docx",
         ],
@@ -287,8 +287,8 @@ CHAPTER_SPECS = [
         "role": "unify square, circle, triangle, and torus as the four governing internal geometries",
         "hubs": ["AppC", "AppE", "AppG", "AppN"],
         "capsules": [
-            "DEEPER CRYSTALIZATION/ACTIVE_NERVOUS_SYSTEM/02_CORPUS_CAPSULES/33_higher_d_square_circle_triangle.md",
-            "DEEPER CRYSTALIZATION/ACTIVE_NERVOUS_SYSTEM/03_METRO/04_higher_dimensional_tensor_map.md",
+            "DEEPER_CRYSTALIZATION/ACTIVE_NERVOUS_SYSTEM/02_CORPUS_CAPSULES/33_higher_d_square_circle_triangle.md",
+            "DEEPER_CRYSTALIZATION/ACTIVE_NERVOUS_SYSTEM/03_METRO/04_higher_dimensional_tensor_map.md",
             "Trading Bot/Memory Docs/HIGHER-D SQUARE ◯ CIRCLE △ TRIANGLE.docx",
         ],
     },
@@ -299,7 +299,7 @@ CHAPTER_SPECS = [
         "role": "show how bucket logic separates canonical mass from frontier contradictions without lying about uncertainty",
         "hubs": ["AppB", "AppI", "AppK", "AppL"],
         "capsules": [
-            "DEEPER CRYSTALIZATION/ACTIVE_NERVOUS_SYSTEM/05_APPENDICES/AppK_conflict_quarantine_revocation.md",
+            "DEEPER_CRYSTALIZATION/ACTIVE_NERVOUS_SYSTEM/05_APPENDICES/AppK_conflict_quarantine_revocation.md",
             "MATH/FINAL FORM/Q shrink/Q-SHRINK MASTER TOME.docx",
             "MATH/FINAL FORM/Q shrink/Q-SHRINK — Volume I.docx",
         ],
@@ -311,7 +311,7 @@ CHAPTER_SPECS = [
         "role": "connect the old Q-SHRINK core to Athena nervous, memory, and mirrored manuscript bodies",
         "hubs": ["AppA", "AppH", "AppM", "AppN"],
         "capsules": [
-            "DEEPER CRYSTALIZATION/ACTIVE_NERVOUS_SYSTEM/08_MIRROR_CORPUS/01_higher_d_sources.md",
+            "DEEPER_CRYSTALIZATION/ACTIVE_NERVOUS_SYSTEM/08_MIRROR_CORPUS/01_higher_d_sources.md",
             "Trading Bot/Memory Docs",
             "Voynich",
         ],
@@ -323,7 +323,7 @@ CHAPTER_SPECS = [
         "role": "describe lawful travel between cells, corpus bodies, and runtime containers",
         "hubs": ["AppF", "AppH", "AppI", "AppN"],
         "capsules": [
-            "DEEPER CRYSTALIZATION/ACTIVE_NERVOUS_SYSTEM/05_APPENDICES/AppF_transport_rotation_as_conjugacy_dual_legality.md",
+            "DEEPER_CRYSTALIZATION/ACTIVE_NERVOUS_SYSTEM/05_APPENDICES/AppF_transport_rotation_as_conjugacy_dual_legality.md",
             "MATH/FINAL FORM/Q shrink/qshrink-rust-final.zip",
             "MATH/FINAL FORM/FRAMEWORKS CODE/Athena OS.zip::athena_os/qshrink/",
         ],
@@ -335,8 +335,8 @@ CHAPTER_SPECS = [
         "role": "formalize the recurrent orbit that keeps manuscripts revisitable without flattening them",
         "hubs": ["AppE", "AppG", "AppM", "AppP"],
         "capsules": [
-            "DEEPER CRYSTALIZATION/ACTIVE_NERVOUS_SYSTEM/05_APPENDICES/AppE_circle_gear_and_mixed_radix_clock.md",
-            "DEEPER CRYSTALIZATION/ACTIVE_NERVOUS_SYSTEM/03_METRO/00_core_metro_map.md",
+            "DEEPER_CRYSTALIZATION/ACTIVE_NERVOUS_SYSTEM/05_APPENDICES/AppE_circle_gear_and_mixed_radix_clock.md",
+            "DEEPER_CRYSTALIZATION/ACTIVE_NERVOUS_SYSTEM/03_METRO/00_core_metro_map.md",
             "MATH/FINAL FORM/Q shrink/Q-SHRINK CODING GUIDE (IMPLEMENTATION TOME).docx",
         ],
     },
@@ -347,9 +347,9 @@ CHAPTER_SPECS = [
         "role": "specify how routes compete, transfer, and settle through the internal metro",
         "hubs": ["AppA", "AppE", "AppH", "AppI", "AppL", "AppM"],
         "capsules": [
-            "DEEPER CRYSTALIZATION/ACTIVE_NERVOUS_SYSTEM/03_METRO/00_core_metro_map.md",
-            "DEEPER CRYSTALIZATION/ACTIVE_NERVOUS_SYSTEM/03_METRO/01_emergent_lines.md",
-            "DEEPER CRYSTALIZATION/ACTIVE_NERVOUS_SYSTEM/03_METRO/07_swarm_hypergraph.md",
+            "DEEPER_CRYSTALIZATION/ACTIVE_NERVOUS_SYSTEM/03_METRO/00_core_metro_map.md",
+            "DEEPER_CRYSTALIZATION/ACTIVE_NERVOUS_SYSTEM/03_METRO/01_emergent_lines.md",
+            "DEEPER_CRYSTALIZATION/ACTIVE_NERVOUS_SYSTEM/03_METRO/07_swarm_hypergraph.md",
         ],
     },
     {
@@ -359,9 +359,9 @@ CHAPTER_SPECS = [
         "role": "turn the manuscript field into a bounded neural swarm with packet law and cluster roles",
         "hubs": ["AppA", "AppG", "AppM", "AppN"],
         "capsules": [
-            "DEEPER CRYSTALIZATION/ACTIVE_NERVOUS_SYSTEM/03_METRO/05_deeper_emergent_neural_swarm.md",
-            "DEEPER CRYSTALIZATION/_build/nervous_system/swarm/02_NEURON_ADDRESS_TENSOR.md",
-            "DEEPER CRYSTALIZATION/ACTIVE_NERVOUS_SYSTEM/03_METRO/02_parallel_agent_grid.md",
+            "DEEPER_CRYSTALIZATION/ACTIVE_NERVOUS_SYSTEM/03_METRO/05_deeper_emergent_neural_swarm.md",
+            "DEEPER_CRYSTALIZATION/_build/nervous_system/swarm/02_NEURON_ADDRESS_TENSOR.md",
+            "DEEPER_CRYSTALIZATION/ACTIVE_NERVOUS_SYSTEM/03_METRO/02_parallel_agent_grid.md",
         ],
     },
     {
@@ -371,8 +371,8 @@ CHAPTER_SPECS = [
         "role": "govern restart without amnesia and bind loop closure to toroidal re-entry",
         "hubs": ["AppF", "AppI", "AppL", "AppM"],
         "capsules": [
-            "DEEPER CRYSTALIZATION/ACTIVE_NERVOUS_SYSTEM/02_CORPUS_CAPSULES/07_chapter_11_perpetual_motion_example.md",
-            "DEEPER CRYSTALIZATION/ACTIVE_NERVOUS_SYSTEM/02_CORPUS_CAPSULES/10_information_from_the_void_mani.md",
+            "DEEPER_CRYSTALIZATION/ACTIVE_NERVOUS_SYSTEM/02_CORPUS_CAPSULES/07_chapter_11_perpetual_motion_example.md",
+            "DEEPER_CRYSTALIZATION/ACTIVE_NERVOUS_SYSTEM/02_CORPUS_CAPSULES/10_information_from_the_void_mani.md",
             "self_actualize/live_docs_gate_status.md",
         ],
     },
@@ -383,7 +383,7 @@ CHAPTER_SPECS = [
         "role": "show how internal manuscripts prove that a compression path is lawful",
         "hubs": ["AppC", "AppI", "AppM", "AppN"],
         "capsules": [
-            "DEEPER CRYSTALIZATION/ACTIVE_NERVOUS_SYSTEM/00_RECEIPTS/01_build_receipt.md",
+            "DEEPER_CRYSTALIZATION/ACTIVE_NERVOUS_SYSTEM/00_RECEIPTS/01_build_receipt.md",
             "MATH/FINAL FORM/Q shrink/Q-SHRINK CODING GUIDE (IMPLEMENTATION TOME).docx",
             "MATH/FINAL FORM/Q shrink/Q-SHRINK.zip",
         ],
@@ -395,7 +395,7 @@ CHAPTER_SPECS = [
         "role": "formalize memory, persistence, and regeneration as first-class QSHRINK operations",
         "hubs": ["AppJ", "AppL", "AppM", "AppP"],
         "capsules": [
-            "DEEPER CRYSTALIZATION/ACTIVE_NERVOUS_SYSTEM/05_APPENDICES/AppM_replay_kernel_and_verifier_capsules.md",
+            "DEEPER_CRYSTALIZATION/ACTIVE_NERVOUS_SYSTEM/05_APPENDICES/AppM_replay_kernel_and_verifier_capsules.md",
             "Trading Bot/docs_search.py",
             "Trading Bot/Memory Docs",
         ],
@@ -407,7 +407,7 @@ CHAPTER_SPECS = [
         "role": "bind evolving manuscripts without breaking backward addressability",
         "hubs": ["AppD", "AppH", "AppM", "AppO"],
         "capsules": [
-            "DEEPER CRYSTALIZATION/ACTIVE_NERVOUS_SYSTEM/05_APPENDICES/AppD_registry_profiles_version_ids.md",
+            "DEEPER_CRYSTALIZATION/ACTIVE_NERVOUS_SYSTEM/05_APPENDICES/AppD_registry_profiles_version_ids.md",
             "MATH/FINAL FORM/Q shrink/Q-SHRINK VOLUME III.docx",
             "MATH/FINAL FORM/Q shrink/qshrink-rust-final.zip",
         ],
@@ -419,7 +419,7 @@ CHAPTER_SPECS = [
         "role": "connect the manuscript law to executable runtime edges and module contracts",
         "hubs": ["AppC", "AppF", "AppN", "AppP"],
         "capsules": [
-            "DEEPER CRYSTALIZATION/ACTIVE_NERVOUS_SYSTEM/02_CORPUS_CAPSULES/17_self_routing_meta_framework_for_manuscripts_metro_maps_and_infinite_recursive_search.md",
+            "DEEPER_CRYSTALIZATION/ACTIVE_NERVOUS_SYSTEM/02_CORPUS_CAPSULES/17_self_routing_meta_framework_for_manuscripts_metro_maps_and_infinite_recursive_search.md",
             "MATH/FINAL FORM/FRAMEWORKS CODE/Athena OS.zip::athena_os/qshrink/",
             "NERUAL NETWORK",
         ],
@@ -431,8 +431,8 @@ CHAPTER_SPECS = [
         "role": "detail the verification surfaces that keep the internal system honest under recursion",
         "hubs": ["AppI", "AppL", "AppM", "AppP"],
         "capsules": [
-            "DEEPER CRYSTALIZATION/ACTIVE_NERVOUS_SYSTEM/05_APPENDICES/AppL_evidence_plans_and_ambig_promotion.md",
-            "DEEPER CRYSTALIZATION/ACTIVE_NERVOUS_SYSTEM/05_APPENDICES/AppM_replay_kernel_and_verifier_capsules.md",
+            "DEEPER_CRYSTALIZATION/ACTIVE_NERVOUS_SYSTEM/05_APPENDICES/AppL_evidence_plans_and_ambig_promotion.md",
+            "DEEPER_CRYSTALIZATION/ACTIVE_NERVOUS_SYSTEM/05_APPENDICES/AppM_replay_kernel_and_verifier_capsules.md",
             "MATH/FINAL FORM/Q shrink/Q-SHRINK CODING GUIDE (IMPLEMENTATION TOME).docx",
         ],
     },
@@ -443,7 +443,7 @@ CHAPTER_SPECS = [
         "role": "govern how the private system touches public software, cloud edges, and active agents",
         "hubs": ["AppG", "AppN", "AppO", "AppP"],
         "capsules": [
-            "DEEPER CRYSTALIZATION/ACTIVE_NERVOUS_SYSTEM/05_APPENDICES/AppP_deployment_profiles_and_monitoring.md",
+            "DEEPER_CRYSTALIZATION/ACTIVE_NERVOUS_SYSTEM/05_APPENDICES/AppP_deployment_profiles_and_monitoring.md",
             "MATH/FINAL FORM/Q shrink/Q-SHRINK.zip",
             "ECOSYSTEM",
         ],
@@ -455,8 +455,8 @@ CHAPTER_SPECS = [
         "role": "state the cross-scale invariants that let the same law work across manuscripts, swarm, and runtime",
         "hubs": ["AppB", "AppE", "AppG", "AppN"],
         "capsules": [
-            "DEEPER CRYSTALIZATION/ACTIVE_NERVOUS_SYSTEM/03_METRO/04_higher_dimensional_tensor_map.md",
-            "DEEPER CRYSTALIZATION/_build/nervous_system/swarm/02_NEURON_ADDRESS_TENSOR.md",
+            "DEEPER_CRYSTALIZATION/ACTIVE_NERVOUS_SYSTEM/03_METRO/04_higher_dimensional_tensor_map.md",
+            "DEEPER_CRYSTALIZATION/_build/nervous_system/swarm/02_NEURON_ADDRESS_TENSOR.md",
             "Trading Bot/Memory Docs/HIGHER-D SQUARE ◯ CIRCLE △ TRIANGLE.docx",
         ],
     },
@@ -467,8 +467,8 @@ CHAPTER_SPECS = [
         "role": "define which loops must close, which may remain open, and how restart stays lawful",
         "hubs": ["AppB", "AppI", "AppJ", "AppM", "AppP"],
         "capsules": [
-            "DEEPER CRYSTALIZATION/ACTIVE_NERVOUS_SYSTEM/02_CORPUS_CAPSULES/46_ω_metro_calculus.md",
-            "DEEPER CRYSTALIZATION/ACTIVE_NERVOUS_SYSTEM/03_METRO/05_deeper_emergent_neural_swarm.md",
+            "DEEPER_CRYSTALIZATION/ACTIVE_NERVOUS_SYSTEM/02_CORPUS_CAPSULES/46_ω_metro_calculus.md",
+            "DEEPER_CRYSTALIZATION/ACTIVE_NERVOUS_SYSTEM/03_METRO/05_deeper_emergent_neural_swarm.md",
             "MATH/FINAL FORM/Q shrink/Q-SHRINK — Volume IV.docx",
         ],
     },
@@ -479,8 +479,8 @@ CHAPTER_SPECS = [
         "role": "turn private QSHRINK into a multi-agent manuscript organism with governed merges",
         "hubs": ["AppE", "AppG", "AppL", "AppP"],
         "capsules": [
-            "DEEPER CRYSTALIZATION/ACTIVE_NERVOUS_SYSTEM/03_METRO/05_deeper_emergent_neural_swarm.md",
-            "DEEPER CRYSTALIZATION/ACTIVE_NERVOUS_SYSTEM/03_METRO/07_swarm_hypergraph.md",
+            "DEEPER_CRYSTALIZATION/ACTIVE_NERVOUS_SYSTEM/03_METRO/05_deeper_emergent_neural_swarm.md",
+            "DEEPER_CRYSTALIZATION/ACTIVE_NERVOUS_SYSTEM/03_METRO/07_swarm_hypergraph.md",
             "self_actualize",
         ],
     },
@@ -491,9 +491,9 @@ CHAPTER_SPECS = [
         "role": "encode how QSHRINK2.0 becomes seed material for later internal frameworks without collapsing into product code",
         "hubs": ["AppA", "AppM", "AppN", "AppP"],
         "capsules": [
-            "DEEPER CRYSTALIZATION/ACTIVE_NERVOUS_SYSTEM/07_RECURSION/01_frontier_queue.md",
-            "DEEPER CRYSTALIZATION/ACTIVE_NERVOUS_SYSTEM/03_METRO/06_family_crystals.md",
-            "DEEPER CRYSTALIZATION/ACTIVE_NERVOUS_SYSTEM/03_METRO/07_swarm_hypergraph.md",
+            "DEEPER_CRYSTALIZATION/ACTIVE_NERVOUS_SYSTEM/07_RECURSION/01_frontier_queue.md",
+            "DEEPER_CRYSTALIZATION/ACTIVE_NERVOUS_SYSTEM/03_METRO/06_family_crystals.md",
+            "DEEPER_CRYSTALIZATION/ACTIVE_NERVOUS_SYSTEM/03_METRO/07_swarm_hypergraph.md",
         ],
     },
 ]
@@ -745,16 +745,16 @@ def hub_vector_for(cell: RootCell) -> list[str]:
 def capsule_focus_for(cell: RootCell) -> list[str]:
     base = list(cell.body["refs"])
     geometry_extra = {
-        "Square": "DEEPER CRYSTALIZATION/ACTIVE_NERVOUS_SYSTEM/05_APPENDICES/AppC_square_kernel_pack.md",
-        "Circle": "DEEPER CRYSTALIZATION/ACTIVE_NERVOUS_SYSTEM/05_APPENDICES/AppE_circle_gear_and_mixed_radix_clock.md",
-        "Triangle": "DEEPER CRYSTALIZATION/ACTIVE_NERVOUS_SYSTEM/05_APPENDICES/AppG_triangle_control_and_tria_prima.md",
-        "Torus": "DEEPER CRYSTALIZATION/ACTIVE_NERVOUS_SYSTEM/03_METRO/04_higher_dimensional_tensor_map.md",
+        "Square": "DEEPER_CRYSTALIZATION/ACTIVE_NERVOUS_SYSTEM/05_APPENDICES/AppC_square_kernel_pack.md",
+        "Circle": "DEEPER_CRYSTALIZATION/ACTIVE_NERVOUS_SYSTEM/05_APPENDICES/AppE_circle_gear_and_mixed_radix_clock.md",
+        "Triangle": "DEEPER_CRYSTALIZATION/ACTIVE_NERVOUS_SYSTEM/05_APPENDICES/AppG_triangle_control_and_tria_prima.md",
+        "Torus": "DEEPER_CRYSTALIZATION/ACTIVE_NERVOUS_SYSTEM/03_METRO/04_higher_dimensional_tensor_map.md",
     }[cell.geometry["name"]]
     closure_extra = {
-        "Seed": "DEEPER CRYSTALIZATION/ACTIVE_NERVOUS_SYSTEM/02_CORPUS_CAPSULES/01_the_manuscript_seed_self_referential_crystalline_generation_protocol.md",
-        "Manuscript": "DEEPER CRYSTALIZATION/ACTIVE_NERVOUS_SYSTEM/03_METRO/00_core_metro_map.md",
-        "Witness": "DEEPER CRYSTALIZATION/ACTIVE_NERVOUS_SYSTEM/05_APPENDICES/AppI_corridors_and_truth_lattice.md",
-        "Loop": "DEEPER CRYSTALIZATION/ACTIVE_NERVOUS_SYSTEM/03_METRO/05_deeper_emergent_neural_swarm.md",
+        "Seed": "DEEPER_CRYSTALIZATION/ACTIVE_NERVOUS_SYSTEM/02_CORPUS_CAPSULES/01_the_manuscript_seed_self_referential_crystalline_generation_protocol.md",
+        "Manuscript": "DEEPER_CRYSTALIZATION/ACTIVE_NERVOUS_SYSTEM/03_METRO/00_core_metro_map.md",
+        "Witness": "DEEPER_CRYSTALIZATION/ACTIVE_NERVOUS_SYSTEM/05_APPENDICES/AppI_corridors_and_truth_lattice.md",
+        "Loop": "DEEPER_CRYSTALIZATION/ACTIVE_NERVOUS_SYSTEM/03_METRO/05_deeper_emergent_neural_swarm.md",
     }[cell.closure["name"]]
     base.extend([geometry_extra, closure_extra])
     return base

@@ -133,7 +133,7 @@ def load_manifest() -> dict:
 def build_basis() -> list[BasisDoc]:
     return [
         BasisDoc(1, "manuscript_brain", "The Holographic Manuscript Brain", "Water", "manuscript substrate", "turns documents into neural tissue", r"FRESH\The Holographic Manuscript Brain.docx", ("AppE", "AppF", "AppG", "AppM")),
-        BasisDoc(2, "self_routing", "Self-Routing Meta-Framework", "Earth", "routing and search", "decides how the corpus searches itself", r"DEEPER CRYSTALIZATION\Self-Routing Meta-Framework...", ("AppE", "AppI", "AppL", "AppM")),
+        BasisDoc(2, "self_routing", "Self-Routing Meta-Framework", "Earth", "routing and search", "decides how the corpus searches itself", r"DEEPER_CRYSTALIZATION\Self-Routing Meta-Framework...", ("AppE", "AppI", "AppL", "AppM")),
         BasisDoc(3, "qbd4", "QBD-4", "Air", "quad logic bits", "formalizes the four-bit address and rotation algebra", r"MATH\...QBD-4", ("AppB", "AppC", "AppM")),
         BasisDoc(4, "quad_rotation", "Quad Holographic Rotation", "Air", "holographic transport", "rotates one truth through all four faces", r"MATH\...Quad Holographic Rotation", ("AppE", "AppF", "AppM")),
         BasisDoc(5, "holographic_kernel", "The Holographic Kernel", "Air", "holographic compression", "compresses bodies without deleting structural DNA", r"MATH\...The Holographic Kernel", ("AppB", "AppC", "AppN")),
@@ -451,7 +451,7 @@ def build_ingress_files() -> None:
     )
     write_text(
         ingress_root / "01_corpus_body_ingress.md",
-        "# Corpus Body Ingress\n\nPrimary ingress bodies are `self_actualize`, `NERVOUS_SYSTEM`, `ECOSYSTEM`, `MATH`, `NERUAL NETWORK`, `DEEPER CRYSTALIZATION`, `Voynich`, and `Trading Bot`. Each body becomes a 3D station with one entry line, one transfer-hub set, and one feed set into the 16-document deeper basis.\n",
+        "# Corpus Body Ingress\n\nPrimary ingress bodies are `self_actualize`, `NERVOUS_SYSTEM`, `ECOSYSTEM`, `MATH`, `NERUAL NETWORK`, `DEEPER_CRYSTALIZATION`, `Voynich`, and `Trading Bot`. Each body becomes a 3D station with one entry line, one transfer-hub set, and one feed set into the 16-document deeper basis.\n",
     )
     write_text(
         ingress_root / "02_folder_to_basis_embedding.md",

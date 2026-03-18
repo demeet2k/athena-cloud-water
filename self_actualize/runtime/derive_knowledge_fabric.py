@@ -80,7 +80,7 @@ GRAPH_AUTHORITY_PATH = NERVOUS_SYSTEM_ROOT / "90_LEDGERS" / "NEURON_LIBRARY.md"
 RECEIPT_AUTHORITY_PATH = NERVOUS_SYSTEM_ROOT / "90_LEDGERS" / "22_SELF_LINEAGE_LEDGER.md"
 BOARD_SOURCE_FALLBACK = (
     WORKSPACE_ROOT
-    / "DEEPER CRYSTALIZATION"
+    / "DEEPER_CRYSTALIZATION"
     / "ACTIVE_NERVOUS_SYSTEM"
     / "07_FULL_PROJECT_INTEGRATION_256"
     / "06_REALTIME_BOARD"
@@ -89,7 +89,7 @@ BOARD_SOURCE_FALLBACK = (
 )
 PROMOTED_SOURCE_FALLBACK = (
     WORKSPACE_ROOT
-    / "DEEPER CRYSTALIZATION"
+    / "DEEPER_CRYSTALIZATION"
     / "_build"
     / "nervous_system"
     / "manifests"
@@ -657,7 +657,7 @@ def determine_semantic_role(
         "MATH",
         "Voynich",
         "Athenachka Collective Books",
-        "DEEPER CRYSTALIZATION",
+        "DEEPER_CRYSTALIZATION",
         "I AM ATHENA",
         "ORGIN",
     } or "\\30_chapters\\" in rel:
@@ -866,7 +866,7 @@ def build_zone_registry() -> List[StorageZoneRecord]:
             "canonical law, publishable overview matter, and live source corpus bodies",
             str(NERVOUS_SYSTEM_ROOT / "00_INDEX.md"),
             "indexed",
-            ["NERVOUS_SYSTEM", "MATH", "Voynich", "DEEPER CRYSTALIZATION"],
+            ["NERVOUS_SYSTEM", "MATH", "Voynich", "DEEPER_CRYSTALIZATION"],
             ["manuscript", "manifest", "schema", "ledger"],
             ["locate", "browse", "synthesize", "publish"],
             "This zone answers where canonical and source-bearing matter actually lives.",
@@ -932,7 +932,7 @@ def build_zone_registry() -> List[StorageZoneRecord]:
             "realtime coordination slice and board-visible witness surfaces",
             str(BOARD_SOURCE_FALLBACK),
             "board",
-            ["DEEPER CRYSTALIZATION/ACTIVE_NERVOUS_SYSTEM/.../06_REALTIME_BOARD"],
+            ["DEEPER_CRYSTALIZATION/ACTIVE_NERVOUS_SYSTEM/.../06_REALTIME_BOARD"],
             ["manifest", "queue", "ledger"],
             ["audit", "repair", "publish"],
             "Board scope is a visibility overlay, not whole-corpus truth.",
@@ -943,7 +943,7 @@ def build_zone_registry() -> List[StorageZoneRecord]:
             "the bronze promoted nervous-system slice and its declared witness surfaces",
             str(PROMOTED_SOURCE_FALLBACK),
             "promoted",
-            ["DEEPER CRYSTALIZATION/_build/nervous_system"],
+            ["DEEPER_CRYSTALIZATION/_build/nervous_system"],
             ["manifest", "ledger", "schema"],
             ["compare", "audit", "publish"],
             "Promoted slices remain named as historical witness, not live totality.",

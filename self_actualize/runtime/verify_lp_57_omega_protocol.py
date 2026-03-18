@@ -20,7 +20,7 @@ from self_actualize.runtime.hemisphere_dense_65_shell_support import (  # noqa: 
 
 PROTOCOL_ROOT = (
     WORKSPACE_ROOT
-    / "DEEPER CRYSTALIZATION"
+    / "DEEPER_CRYSTALIZATION"
     / "ACTIVE_NERVOUS_SYSTEM"
     / "18_LP_57OMEGA_PROTOCOL"
 )

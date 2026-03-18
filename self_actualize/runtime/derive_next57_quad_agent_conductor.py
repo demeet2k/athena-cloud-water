@@ -120,7 +120,7 @@ MAJOR_BODIES = [
     "GAMES",
     "Stoicheia",
     "CLEAN",
-    "DEEPER CRYSTALIZATION",
+    "DEEPER_CRYSTALIZATION",
     "Knowledge Fabric",
     "Grand Central",
     "ATHENA TEMPLE",

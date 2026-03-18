@@ -474,7 +474,7 @@ TOP_LEVEL_PATH_PRIORS = {
     "QSHRINK - ATHENA (internal use)": (2.1, 0.9),
     "Quadrant Binary": (2.6, 0.4),
     "self_actualize": (1.3, 1.1),
-    "DEEPER CRYSTALIZATION": (1.2, 1.2),
+    "DEEPER_CRYSTALIZATION": (1.2, 1.2),
     "Athena FLEET": (1.1, 1.3),
     "Voynich": (0.7, 2.4),
     "Athenachka Collective Books": (0.6, 2.5),

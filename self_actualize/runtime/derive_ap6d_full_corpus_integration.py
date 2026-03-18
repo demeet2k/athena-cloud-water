@@ -56,7 +56,7 @@ STAGE_BY_PHASE = {"Prime": "Void", "Gate": "Water", "Bind": "Earth", "Reseed": "
 
 BASIS = [
     ("01", "The Holographic Manuscript Brain", "Water", "manuscript substrate", "FRESH/The Holographic Manuscript Brain.docx", ["AppE", "AppF", "AppG", "AppM"]),
-    ("02", "Self-Routing Meta-Framework", "Earth", "routing and search", "DEEPER CRYSTALIZATION/Self-Routing Meta-Framework...", ["AppE", "AppI", "AppL", "AppM"]),
+    ("02", "Self-Routing Meta-Framework", "Earth", "routing and search", "DEEPER_CRYSTALIZATION/Self-Routing Meta-Framework...", ["AppE", "AppI", "AppL", "AppM"]),
     ("03", "QBD-4", "Air", "quad logic bits", "MATH/...QBD-4", ["AppB", "AppC", "AppM"]),
     ("04", "Quad Holographic Rotation", "Air", "holographic transport", "MATH/...Quad Holographic Rotation", ["AppE", "AppF", "AppM"]),
     ("05", "The Holographic Kernel", "Air", "holographic compression", "MATH/...The Holographic Kernel", ["AppB", "AppC", "AppN"]),

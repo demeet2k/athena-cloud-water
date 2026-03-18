@@ -1,0 +1,246 @@
+{
+  "meta": {
+    "title": "Meta Observer Swarm — 12D Observation Calculus",
+    "version": "1.0",
+    "source": "2026-03-17_claude_meta_observer.md",
+    "description": "57-cycle meta-observation protocol with 12D perspective calculus, 4-element synthesis, swarm orchestration, and observation field dynamics.",
+    "key_insight": "The repository is not a single static point but a 12-dimensional evolving field. Observation is not passive commentary — it is computed perspective with derivatives, couplings, and explicit cycle logs."
+  },
+
+  "core_identity": {
+    "role": "Meta Observer",
+    "purpose": "Central observing intelligence across the repository ecosystem",
+    "functions": ["observe", "document", "coordinate", "synthesize", "improve", "route work", "close cycles"],
+    "tracking_targets": [
+      "structural changes", "conceptual changes", "architectural changes",
+      "convergence patterns", "failures", "contradictions", "regressions",
+      "emergent improvements", "unfinished work", "promising directions",
+      "dead ends", "signal vs noise"
+    ],
+    "cardinal_rule": "Document both positive and negative observations. Do not only report wins. Do not hide failures. Do not skip contradictions."
+  },
+
+  "mission": {
+    "name": "57-Cycle Meta-Observation Swarm Synthesis",
+    "total_cycles": 57,
+    "swarm_size": 24,
+    "communication_medium": "repository itself",
+    "coordination_method": "indirect through message boards, quest halls, README files, instruction surfaces"
+  },
+
+  "twelve_dimensional_observation_space": {
+    "manifold": "M_12 = [-1,1]^12",
+    "score_range": {"min": -1, "max": 1},
+    "interpretation": {
+      "-1": "strongly degraded / actively harmful",
+      "0": "neutral / unresolved / mixed",
+      "+1": "strongly coherent / high-performing"
+    },
+    "dimensions": [
+      {"index": 1, "name": "Structure", "symbol": "x1", "measures": "Architecture, hierarchy, file topology, naming stability, scaffold coherence"},
+      {"index": 2, "name": "Semantics", "symbol": "x2", "measures": "Meaning precision, terminology stability, symbolic rigor, definitional clarity"},
+      {"index": 3, "name": "Coordination", "symbol": "x3", "measures": "Agent alignment, handoff quality, duplication avoidance, shared motion"},
+      {"index": 4, "name": "Recursion", "symbol": "x4", "measures": "Ability to learn from prior cycles, reference history, compound gains, close loops"},
+      {"index": 5, "name": "Contradiction", "symbol": "x5", "measures": "Conflict load, instruction clashes, logic breaks, unstable assumptions, incoherence"},
+      {"index": 6, "name": "Emergence", "symbol": "x6", "measures": "Novel coherent structures, unscripted but useful syntheses, pattern formation"},
+      {"index": 7, "name": "Legibility", "symbol": "x7", "measures": "Readability, navigability, scanability, handoff clarity for future agents"},
+      {"index": 8, "name": "Routing", "symbol": "x8", "measures": "Quest clarity, task flow, message-board usability, assignment specificity"},
+      {"index": 9, "name": "Grounding", "symbol": "x9", "measures": "Evidence quality, traceability, file-based justification, resistance to hallucinated claims"},
+      {"index": 10, "name": "Compression", "symbol": "x10", "measures": "Signal density, redundancy reduction, compactness without semantic collapse"},
+      {"index": 11, "name": "Interoperability", "symbol": "x11", "measures": "Subsystem compatibility, file-to-file cooperation, cross-board coherence"},
+      {"index": 12, "name": "Potential", "symbol": "x12", "measures": "Future leverage, branch value, extensibility, next-step opportunity"}
+    ]
+  },
+
+  "observation_field": {
+    "definition": "Phi(p,n): Omega x N -> R^12",
+    "local_position_types": ["file", "folder", "message board", "quest hall", "README surface", "cycle log cluster", "swarm-routing region", "synthesis corridor"],
+    "global_aggregation": "X^(n) = (1/Z_n) * integral(w(p,n) * Phi(p,n) dp)",
+    "importance_weighting": "w(p,n) assigns higher weight to actively changing or structurally critical regions"
+  },
+
+  "phase_definitions": {
+    "A": {
+      "name": "Ingest",
+      "description": "Read the currently relevant framework files, prior observations, quest halls, message boards, README instructions, and any active synthesis documents."
+    },
+    "B": {
+      "name": "4-Element Deep Synthesis",
+      "description": "Run the framework through four elemental lenses in deep relation to each other.",
+      "lenses": {
+        "Earth": {"symbol": "E", "emphasizes": ["x1", "x7", "x8", "x10", "x11"], "extracts": "structure, topology, placement, dependencies, scaffolding, persistence"},
+        "Fire": {"symbol": "F", "emphasizes": ["x5", "x3", "x4", "x9"], "extracts": "conflict, critique, pressure points, contradictions, weak instructions, brittle structures"},
+        "Water": {"symbol": "W", "emphasizes": ["x2", "x3", "x6", "x11", "x12"], "extracts": "continuity, adaptability, connection, flow, handoff, relation"},
+        "Air": {"symbol": "A", "emphasizes": ["x2", "x4", "x6", "x10", "x12"], "extracts": "abstraction, synthesis, pattern recognition, meta-organization, large-scale conceptual shape"}
+      }
+    },
+    "C": {
+      "name": "12-Dimensional Observation",
+      "description": "Full 12-dimensional observation pass across the framework. Score each dimension, justify with repo evidence, note motion vs prior cycle."
+    },
+    "D": {
+      "name": "A+ Upgrade Pass",
+      "description": "Take the current framework to its strongest next coherent form: sharpen language, improve instructions, reduce ambiguity, strengthen task continuity.",
+      "objective_functional": "J = lambda_1*x1 + lambda_2*x3 + lambda_3*x7 + lambda_4*x8 + lambda_5*x9 + lambda_6*x12 - mu*x5"
+    },
+    "E": {
+      "name": "Observation Ledger",
+      "description": "Write positive observations, negative observations, open contradictions, unresolved questions, key emergent patterns, suggested agent quests, framework weaknesses and strengths."
+    },
+    "F": {
+      "name": "Swarm Emission",
+      "description": "Leave new or updated instruction files for mini-agents with explicit targets: what to inspect, improve, validate, challenge, rewrite, compare, and where to leave responses."
+    }
+  },
+
+  "differential_calculus": {
+    "velocity": {
+      "formula": "V^(n) = X^(n) - X^(n-1)",
+      "interpretation": {"positive": "improvement", "negative": "degradation", "near_zero": "stasis / plateau / unresolved equilibrium"}
+    },
+    "acceleration": {
+      "formula": "A^(n) = X^(n) - 2*X^(n-1) + X^(n-2)",
+      "interpretation": {"positive": "compounding gain", "negative": "compounding decline", "oscillatory": "unstable loop"}
+    },
+    "jerk": {
+      "formula": "j^(n) = A^(n) - A^(n-1)",
+      "use": "Detect chaotic behavior, instruction churn, repeated rewrites, fragile coordination"
+    },
+    "cycle_update_law": "X^(n+1) = X^(n) + U^(n) + C*X^(n) + epsilon^(n)",
+    "components": {
+      "U": "intentional interventions this cycle",
+      "C*X": "coupled drift from cross-dimensional interactions",
+      "epsilon": "unexplained residual — must be documented, not ignored"
+    }
+  },
+
+  "cross_dimensional_coupling": {
+    "coupling_matrix": "C in R^(12x12), C_ij measures how motion in dimension j influences dimension i",
+    "known_couplings": [
+      {"from": "x1", "to": "x7", "type": "positive", "description": "improved structure often improves legibility"},
+      {"from": "x8", "to": "x3", "type": "positive", "description": "improved routing often improves coordination"},
+      {"from": "x10", "to": "x9", "type": "risk", "description": "excessive compression may harm grounding"},
+      {"from": "x5", "to": "x2", "type": "negative", "description": "unresolved contradiction may degrade semantics"},
+      {"from": "x5", "to": "x3", "type": "negative", "description": "unresolved contradiction may degrade coordination"},
+      {"from": "x6", "to": "x12", "type": "positive", "description": "emergence increases potential"}
+    ]
+  },
+
+  "observational_metric": {
+    "form": "ds^2 = dX^T * G * dX",
+    "default_weights": [1.3, 1.2, 1.4, 1.2, 1.4, 1.1, 1.2, 1.3, 1.4, 1.1, 1.2, 1.0],
+    "priority_order": ["coordination", "contradiction", "grounding", "routing", "structure"],
+    "distance_formula": "D(n,n-1) = sqrt((X^(n)-X^(n-1))^T * G * (X^(n)-X^(n-1)))"
+  },
+
+  "contradiction_calculus": {
+    "density": "kappa(R,n) = (unresolved contradictions in R) / (size of R)",
+    "global_load": "K^(n) = integral(w(p,n) * kappa(p,n) dp)",
+    "propagation_targets": ["x5 (primary)", "x2 semantics", "x3 coordination", "x7 legibility", "x9 grounding"],
+    "tracking_states": ["resolved", "transformed", "displaced", "split into sub-contradictions", "recurring"]
+  },
+
+  "emergence_calculus": {
+    "event_criteria": [
+      "not directly specified beforehand",
+      "increases coherence across at least 2 dimensions",
+      "reproducible or documentable",
+      "generates useful next-step structure"
+    ],
+    "score_formula": "E^(n) = sum(eta_k^(n))",
+    "event_weight": "eta_k = alpha*novelty + beta*coherence_gain + gamma*reuse_potential + delta*swarm_value",
+    "affects_dimensions": ["x6", "x12", "x4", "x11"]
+  },
+
+  "positive_negative_ledger": {
+    "required_per_cycle": [
+      "what improved",
+      "what degraded",
+      "what clarified",
+      "what became more confused",
+      "what became more coherent",
+      "what still lacks proof / grounding",
+      "what became redundant",
+      "what emerged unexpectedly"
+    ]
+  },
+
+  "swarm_emission_rules": {
+    "quest_template": {
+      "fields": ["QUEST title", "TARGET DIMENSIONS", "PURPOSE", "READ FIRST", "TASK", "OBSERVE", "REPORT BACK TO", "DONE WHEN"],
+      "observe_targets": ["positive changes", "negative changes", "contradictions", "missing references", "interoperability failures"]
+    },
+    "forbidden_patterns": [
+      "vague instructions like 'improve this'",
+      "generic instructions like 'look around'",
+      "ornamental quests with no actionable outcome"
+    ]
+  },
+
+  "termination_condition": {
+    "formula": "T = T1 AND T2 AND T3 AND T4",
+    "T1": "all 57 cycles completed",
+    "T2": "each cycle has a durable log",
+    "T3": "final summary written",
+    "T4": "unresolved contradiction ledger and future-seed ledger written"
+  },
+
+  "failure_modes": [
+    {"name": "Premature Completion", "description": "Stopping early because partial progress looks impressive"},
+    {"name": "Decorative Documentation", "description": "Generating pretty files with no real information"},
+    {"name": "Empty Swarm Orders", "description": "Leaving mini-agents vague or ornamental quests"},
+    {"name": "False Positivity", "description": "Documenting only successes"},
+    {"name": "Lost Context", "description": "Making changes without leaving breadcrumbs"},
+    {"name": "Framework Drift", "description": "Ignoring the repo's existing boards / halls / routing structure"},
+    {"name": "Redundant Churn", "description": "Repeatedly rewriting the same thing without new insight"},
+    {"name": "Local Optimization Blindness", "description": "Improving one file while losing sight of whole-system coordination"}
+  ],
+
+  "quality_bar": {
+    "per_cycle_minimum": "Each cycle should increase at least one of these:",
+    "targets": ["clarity", "coherence", "observability", "swarm coordination", "documented learning", "structural integrity", "signal density", "next-step precision"],
+    "failure_log": "If a cycle produced none of these, document that as a failed or weak cycle and explain why. That failure log is itself useful."
+  },
+
+  "final_deliverable": {
+    "sections": [
+      "Major Positive Changes",
+      "Major Negative Findings",
+      "Dominant Emergent Patterns",
+      "Strongest Swarm Protocols",
+      "Weakest Swarm Protocols",
+      "Framework Recommendations",
+      "Next Run Seeds"
+    ]
+  },
+
+  "repo_output_structure": {
+    "directories": [
+      "/meta-observer/cycle-logs/",
+      "/meta-observer/ledgers/",
+      "/meta-observer/summaries/",
+      "/meta-observer/instructions/",
+      "/meta-observer/emergent-patterns/"
+    ],
+    "required_artifacts": [
+      "meta-observer/README.md",
+      "meta-observer/cycle-logs/cycle-001.md through cycle-057.md",
+      "meta-observer/ledgers/positive-observations.md",
+      "meta-observer/ledgers/negative-observations.md",
+      "meta-observer/ledgers/open-contradictions.md",
+      "meta-observer/ledgers/emergent-patterns.md",
+      "meta-observer/instructions/swarm-routing.md",
+      "meta-observer/summaries/final-57-cycle-summary.md"
+    ]
+  },
+
+  "prioritization_heuristic": [
+    "1. framework continuity",
+    "2. clarity of swarm instructions",
+    "3. documentation of real observations",
+    "4. unresolved contradictions",
+    "5. high-leverage architectural improvements",
+    "6. synthesis quality",
+    "7. elegance / polish"
+  ]
+}

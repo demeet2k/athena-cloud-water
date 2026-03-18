@@ -272,7 +272,7 @@ def build_transition_notes(profiles: list[AwakeningAgentProfile]) -> list[Transi
 def build_region_assignments() -> list[RegionLaneAssignment]:
     return [
         RegionLaneAssignment("self_actualize", RegionClass.LIVE_AUTHORITY, "base_agent", "offline_replay", ReceiptClass.REPLAY, rel(CURRENT_PACKET_PATH), "thin-waist runtime and atlas control plane"),
-        RegionLaneAssignment("DEEPER CRYSTALIZATION", RegionClass.LIVE_AUTHORITY, "pillar_water", "internal_preview", ReceiptClass.PROMOTION, rel(ACTIVE_RUN_PATH), "deep integration and nervous-system synthesis body"),
+        RegionLaneAssignment("DEEPER_CRYSTALIZATION", RegionClass.LIVE_AUTHORITY, "pillar_water", "internal_preview", ReceiptClass.PROMOTION, rel(ACTIVE_RUN_PATH), "deep integration and nervous-system synthesis body"),
         RegionLaneAssignment("Voynich", RegionClass.LIVE_AUTHORITY, "archetype_water_fire", "internal_preview", ReceiptClass.REPLAY, "Voynich/FULL_TRANSLATION/unified/VOYNICH_MASTER_MANUSCRIPT.md", "dense live manuscript execution and replay stress-test body"),
         RegionLaneAssignment("MATH", RegionClass.ARCHIVE_BACKED, "pillar_air", "offline_replay", ReceiptClass.PROMOTION, "MATH", "theorem reservoir and formal engine room"),
         RegionLaneAssignment("Athena FLEET", RegionClass.LIVE_AUTHORITY, "archetype_fire_air", "internal_preview", ReceiptClass.MONITOR, "Athena FLEET", "high-order bridge and emerging council geometry"),

@@ -128,7 +128,7 @@ STATION_META = {
         "authority_level": "governance",
         "exchange": "GCL",
     },
-    "DEEPER CRYSTALIZATION": {
+    "DEEPER_CRYSTALIZATION": {
         "hemisphere": "bilateral",
         "tract": "chamber",
         "bundle": "B64-A04-QUAR",
@@ -340,7 +340,7 @@ COMMISSURE_SPECS = [
     },
     {
         "commissure_id": "C-008",
-        "source_family": "DEEPER CRYSTALIZATION",
+        "source_family": "DEEPER_CRYSTALIZATION",
         "target_family": "self_actualize",
         "class": "continuity bridge",
         "purpose": "fold precursor integration mass back into the live runtime without restoring mirror authority",
@@ -377,7 +377,7 @@ COMMISSURE_SPECS = [
     {
         "commissure_id": "C-012",
         "source_family": "CLEAN",
-        "target_family": "DEEPER CRYSTALIZATION",
+        "target_family": "DEEPER_CRYSTALIZATION",
         "class": "continuity bridge",
         "purpose": "turn the clean staging shelf into a lawful reserve corridor instead of a silent side pile",
         "replay_policy": "promotion closes through pruning or staging receipt",
@@ -428,7 +428,7 @@ TUNNEL_SPECS = [
     {
         "tunnel_id": "ZT-004",
         "tunnel_class": "Z3 repair",
-        "entry_route": "DEEPER CRYSTALIZATION -> GCZ -> self_actualize",
+        "entry_route": "DEEPER_CRYSTALIZATION -> GCZ -> self_actualize",
         "restart_token": "PRECURSOR-REPAIR-DELTA",
         "zero_state": "historical drift held long enough for lawful repair",
         "resume_target": "runtime repair surfaces and receipts",

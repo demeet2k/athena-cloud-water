@@ -116,7 +116,7 @@ ROOT_CLASSIFICATION: dict[str, dict[str, str]] = {
         "target_system": "awakening-library",
         "authority_class": "memory",
     },
-    "DEEPER CRYSTALIZATION": {
+    "DEEPER_CRYSTALIZATION": {
         "integration_role": "reserve shelf",
         "qshrink_body": "Nervous Body",
         "target_system": "historical-mirror",

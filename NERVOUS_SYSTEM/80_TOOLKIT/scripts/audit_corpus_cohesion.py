@@ -17,8 +17,8 @@ SCAN_ROOTS = [
 ]
 FILE_GLOBS = ("*.md", "SKILL.md")
 HISTORICAL_MARKERS = [
-    "DEEPER CRYSTALIZATION\\_build\\nervous_system",
-    "DEEPER CRYSTALIZATION/_build/nervous_system",
+    "DEEPER_CRYSTALIZATION\\_build\\nervous_system",
+    "DEEPER_CRYSTALIZATION/_build/nervous_system",
     "ACTIVE_NERVOUS_SYSTEM",
     "DEEPER_INTEGRATED_NEURAL_NETWORK",
     "DEEPER_INTEGRATED_NEURAL_NET_ATHENA",
