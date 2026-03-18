@@ -63,7 +63,8 @@ _MD_BLOCK_RE = re.compile(
     re.DOTALL,
 )
 
-_PY_CRYSTAL_START = "_PY_BLOCK_RE = re.compile(
+_PY_CRYSTAL_START = "# CRYSTAL:"
+_PY_BLOCK_RE = re.compile(
     r"# CRYSTAL:.*\n"
     r"(?:# METRO:.*\n)?"
     r"(?:# BRIDGES:.*\n)?",
