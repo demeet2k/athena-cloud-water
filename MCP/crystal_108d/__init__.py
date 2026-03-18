@@ -28,6 +28,7 @@ Extends the Athena Nervous System MCP server with the full 108D organism:
   - Athenachka 720 metro map (Σ60×4×3 emergence protocol, Z⁺/A⁺)
   - Program Rosetta (one crystal, nine projections, HPRO→VML→code)
   - 4D Calculus (A⁺ lift canon, 15 masks, orbit quartets, gearclock)
+  - Meta-Telemetry (universal tool instrumentation, resonance monitor, self-healing)
 """
 
 from ._cache import JsonCache
@@ -82,6 +83,7 @@ def status_summary() -> str:
         f"- **Athenachka 720**: Σ60×4×3=720 A⁺/Z⁺ metro map, triadic rails Su/Me/Sa\n"
         f"- **Program Rosetta**: One crystal, 9 projections, HPRO→VML→code translation\n"
         f"- **4D Calculus**: A⁺ lift canon, 15 masks × 4 orbits = 60, gearclock/poi overlay\n"
+        f"- **Meta-Telemetry**: Universal tool instrumentation, 8D resonance, self-healing engine\n"
     )
 
 
@@ -121,6 +123,10 @@ def register_108d_tools(mcp) -> None:
     from .athenachka import query_athenachka
     from .program_rosetta import query_program_rosetta
     from .calculus_4d import query_calculus_4d
+    from .meta_telemetry import query_telemetry, instrument, Telemetry
+
+    # Initialize telemetry singleton
+    _telemetry = Telemetry.instance()
 
     # Register each tool
     mcp.tool()(query_shell)
@@ -177,6 +183,7 @@ def register_108d_tools(mcp) -> None:
     mcp.tool()(query_athenachka)
     mcp.tool()(query_program_rosetta)
     mcp.tool()(query_calculus_4d)
+    mcp.tool()(query_telemetry)
 
 
 def register_108d_resources(mcp) -> None:
