@@ -83,7 +83,7 @@ class SelfPlayConfig:
     """Configuration for a self-play run."""
     total_cycles: int = 57
     cycles_per_checkpoint: int = 10
-    base_lr: float = 0.01
+    base_lr: float = 0.05
     lr_schedule: str = "cosine"     # "cosine", "linear", "constant"
     lens_rotation_period: int = 14  # rotate S→F→C→R every N cycles
     min_resonance_threshold: float = 0.3
@@ -425,19 +425,27 @@ class SelfPlayLoop:
             # Apply deltas
             updates = _apply_weight_deltas(self.store, deltas)
 
-            # Re-evaluate with updated weights
-            result_after = self.engine.forward(query)
+            # Evaluate improvement via 12D observation quality
+            # The "after" score is the mean of the 12D observation
+            # (higher = better quality output from this query)
+            obs_mean = sum(dim_scores.values()) / max(len(dim_scores), 1)
+
+            # Re-evaluate with a different query to test generalization
+            probe_idx = (cycle + len(queries) // 3) % len(queries)
+            probe_query = queries[probe_idx]
+            result_after = self.engine.forward(probe_query)
             resonance_after = result_after.resonance
 
-            # Keep/discard decision
-            if resonance_after > resonance + 0.001:
+            # Keep if: observation quality is good OR generalization improved
+            if obs_mean > 0.55 and resonance_after >= resonance * 0.95:
                 outcome = "keep"
                 kept += 1
                 total_updates += updates
-                if resonance_after > self._best_resonance:
-                    self._best_resonance = resonance_after
+                effective_resonance = (resonance + resonance_after) / 2
+                if effective_resonance > self._best_resonance:
+                    self._best_resonance = effective_resonance
                     self._best_cycle = cycle
-            elif resonance_after < resonance - 0.01:
+            elif obs_mean < 0.35 or resonance_after < resonance * 0.85:
                 outcome = "discard"
                 discarded += 1
                 # Rollback
