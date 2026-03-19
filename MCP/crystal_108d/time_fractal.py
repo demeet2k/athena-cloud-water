@@ -35,9 +35,7 @@ class CycleSpec:
                 "local_closure": self.local_closure, "cycles_per_strand": self.cycles_per_strand,
                 "learning_rate": self.learning_rate}
 
-def query_time_fractal(component: str = "all") -> str:
-    """Query the Holographic Time Fractal — cyclical phase decomposition."""
-    return "## Time Fractal\n\nPending full implementation. 4 phases: accumulation/markup/distribution/decline."
+
 
 Z12_TRIADIC = CycleSpec(
     cycle_type=CycleType.Z12, period_hours=4.0,
