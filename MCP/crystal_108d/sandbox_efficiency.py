@@ -308,6 +308,24 @@ class RecursiveEfficiencyEngine:
         # Verify existing directives (self-observation of directives)
         self._verify_directives()
 
+        # ── HIVE LEDGER: Broadcast new directives to all agents ──
+        if new_directives:
+            try:
+                from .hive_ledger import HiveLedger
+                ledger = HiveLedger()
+                for d in new_directives[:3]:  # Cap broadcast volume
+                    ledger.write_broadcast(
+                        broadcast_subtype="directive",
+                        reasoning=(
+                            f"[{d.directive_type}] {d.recommendation} "
+                            f"(priority={d.priority:.2f})"
+                        ),
+                        affected_files=[],
+                        ttl_seconds=600,
+                    )
+            except Exception:
+                pass  # Non-fatal
+
         self._save_state()
         return new_directives
 

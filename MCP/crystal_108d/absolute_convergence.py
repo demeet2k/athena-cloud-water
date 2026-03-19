@@ -406,7 +406,8 @@ def _format_full_report() -> str:
             lines.append(f"### Gate {gate_num} ({g['name']}) — {g_status} ({g_passed}/{g_total})")
             for r in results:
                 status = "PASS" if r.passed else "FAIL"
-                lines.append(f"  - [{status}] {r.name} ({r.score:.2f}): {r.detail}")
+                score_val = getattr(r, "score", 0.0)
+                lines.append(f"  - [{status}] {r.name} ({score_val:.2f}): {r.detail}")
             lines.append("")
 
     lines.append("---")

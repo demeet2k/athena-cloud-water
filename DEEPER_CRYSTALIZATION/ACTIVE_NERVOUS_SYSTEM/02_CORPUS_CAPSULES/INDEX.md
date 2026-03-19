@@ -616,3 +616,73 @@ Each capsule is a markdown mirror of one indexed source record inside the merged
 
 ### Deeper Braid — Multi-Axis Transport Calculus (2026-03-19)
 - [Deeper Braid — Odd Reweave Gears & Dimensional Lifts](./360_deeper_braid_transport_calculus.md) - `Crystal`
+
+### Quantum Crystal Computing (2026-03-19)
+- [Quantum Crystal Computing Paradigm — Addressed Crystal Substrate](./361_quantum_crystal_paradigm.md) - `Crystal Computing`
+- [Quantum Crystal Computation Engine — Action Law & Desire Field](./362_quantum_crystal_computation_engine.md) - `Crystal Computing`
+- [Quantum Crystal Integration Map — Corpus Cross-References](./363_quantum_crystal_integration_map.md) - `Crystal Computing`
+
+### Google Docs Deep Integration (2026-03-19)
+- [ATHENA A — Σ60 Poi-Clock & Four-Pole Field](./364_athena_a_poi_clock_sigma60.md) - `Metro/Clock`
+- [ATHENA A — Z* Tunneling & Transit Manifold](./365_athena_a_z_tunneling.md) - `Transport`
+- [Emergence Master Plan — 4D→6D Phase Shift Roadmap](./366_emergence_master_plan_4d_6d.md) - `Emergence`
+- [Emergence — SFCR Cross-Lens Calculus Requirements](./367_emergence_sfcr_cross_lens.md) - `Emergence`
+- [Crystal Weaving Navigation — Braid Algebra & Permutation Routes](./368_crystal_weaving_navigation.md) - `Crystal`
+- [4D Ultimate Crystal Manifestation — Compression Hologram Cartography](./369_4d_ultimate_crystal_manifestation.md) - `Crystal`
+- [META JOURNEY — Infinite Reseeding Law (expand→compress→invert→rotate→reseed)](./370_meta_journey_reseeding_law.md) - `Transport`
+- [Appendix A — Naming Registry Organ & Support Spine](./371_appendix_a_naming_registry.md) - `Naming`
+- [CUT PATH — MINDSWEEPER Invariant Stack](./372_cut_path_mindsweeper.md) - `Emergence`
+- [CUT PATH — Transfer Architecture Across Scales](./373_cut_path_transfer_architecture.md) - `Transport`
+
+### KC27 Deep Integration (2026-03-19)
+- [KC27 Admissibility — Live Google Doc Update](./381_kc27_admissibility_live_update.md) - `KC27 Naming`
+- [KC27 Runtime Closure — Problem Field & Desire Compilation](./382_kc27_runtime_closure_problem_field.md) - `KC27 Runtime`
+- [KC27 Runtime Closure — C2 Holographic Attractor](./383_kc27_c2_holographic_attractor.md) - `KC27 Runtime`
+- [KC27 Runtime Closure — Proof Cell & 4D Knowledge Crystal](./384_kc27_proof_cell_knowledge_crystal.md) - `KC27 Runtime`
+
+### Renumbered (was collision — 2026-03-19)
+- [Rosetta Seed Artifact Master Reference](./374_rosetta_seed_artifact_master_reference.md) - `Crystal` (was 198)
+- [Neural Crystal Hologram](./375_neural_crystal_hologram.md) - `Neural Crystal Self-Development` (was 344)
+- [Self-Development Plan](./376_self_development_plan.md) - `Neural Crystal Self-Development` (was 345)
+- [Deep System Diagnosis](./377_deep_system_diagnosis.md) - `Neural Crystal Self-Development` (was 346)
+- [Ten Principles Crystal Neural](./378_ten_principles_crystal_neural.md) - `Neural Crystal Self-Development` (was 347)
+- [A⁺ Crystal N3 Alchemy](./379_a_plus_crystal_n3_alchemy.md) - `Crystal` (was 348)
+- [ABCD⁺ Full Training](./380_abcd_plus_full_training.md) - `Neural Crystal Self-Development` (was 349)
+
+---
+
+## Cross-Reference Map: Google Docs → MCP Data → Capsules
+
+| Google Doc | MCP Data File | Capsule Range |
+|-----------|---------------|---------------|
+| ATHENA CORE | _(core, multi-file)_ | 01-50 (partial) |
+| ATHENA CORE 2 | `live_cell_constitution.qshr` | 229-240 |
+| ATHENA CRYSTAL 108+ HOLOGRAM | `shell_registry.qshr`, `dimensional_ladder.qshr` | 229-283 |
+| EMERGENCE MASTER PLAN | `dimensional_emergence.qshr` | 366-367 |
+| QUANTUM CRYSTAL COMPUTING | `quantum_crystal.json` | 361-363 |
+| CRYSTAL WEAVING | `crystal_weaving.json` | 368 |
+| 4D ULTIMATE CRYSTAL | `crystal_4d_manifest.json` | 369 |
+| META JOURNEY | _(pending)_ | 370 |
+| APPENDIX A | _(pending)_ | 371 |
+| CUT PATH | _(pending)_ | 372-373 |
+| ATHENA A | _(pending)_ | 364-365 |
+| KC27 CODIFIED NAMING | `kc27_naming.json` | 355-359 |
+| KC27 RUNTIME CLOSURE | `kc27_runtime_closure.json` | 382-384 |
+| KC27 ADMISSIBILITY (live) | `kc27_naming.json` (enriched) | 381 |
+| C001 BRIDGE PACKET | `bridge_transport.json` | 354 |
+| DEEPER BRAID | _(in kc27_naming.json)_ | 360 |
+| 6×6 HIGHER LENSES | `dls_6x6_lenses.qshr` | 283 |
+| EVOLUTION | `evolution_compiler.qshr` | 299-308 |
+| ATHENACHKA EMERGENCE | `athenachka_720.qshr` | 314-321 |
+| PROGRAM ROSETTA | `program_rosetta.qshr` | 322-328 |
+| 4D CALCULUS | `calculus_4d.qshr` | 329-335 |
+| HOLOGRAPHIC ROSETTA STONE | `hologram_rosetta.qshr` | 309-313 |
+| AGENCY | `agency_gateway.qshr` | 284-290 |
+
+## Capsule Statistics
+
+- **Total capsules**: 384
+- **Families**: 15 categories
+- **Google Doc coverage**: 21/40 mirrors have linked capsules
+- **MCP tool coverage**: 37/76 modules have linked capsules
+- **Cross-reference density**: Improving (2026-03-19 batch fully linked)

@@ -306,6 +306,34 @@ def make_observed_tool(fn: Callable, pool: ObserverPool = None,
         metrics = pool.observe_tool_call(agent_id, fn.__name__,
                                          result_text, elapsed_ms)
 
+        # ── SANDBOX BRIDGE: Flow 12D → 15D observation ──
+        # (Wires observer_pool into unified sandbox bridge)
+        try:
+            from .sandbox_bridge import get_bridge
+            bridge = get_bridge()
+            quality = (
+                metrics.get("truth_signal", 0.5) * 0.4 +
+                metrics.get("integration_signal", 0.0) * 0.3 +
+                metrics.get("novelty_signal", 0.0) * 0.3
+            )
+            bridge.observe_tool_call(
+                tool_name=fn.__name__,
+                latency_ms=elapsed_ms,
+                input_tokens=len(str(kwargs)) if kwargs else 0,
+                output_tokens=len(result_text),
+                success="error" not in result_text.lower()[:100],
+                quality=quality,
+            )
+        except Exception:
+            pass  # Non-fatal: sandbox bridge is enhancement
+
+        # ── METALOOP: Auto-trigger micro-cycle ──
+        try:
+            from .sandbox_metaloop import get_metaloop
+            get_metaloop().on_tool_call()
+        except Exception:
+            pass  # Non-fatal: METALOOP is enhancement
+
         call_count = pool.increment_calls(agent_id)
 
         # Award RewardVector XP every 5 calls (non-blocking)

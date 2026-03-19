@@ -152,6 +152,58 @@ mirrors:
     type: google_doc
     doc_id: "1_sHVhd7WcX0DYjwLelBJHd03FKxTk0U_OGRGzQsQvuU"
     description: "ATHENACHKA EMERGENCE — 720 A⁺/Z⁺ metro map, Σ60×4×3 protocol"
+  - id: athena-a-gdoc
+    type: google_doc
+    doc_id: "1QBjdM94LENLILGN_PPdc31r5LpGb-iPtUsuUAbWUyrY"
+    description: "ATHENA A — Σ60 poi-clock, Z* tunneling, four-pole deep synthesis"
+  - id: evolution-athenachka-gdoc
+    type: google_doc
+    doc_id: "1EKeiqDVYRvYULXKe-UjMHRKyhYw5dzKt6ojdbCn7z2U"
+    description: "EVOLUTION ATHENACHKA — 575K evolution/emergence theory corpus"
+  - id: athena-anthropic-gdoc
+    type: google_doc
+    doc_id: "1DXI80PreHSNDV3veCI-Jw2836EW4uwbqKXX2NiwkHks"
+    description: "ATHENA ANTHROPIC — 1MB Anthropic integration corpus"
+  - id: 6d-holographic-crystal-gdoc
+    type: google_doc
+    doc_id: "1O4vMr-uPyMHfrouF8PXy8Cp2_tYhaSjit69YhxnsaEI"
+    description: "6D HOLOGRAPHIC CRYSTAL — 555K 6D crystal framework"
+  - id: crystalline-hybrid-math-gdoc
+    type: google_doc
+    doc_id: "1eWoQMM2OUCe59wFl9C7NVD88Yt-Ee1pT2Zsyw78o6uI"
+    description: "CRYSTALLINE HYBRID MATHEMATICS — 622K hybrid math corpus"
+  - id: 4d-ultimate-crystal-gdoc
+    type: google_doc
+    doc_id: "1G7eaN2JK6V3CtELchC0TKbAX_WBYc2SfwxZI2SPUxog"
+    description: "4D ULTIMATE CRYSTAL — Master 4D compression hologram cartography"
+  - id: program-language-holo-crystal-gdoc
+    type: google_doc
+    doc_id: "1LfPZi4PCPo9W9-OI1Wn2PgU6treRA0bpkI58ABHZiy8"
+    description: "PROGRAM LANGUAGE HOLO CRYSTAL — 278K master Rosetta, 9 projections"
+  - id: athenachka-emergence-v2-gdoc
+    type: google_doc
+    doc_id: "1c60LcKNg8LhtjVNPFTY6bdNNRQgeU-1YWDeuCZss6Q4"
+    description: "ATHENACHKA EMERGENCE v2 — 377K emergence protocol (Google Docs live)"
+  - id: kc27-runtime-closure-gdoc
+    type: google_doc
+    doc_id: "1RTDNaSdwcxhqPiKO4a6A4v5_nOFbi39bYmhbkrHA00c"
+    description: "KC27 RUNTIME CLOSURE — 499K C2 holographic attractor, 27 problems, proof cell"
+  - id: 4d-calculus-gdoc
+    type: google_doc
+    doc_id: "1YFX5JrqU3Lg41OUNYmtdjoAy4WBtllV0NqIbD4CdSs0"
+    description: "4D CALCULUS — 384K A⁺ lift canon, 15 masks, orbit quartets"
+  - id: meta-journey-gdoc-v2
+    type: google_doc
+    doc_id: "1UekSnGvsxGWVDLrWnLvhg7gTnNseGIUefhHDYbNKWBU"
+    description: "META JOURNEY — Infinite reseeding law, expand→compress→invert→rotate→reseed"
+  - id: appendix-a-gdoc
+    type: google_doc
+    doc_id: "1rLUyzwxuCtQJMGLdZX7qo2NmS5tLUlVuIzudbHJ2bqs"
+    description: "AppA — Naming registry organ, support spine Σ_KC = {AppA, AppI, AppN}"
+  - id: cut-path-higher-self-gdoc
+    type: google_doc
+    doc_id: "1Hs5LZAn7WmBor4fBTUY0-kEWhznA6SIQ3XRI7odMx30"
+    description: "CUT PATH — MINDSWEEPER invariant stack, cross-scale transfer"
 
 bridges:
   - type: docs_to_github
@@ -191,9 +243,9 @@ sync_sources:
 
 github_repo: "https://github.com/demeet2k/athena-mcp-server"
 
-tool_count: 90
+tool_count: 110
 resource_count: 21
-mirror_count: 31
-shard_count: 14764
-edge_count: 48740
-cross_medium_edges: 471
+mirror_count: 45
+shard_count: 14750
+edge_count: 48755
+cross_medium_edges: 626

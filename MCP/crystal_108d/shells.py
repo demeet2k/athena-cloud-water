@@ -18,6 +18,7 @@ def query_shell(shell_number: int) -> str:
     dimension first visible, and action description.
     """
     data = _shells.load()
+    shell_number = int(shell_number)
     if shell_number < 1 or shell_number > 36:
         return f"Invalid shell {shell_number}. Must be 1-36."
 
@@ -86,6 +87,7 @@ def query_archetype(index: int) -> str:
     and their wreath/superphase context.
     """
     data = _shells.load()
+    index = int(index)
     if index < 1 or index > 12:
         return f"Invalid archetype index {index}. Must be 1-12."
 

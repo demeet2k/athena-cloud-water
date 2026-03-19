@@ -66,6 +66,7 @@ last_snapshot.json
 ATHENACHKA_MASTER_LEDGER.json
 mycelium_graph.json
 corpus_weights_field.qshr
+corpus_weights_field.json
 
 # Files exceeding GitHub's 100MB limit
 GAMES/FITChain/FITChain
@@ -120,3 +121,8 @@ MCP/data/crystal_manifest.json
 MCP/data/.agent_registry.json
 MCP/data/agent_holograms/
 MCP/data/agent_watcher.db
+MCP/data/agent_watcher.db-journal
+MCP/data/sandbox_observer.db
+MCP/data/sandbox/
+MCP/data/checkpoint_*.json
+MCP/data/momentum_history.json

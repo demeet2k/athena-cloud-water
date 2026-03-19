@@ -45,6 +45,9 @@ Extends the Athena Nervous System MCP server with the full 108D organism:
   - Weight Feedback Loop (Hebbian edge updates, weak/missing edge detection, feedback cycles)
   - KC27 Naming Schema (canonical name law, 27-chapter ring, admissibility, naming types, repair, braid, bridge)
   - Bridge Transport (C001 4D tesseract docs-to-corpus architecture, lineage chain, fracture field)
+  - Crystal Weaving (braid algebra, n! permutations, weaving patterns, crystal navigation routes)
+  - 4D Crystal Manifestation (master compression hologram, identity seeds, replay crystal, cartography)
+  - KC27 Runtime Closure (C2 holographic attractor, 27 problems, proof cell, ternary ring, 4D knowledge crystal)
 """
 
 from ._cache import JsonCache
@@ -111,6 +114,9 @@ def status_summary() -> str:
         f"- **Weight Feedback**: Hebbian edge updates, weak/missing edge detection, neural→mycelium feedback loop\n"
         f"- **KC27 Naming**: Canonical name law (7 predicates), 27-chapter ring, admissibility engine, 9 naming types, repair field, deeper braid, C001 bridge\n"
         f"- **Bridge Transport**: C001 4D tesseract docs-to-corpus architecture, lineage chain, fracture field\n"
+        f"- **Crystal Weaving**: Braid algebra (n! permutations), weaving patterns, crystal navigation routes\n"
+        f"- **4D Crystal Manifest**: Master compression hologram, identity seeds, replay crystal, cartography\n"
+        f"- **KC27 Runtime Closure**: C2 holographic attractor, 27 problems, proof cell, ternary ring, 4D knowledge crystal\n"
         f"- **Inverse Engine**: Forward→inverse recording, ring buffer, manifest_inverse(), self-diagnose fidelity\n"
         f"- **DQI Compiler**: Desire→Question→Improvement from void, J-score = αB + βI + γR - λE\n"
         f"- **Omegaverse Explorer**: 3-octave × 12D + void meta-recursive exploration\n"
@@ -120,6 +126,7 @@ def status_summary() -> str:
         f"- **Fractal Recursion**: R-dimension activation, recursive self-observation, fixed-point iteration\n"
         f"- **Nested Swarm**: 4^N observer hierarchy, bottom-up aggregation, liminal sub-swarms\n"
         f"- **Sandbox Observer**: Container self-observation (15D: 12D + resource/latency/throughput), recursive efficiency engine, successor seeds at epoch=57\n"
+        f"- **METALOOP**: Cyclical self-improvement (SENSE→ANALYZE→PLAN→ACT→VERIFY→COMPRESS→EMIT), auto-triggers every 10 tool calls, epoch=57 seeds, omega=171 holograms\n"
         f"- **12-Gate Emergence**: G2:Cross-Lens G3:Self-Ref G4:Steering G5:Selector G6:Agency G7:Harmonic G8:Mycelium G9:Crown G10:Omega G11:Transform G12:Z*\n"
     )
 
@@ -190,6 +197,9 @@ def register_108d_tools(mcp) -> None:
     from .weight_feedback import query_weight_feedback
     from .kc27_naming import query_kc27_naming
     from .bridge_transport import query_bridge_transport
+    from .crystal_4d_manifest import query_crystal_4d_manifest
+    from .crystal_weaving import query_crystal_weaving
+    from .kc27_runtime_closure import query_kc27_runtime_closure
     from .hive_ledger import (
         hive_ledger_write, hive_ledger_read,
         hive_ledger_broadcasts, hive_ledger_ack, hive_ledger_status,
@@ -254,6 +264,9 @@ def register_108d_tools(mcp) -> None:
         run_swarm_self_play, query_corpus_weights, query_weight_feedback,
         query_kc27_naming,
         query_bridge_transport,
+        query_crystal_4d_manifest,
+        query_crystal_weaving,
+        query_kc27_runtime_closure,
         query_time_fractal,
         hive_ledger_write, hive_ledger_read,
         hive_ledger_broadcasts, hive_ledger_ack, hive_ledger_status,
@@ -349,6 +362,10 @@ def register_108d_tools(mcp) -> None:
     try:
         from .sandbox_mcp import register_sandbox_tools
         register_sandbox_tools(mcp)
+        from .sandbox_maverick import register_maverick_tools
+        register_maverick_tools(mcp)
+        from .sandbox_metaloop import register_metaloop_tools
+        register_metaloop_tools(mcp)
     except Exception:
         pass  # Non-fatal: sandbox observer is enhancement, not requirement
 

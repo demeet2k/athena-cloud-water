@@ -62,13 +62,15 @@ def query_meta_observer(component: str = "all") -> str:
         )
 
 def _format_all(data: dict) -> str:
+    meta = data.get("meta", {})
+    mission = data.get("mission", meta.get("mission", meta.get("description", "Unknown")))
     lines = [
         "## Meta Observer Swarm Protocol\n",
-        f"**Mission**: {data['meta']['mission']}",
-        f"**Cycles**: {data['meta']['total_cycles']}",
-        f"**Phases per Cycle**: {data['meta']['phases_per_cycle']}",
-        f"**Elements**: {', '.join(data['meta'].get('elements', ['Earth', 'Fire', 'Water', 'Air']))}",
-        f"**Observation Dimensions**: {data['meta'].get('observation_dimensions', 12)}",
+        f"**Title**: {meta.get('title', 'Meta Observer Swarm')}",
+        f"**Mission**: {mission}",
+        f"**Version**: {meta.get('version', '?')}",
+        f"**Source**: {meta.get('source', '?')}",
+        f"**Key Insight**: {meta.get('key_insight', 'N/A')}",
     ]
     return "\n".join(lines)
 

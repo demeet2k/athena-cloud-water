@@ -29,10 +29,27 @@ class ContinuousSelfPlay:
         self._running = False
 
     def _loop(self):
+        _wave_counter = 0
         while self._running:
             try:
                 from ..legacy_bridge import run_self_play
-                run_self_play()
+                result = run_self_play()
+
+                # ── SANDBOX BRIDGE: Feed self-play into 15D observation ──
+                _wave_counter += 1
+                try:
+                    from ..sandbox_bridge import get_bridge
+                    bridge = get_bridge()
+                    bridge.observe_self_play(
+                        wave=_wave_counter,
+                        cycle=_wave_counter // 159,
+                        momentum_delta=[],
+                        loss=0.5,  # neutral when no loss reported
+                        sfcr_balance={"S": 1.0, "F": 1.0, "C": 1.0, "R": 1.0},
+                    )
+                except Exception:
+                    pass  # Non-fatal
+
             except Exception as exc:
                 _log.debug("Self-play cycle error: %s", exc)
             time.sleep(self.interval)
