@@ -720,17 +720,19 @@ def rewire_weights_to_a_plus(a_plus: dict) -> str:
         pw_sum = sum(store.path_weights.values())
         store.path_weights = {k: v / pw_sum for k, v in store.path_weights.items()}
 
-    # Apply resonance weights
-    if "resonance_weights" in a_plus:
+    # Apply resonance weights (only if non-empty)
+    if a_plus.get("resonance_weights"):
         store.resonance_weights = dict(a_plus["resonance_weights"])
         rw_sum = sum(store.resonance_weights.values())
-        store.resonance_weights = {k: v / rw_sum for k, v in store.resonance_weights.items()}
+        if rw_sum > 0:
+            store.resonance_weights = {k: v / rw_sum for k, v in store.resonance_weights.items()}
 
-    # Apply desire weights
-    if "desire_weights" in a_plus:
+    # Apply desire weights (only if non-empty)
+    if a_plus.get("desire_weights"):
         store.desire_weights = dict(a_plus["desire_weights"])
         dw_sum = sum(store.desire_weights.values())
-        store.desire_weights = {k: v / dw_sum for k, v in store.desire_weights.items()}
+        if dw_sum > 0:
+            store.desire_weights = {k: v / dw_sum for k, v in store.desire_weights.items()}
 
     # Apply scalars
     if "bridge_modulation" in a_plus:

@@ -109,3 +109,12 @@ self_actualize/myth_math_hemisphere_*.json
 # MCP regenerable state
 MCP/data/meta_observer_logs/
 MCP/data/self_play_checkpoints/
+
+# Agent coordination (ephemeral, regenerable)
+*.lock
+*.pheromone.qshr
+MCP/data/CRYSTAL_4D/
+MCP/data/crystal_manifest.json
+MCP/data/.agent_registry.json
+MCP/data/agent_holograms/
+MCP/data/agent_watcher.db

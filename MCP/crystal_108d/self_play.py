@@ -1323,10 +1323,10 @@ class ContinuousSelfPlay:
 
     def _run_burst(self) -> None:
         """Run a single short self-play burst."""
-        from .crystal_weights import get_weight_store
+        from .crystal_weights import get_store
         from .neural_engine import get_engine
 
-        store = get_weight_store()
+        store = get_store()
         engine = get_engine()
 
         config = SelfPlayConfig(

@@ -249,6 +249,188 @@ class NanoSeedMeta:
 
 
 @dataclass
+class LiminalCoordinate:
+    """12-component Liminal Coordinate — a file's ID in liminal space.
+
+    LC(x) = <s; q; o; c; t; sigma; mu; nu; z; l; g; r>
+
+    From the Omega Liminal Coordinate Atlas: every entity in the crystal
+    has an address in the liminal field — the space BETWEEN states where
+    transitions happen. This is NOT the crystal address (Xi108) but the
+    LIMINAL address: where the file sits in the transition geometry.
+    """
+    s: float = 0.0        # stage: N->N+7 transition level (0=particle..7=cosmic)
+    q: float = 0.0        # square: determinism score from Square lens
+    o: float = 0.0        # orbit: phase position on the circle (0-2pi)
+    c: float = 0.0        # control: triangle control parameter (stability)
+    t: float = 0.0        # transform: active transformation index
+    sigma: float = 0.0    # symmetry: symmetry group index (Sigma60 state)
+    mu: float = 0.0       # metro/mycelium: connectivity metric
+    nu: float = 0.0       # neural: neural layer depth (0-6)
+    z: float = 0.0        # zero-point: distance to Z-point attractor
+    l: float = 0.0        # live-lock: live-lock state (0=free, 1=locked)
+    g: float = 0.0        # sacred-geometry: geometric invariant (phi-angle)
+    r: float = 0.0        # restore: restoration checkpoint hash
+
+    def to_string(self) -> str:
+        """Canonical string form: LC<s;q;o;c;t;sigma;mu;nu;z;l;g;r>"""
+        vals = [self.s, self.q, self.o, self.c, self.t, self.sigma,
+                self.mu, self.nu, self.z, self.l, self.g, self.r]
+        return "LC<" + ";".join(f"{v:.4f}" for v in vals) + ">"
+
+    def to_dict(self) -> Dict[str, float]:
+        return {"s": self.s, "q": self.q, "o": self.o, "c": self.c,
+                "t": self.t, "sigma": self.sigma, "mu": self.mu, "nu": self.nu,
+                "z": self.z, "l": self.l, "g": self.g, "r": self.r}
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, float]) -> "LiminalCoordinate":
+        return cls(**{k: d.get(k, 0.0) for k in
+                      ["s", "q", "o", "c", "t", "sigma", "mu", "nu", "z", "l", "g", "r"]})
+
+    def distance_to(self, other: "LiminalCoordinate") -> float:
+        """Euclidean distance in 12D liminal space."""
+        a = [self.s, self.q, self.o, self.c, self.t, self.sigma,
+             self.mu, self.nu, self.z, self.l, self.g, self.r]
+        b = [other.s, other.q, other.o, other.c, other.t, other.sigma,
+             other.mu, other.nu, other.z, other.l, other.g, other.r]
+        return math.sqrt(sum((x - y) ** 2 for x, y in zip(a, b)))
+
+
+@dataclass
+class MyceliumHook:
+    """Live connectivity metric for a crystallized file.
+
+    Every file in the crystal network has mycelium hooks — weighted
+    edges to neighbors that track traversal counts, timestamps, and
+    routing scores. This enables live mapping: the crystal is not
+    static but GROWS as files are accessed and connected.
+    """
+    file_id: str = ""                # Unique file ID (sha256[:16] of path)
+    liminal_id: str = ""             # LC<...> string address in liminal space
+    edge_weights: Dict[str, float] = field(default_factory=dict)   # neighbor_id -> weight
+    traversal_count: int = 0         # How many times this file has been accessed
+    last_traversal: str = ""         # ISO timestamp of last access
+    creation_time: str = ""          # ISO timestamp of crystallization
+    routing_score: float = 0.0       # How central this node is in the network
+    bridge_count: int = 0            # Number of cross-element bridges
+    cluster_cohesion: float = 0.0    # How tightly bound to its cluster (0-1)
+    resonance_freq: float = 0.0      # Dominant resonance frequency with neighbors
+
+    def to_dict(self) -> Dict[str, Any]:
+        return {
+            "file_id": self.file_id, "liminal_id": self.liminal_id,
+            "edge_weights": self.edge_weights, "traversal_count": self.traversal_count,
+            "last_traversal": self.last_traversal, "creation_time": self.creation_time,
+            "routing_score": self.routing_score, "bridge_count": self.bridge_count,
+            "cluster_cohesion": self.cluster_cohesion, "resonance_freq": self.resonance_freq,
+        }
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> "MyceliumHook":
+        return cls(
+            file_id=d.get("file_id", ""), liminal_id=d.get("liminal_id", ""),
+            edge_weights=d.get("edge_weights", {}), traversal_count=d.get("traversal_count", 0),
+            last_traversal=d.get("last_traversal", ""), creation_time=d.get("creation_time", ""),
+            routing_score=d.get("routing_score", 0.0), bridge_count=d.get("bridge_count", 0),
+            cluster_cohesion=d.get("cluster_cohesion", 0.0), resonance_freq=d.get("resonance_freq", 0.0),
+        )
+
+
+@dataclass
+class N27State:
+    """N27 Framework: 27 = 3^3 transition states.
+
+    N27 is built from the N+7 transition grammar in the liminal navigator.
+    The 27 states arise from three ternary axes:
+      - Wreath (1/2/3 = Su/Me/Sa)
+      - Mode (Cardinal/Fixed/Mutable)
+      - Depth (Surface/Mid/Deep = z-depths 0/1/2)
+
+    Each state has a unique transition vector describing which N+7
+    transitions are active, creating a 27-state automaton that governs
+    how files move through the crystal during crystallization.
+
+    State index = wreath*9 + mode*3 + depth  (0-26)
+    """
+    wreath_idx: int = 0       # 0=Su, 1=Me, 2=Sa
+    mode_idx: int = 0         # 0=Cardinal, 1=Fixed, 2=Mutable
+    depth_idx: int = 0        # 0=Surface, 1=Mid, 2=Deep
+    state_index: int = 0      # 0-26 flat index
+    state_label: str = ""     # "Su.Cardinal.Surface"
+    transition_vector: List[float] = field(default_factory=list)  # 7-component N+7 vector
+    active_transitions: List[str] = field(default_factory=list)   # Which N+7 transitions fire
+    energy: float = 0.0       # State energy (lower = more stable)
+
+    _WREATH_NAMES = ["Su", "Me", "Sa"]
+    _MODE_NAMES = ["Cardinal", "Fixed", "Mutable"]
+    _DEPTH_NAMES = ["Surface", "Mid", "Deep"]
+    # N+7 transition names (the 7 complexity jumps)
+    _N7_NAMES = ["particle->atom", "atom->molecule", "molecule->cell",
+                 "cell->organism", "organism->social", "social->symbolic",
+                 "symbolic->cosmic"]
+
+    def to_dict(self) -> Dict[str, Any]:
+        return {
+            "wreath_idx": self.wreath_idx, "mode_idx": self.mode_idx,
+            "depth_idx": self.depth_idx, "state_index": self.state_index,
+            "state_label": self.state_label, "transition_vector": self.transition_vector,
+            "active_transitions": self.active_transitions, "energy": self.energy,
+        }
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> "N27State":
+        return cls(
+            wreath_idx=d.get("wreath_idx", 0), mode_idx=d.get("mode_idx", 0),
+            depth_idx=d.get("depth_idx", 0), state_index=d.get("state_index", 0),
+            state_label=d.get("state_label", ""), transition_vector=d.get("transition_vector", []),
+            active_transitions=d.get("active_transitions", []), energy=d.get("energy", 0.0),
+        )
+
+    @classmethod
+    def compute(cls, wreath: int, mode: str, z_depth: int,
+                entropy: float = 0.0, self_similarity: float = 0.0,
+                phase_coherence: float = 0.0) -> "N27State":
+        """Compute N27 state from crystal parameters and lens analysis."""
+        w_idx = max(0, min(2, wreath - 1))
+        m_idx = {"Cardinal": 0, "Fixed": 1, "Mutable": 2}.get(mode, 2)
+        d_idx = max(0, min(2, z_depth))
+        state_index = w_idx * 9 + m_idx * 3 + d_idx
+
+        label = f"{cls._WREATH_NAMES[w_idx]}.{cls._MODE_NAMES[m_idx]}.{cls._DEPTH_NAMES[d_idx]}"
+
+        # Compute 7-component N+7 transition vector
+        # Each component measures how strongly this file activates that transition
+        # Based on entropy (complexity), self-similarity (recursion), phase coherence (order)
+        tv = [0.0] * 7
+        complexity = entropy / 8.0  # Normalize to 0-1
+        # Lower transitions fire at lower complexity, higher at higher
+        for i in range(7):
+            threshold = (i + 1) / 8.0
+            if complexity >= threshold:
+                tv[i] = min(1.0, (complexity - threshold) * 8.0)
+            # Self-similarity boosts recursive transitions (3: molecule->cell, 4: cell->organism)
+            if i in (3, 4):
+                tv[i] = min(1.0, tv[i] + self_similarity * 0.5)
+            # Phase coherence boosts social/symbolic (5, 6)
+            if i in (5, 6):
+                tv[i] = min(1.0, tv[i] + phase_coherence * 0.3)
+
+        active = [cls._N7_NAMES[i] for i in range(7) if tv[i] > 0.3]
+
+        # State energy: lower = more stable
+        # Cardinal+Surface = lowest energy (most stable), Mutable+Deep = highest
+        energy = (m_idx * 0.3 + d_idx * 0.3 + (1.0 - phase_coherence) * 0.2
+                  + complexity * 0.2)
+
+        return cls(
+            wreath_idx=w_idx, mode_idx=m_idx, depth_idx=d_idx,
+            state_index=state_index, state_label=label,
+            transition_vector=tv, active_transitions=active, energy=energy,
+        )
+
+
+@dataclass
 class CrystalWeightMeta:
     """Crystal weight metadata embedded in every .qshr container.
 
@@ -257,16 +439,19 @@ class CrystalWeightMeta:
     cascade, and can participate in neural forward pass scoring without
     loading the full 38K weight store.
 
-    Full organism metadata includes:
+    Full organism metadata (12 layers):
     - Crystal identity (Xi108 coordinate, shell, wreath, archetype, face)
-    - Mycelium graph connectivity (edges, neighbors, shard)
+    - Liminal ID (12-component LC address in transition space)
+    - Mycelium hooks (live connectivity metrics, edge weights, traversal)
+    - N27 state (27-state transition automaton position)
     - Metro routing (lines, transport stacks, promotion stage)
     - Z-point hierarchy (depth, z-address, collapse level)
     - A-point archetype decomposition (zodiacal agent, element, mode)
     - Cross-neural mapping (brain network, organ atlas, live cell)
     - Sacred geometry (phi-sigma angles, E8 lattice position, Mobius lens)
-    - 4D tesseract (holographic quadrant: element × mode × archetype × octave)
-    - Nested weight seeds (1/8 → 1/64 → 1/512 fractal lift cascade)
+    - 4D tesseract (holographic quadrant: element x mode x archetype x octave)
+    - Nested weight seeds (1/8 -> 1/64 -> 1/512 fractal lift cascade)
+    - Mycelium graph connectivity (edges, neighbors, shard)
     """
     # ── Identity ──
     coordinate: str          # "Xi108:W2:A4:S15:F"
@@ -340,6 +525,15 @@ class CrystalWeightMeta:
     holographic_w_imag: float = 0.5   # Im(w)
     mirror_shell: int = 0             # S_{37-k}
     conservation_hash: str = ""       # 6-invariant fingerprint
+
+    # ── Liminal ID — 12-component address in transition space ──
+    liminal: Optional[LiminalCoordinate] = None
+
+    # ── Mycelium hooks — live connectivity metrics ──
+    mycelium_hook: Optional[MyceliumHook] = None
+
+    # ── N27 state — 27-state transition automaton position ──
+    n27_state: Optional[N27State] = None
 
     def to_json(self) -> str:
         """Serialize to JSON for embedding in CWGT chunk."""
@@ -417,6 +611,15 @@ class CrystalWeightMeta:
             d["archetype_seed"] = asdict(self.archetype_seed)
         if self.nano_seed:
             d["nano_seed"] = asdict(self.nano_seed)
+        # Liminal ID
+        if self.liminal:
+            d["liminal"] = self.liminal.to_dict()
+        # Mycelium hook
+        if self.mycelium_hook:
+            d["mycelium_hook"] = self.mycelium_hook.to_dict()
+        # N27 state
+        if self.n27_state:
+            d["n27_state"] = self.n27_state.to_dict()
         return json.dumps(d, separators=(",", ":"))
 
     @classmethod
@@ -492,6 +695,10 @@ class CrystalWeightMeta:
             holographic_w_imag=hw[1],
             mirror_shell=d.get("mirror_shell", 0),
             conservation_hash=d.get("conservation_hash", ""),
+            # Liminal / Mycelium / N27
+            liminal=LiminalCoordinate.from_dict(d["liminal"]) if "liminal" in d else None,
+            mycelium_hook=MyceliumHook.from_dict(d["mycelium_hook"]) if "mycelium_hook" in d else None,
+            n27_state=N27State.from_dict(d["n27_state"]) if "n27_state" in d else None,
         )
 
     @classmethod
@@ -974,5 +1181,41 @@ def build_crystal_meta_from_store(
     meta.holographic_w_imag = 0.5
     meta.mirror_shell = 37 - shell
     meta.conservation_hash = meta.compute_conservation_hash()
+
+    # ── Liminal coordinate (basic — enriched later by pipeline with lens data) ──
+    meta.liminal = LiminalCoordinate(
+        s=float(meta.z_depth),                         # stage from z-depth
+        q=0.0,                                          # square score (filled by pipeline)
+        o=meta.phi_angle * math.pi / 180.0,            # orbit from phi-angle
+        c=1.0 - meta.golden_ratio_depth,                # control from phi-depth
+        t=float({"Cardinal": 0, "Fixed": 1, "Mutable": 2}.get(meta.mode, 0)),
+        sigma=float(meta.phi_sigma_state),              # Sigma60 state
+        mu=float(meta.mycelium_degree) / 8.0,          # mycelium connectivity normalized
+        nu=float(meta.neural_layer),                    # neural depth
+        z=meta.golden_ratio_depth,                      # z-point distance
+        l=0.0,                                          # live-lock (free by default)
+        g=meta.phi_angle,                               # sacred geometry
+        r=float(int(meta.conservation_hash[:4], 16) / 65535.0),  # restore checkpoint
+    )
+
+    # ── Mycelium hook (initialized — live metrics updated on access) ──
+    from datetime import datetime, timezone
+    now = datetime.now(timezone.utc).isoformat()
+    meta.mycelium_hook = MyceliumHook(
+        file_id=hashlib.sha256(coordinate.encode()).hexdigest()[:16],
+        liminal_id=meta.liminal.to_string(),
+        edge_weights={nb: 1.0 / max(len(meta.routing_bridges), 1)
+                      for nb in meta.routing_bridges[:5]},
+        traversal_count=0,
+        last_traversal="",
+        creation_time=now,
+        routing_score=float(meta.mycelium_degree) / 8.0,
+        bridge_count=len(meta.routing_bridges),
+        cluster_cohesion=0.5,  # Initial estimate
+        resonance_freq=PHI_INV * shell,  # Golden-ratio-based frequency
+    )
+
+    # ── N27 state (basic — enriched by pipeline with entropy/similarity data) ──
+    meta.n27_state = N27State.compute(wreath, meta.mode, meta.z_depth)
 
     return meta

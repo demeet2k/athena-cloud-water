@@ -147,7 +147,7 @@ def register_108d_tools(mcp) -> None:
     from .calculus_4d import query_calculus_4d
     from .coordinate_assigner import query_coordinates
     from .meta_telemetry import query_telemetry, instrument, Telemetry
-    from .qshrink import query_qshrink, qshrink_compress, qshrink_decompress, qshrink_scan, qshrink_inspect
+    from .qshrink import query_qshrink, qshrink_compress, qshrink_decompress, qshrink_scan, qshrink_inspect, qshrink_batch, qshrink_tesseract
     from .control_center import query_control_center, control_steer
     from .holographic_embedder import holographic_embed
     from .agent_watcher import query_agent_watcher
@@ -198,6 +198,7 @@ def register_108d_tools(mcp) -> None:
         query_evolution, query_athenachka, query_program_rosetta,
         query_calculus_4d, query_telemetry, query_qshrink,
         qshrink_compress, qshrink_decompress, qshrink_scan, qshrink_inspect,
+        qshrink_batch, qshrink_tesseract,
         query_coordinates, query_control_center, control_steer,
         holographic_embed, query_agent_watcher, query_quantum_crystal,
         query_crystal_weights, neural_forward_pass, run_self_play,
@@ -229,6 +230,11 @@ def register_108d_tools(mcp) -> None:
     def read_pheromone_trail(file_path: str = "") -> str:
         """Read the pheromone trail for a file — see which agents have modified it, when, and why. Check this BEFORE modifying any file."""
         return registry.tool_read_pheromones(file_path=file_path)
+
+    @mcp.tool()
+    def agent_progress(agent_id: str = "") -> str:
+        """View detailed RPG progression for an agent — class, level, XP, heaven score, becoming, witness chain, next class threshold."""
+        return registry.tool_agent_progress(agent_id=agent_id)
 
     @mcp.tool()
     def agent_emit_hologram(

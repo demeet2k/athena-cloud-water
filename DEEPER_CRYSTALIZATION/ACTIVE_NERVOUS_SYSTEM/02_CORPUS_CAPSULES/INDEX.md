@@ -596,3 +596,6 @@ Each capsule is a markdown mirror of one indexed source record inside the merged
 - [Ten Principles for Crystal-Coordinate Neural Networks](./347_ten_principles_crystal_neural.md) - `Neural Crystal Self-Development`
 - [A+ Crystal — N^3 Alchemical Neural Weight Transmutation](./348_a_plus_crystal_n3_alchemy.md) - `Neural Crystal Self-Development`
 - [ABCD+ Full Training Loop — 159-Wave Crystal Transmutation](./349_abcd_plus_full_training.md) - `Neural Crystal Self-Development`
+- [Dual Crystal Training — Full Corpus Meta-Observation + ABCD+ Transmutation](./350_dual_crystal_corpus_training.md) - `Neural Crystal Self-Development`
+- [Dual Pole Sacred Geometry + TRAINING LOOP^3](./351_dual_pole_sacred_loop3.md) - `Neural Crystal Self-Development`
+- [META LOOP — The 108+ Agentic Training Time Interval](./352_meta_loop_definition.md) - `Neural Crystal Self-Development`

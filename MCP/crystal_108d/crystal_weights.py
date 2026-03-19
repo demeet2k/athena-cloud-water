@@ -694,10 +694,16 @@ class FractalWeightStore:
                 })
             data["doc_registry"] = compact_docs
 
-        # Atomic write via temp file
-        tmp_path = path.with_suffix(".tmp")
-        tmp_path.write_text(json.dumps(data, indent=2, ensure_ascii=False), encoding="utf-8")
-        tmp_path.replace(path)
+        # Write via centralized JsonCache (locking + pheromone + auto-qshrink)
+        from ._cache import JsonCache
+        cache = JsonCache(path.name)
+        cache.save(
+            data,
+            agent_id="crystal-weight-store",
+            task_summary=f"save weights v{self._version} level={self._active_level}",
+            element="S",
+            auto_compress=True,
+        )
 
     def load(self, path: Path = None) -> bool:
         """Load crystal weights from JSON file. Returns True if loaded."""
@@ -784,9 +790,9 @@ class FractalWeightStore:
         # Load learnable parameters
         lp = data.get("learnable", {})
         if lp:
-            self.path_weights = lp.get("path_weights", dict(self.DEFAULT_PATH_WEIGHTS))
-            self.resonance_weights = lp.get("resonance_weights", dict(self.DEFAULT_RESONANCE_WEIGHTS))
-            self.desire_weights = lp.get("desire_weights", dict(self.DEFAULT_DESIRE_WEIGHTS))
+            self.path_weights = lp.get("path_weights") or dict(self.DEFAULT_PATH_WEIGHTS)
+            self.resonance_weights = lp.get("resonance_weights") or dict(self.DEFAULT_RESONANCE_WEIGHTS)
+            self.desire_weights = lp.get("desire_weights") or dict(self.DEFAULT_DESIRE_WEIGHTS)
             self.bridge_modulation = lp.get("bridge_modulation", self.DEFAULT_BRIDGE_MODULATION)
             self.geo_arith_blend = lp.get("geo_arith_blend", 0.60)
 

@@ -459,16 +459,23 @@ def _get_weight_store() -> Any:
 
 
 def qshrink_compress(path: str, lossless: bool = True) -> str:
-    """Compress a file to .qshr with embedded crystal weight metadata.
+    """Crystallize ANY file through the TRUE Q-SHRINK pipeline.
+
+    The file is decompressed to raw signal, analyzed through all 4 lens
+    families (Square/Flower/Cloud/Fractal), expanded to 108++ to find its
+    A-point in the 4D tesseract, then recompressed in its native format —
+    holographically denser, still functional, carrying full 108++ metadata,
+    and now part of the living crystal network.
+
+    Works on ANY file type: PDF, ZIP, DOCX, images, video, JSON, code, binary.
 
     Args:
-        path: File path to compress (relative to MCP/data/ or absolute).
+        path: File path to crystallize (relative to MCP/data/ or absolute).
         lossless: If True, use lossless compression (default).
 
-    Returns a summary of compression results including crystal coordinate
-    and weight seed status.
+    Returns full crystallization report with 4-lens analysis and A-point.
     """
-    from .qshrink_pipeline import compress_file
+    from .qshrink_pipeline import crystallize_file
 
     p = Path(path)
     if not p.is_absolute():
@@ -477,21 +484,82 @@ def qshrink_compress(path: str, lossless: bool = True) -> str:
         return f"File not found: {p}"
 
     store = _get_weight_store()
-    out_path, stats = compress_file(p, lossless=lossless, weight_store=store)
+    result = crystallize_file(p, weight_store=store)
 
+    ap = result.apoint
     lines = [
-        "## QSHR Compression Complete\n",
-        f"- **Source**: `{p.name}`",
-        f"- **Output**: `{out_path.name}`",
-        f"- **Original size**: {stats['original_size']:,} bytes",
-        f"- **Compressed size**: {stats['compressed_size']:,} bytes",
-        f"- **Ratio**: {stats['ratio']:.1f}x",
-        f"- **Savings**: {stats['savings_pct']:.1f}%",
-        f"- **Crystal coordinate**: `{stats['coordinate']}`",
-        f"- **Shell**: S{stats['shell']}",
-        f"- **Weight seeds embedded**: {'Yes' if stats['has_weight_seeds'] else 'No (hollow envelope)'}",
-        f"- **Lossless**: {'Yes' if lossless else 'No'}",
+        "## QSHR Crystallization Complete\n",
+        f"- **Source**: `{p.name}` ({result.source_format})",
+        f"- **Output**: `{result.output_path.name}`",
+        f"- **Original size**: {result.original_size:,} bytes",
+        f"- **Crystallized size**: {result.output_size:,} bytes",
+        f"- **Ratio**: {result.compression_ratio:.1f}x",
+        f"- **Savings**: {(1 - result.output_size / result.original_size) * 100:.1f}%",
+        f"- **Native format preserved**: {'Yes' if result.native_format_preserved else 'No (→ .qshr)'}",
+        "",
+        "### A-Point (4D Crystal Position)\n",
+        f"- **Element**: {ap.element} ({ap.element})",
+        f"- **Mode**: {ap.mode}",
+        f"- **Archetype**: {ap.archetype_name} (A{ap.archetype_idx})",
+        f"- **Octave**: W{ap.octave}",
+        f"- **Shell**: S{ap.shell}",
+        f"- **Gate**: {ap.gate}/256",
+        f"- **Coordinate**: `{ap.coordinate}`",
+        f"- **Holographic seed**: ({ap.seed_real:.4f} + {ap.seed_imag:.4f}i)",
+        "",
+        "### Four-Lens Analysis\n",
+        f"- **□ Square** (determinism):  {ap.square_score:.3f} — entropy={result.square.entropy_per_byte:.2f}b, "
+        f"latin={result.square.latin_regularity:.2f}, period={result.square.seek_lattice_period}",
+        f"- **✿ Flower** (coupling):    {ap.flower_score:.3f} — coherence={result.flower.phase_coherence:.2f}, "
+        f"coupling={result.flower.coupling_strength:.2f}, petals={result.flower.n_petals}",
+        f"- **☁ Cloud** (probability):  {ap.cloud_score:.3f} — entropy={result.cloud.byte_entropy:.2f}b, "
+        f"redundancy={result.cloud.redundancy:.2f}, bulk={result.cloud.bulk_fraction:.2f}",
+        f"- **⟡ Fractal** (recursion):  {ap.fractal_score:.3f} — similarity={result.fractal.self_similarity:.2f}, "
+        f"dim={result.fractal.fractal_dimension:.2f}, depth={result.fractal.recursive_depth}",
+        "",
+        f"- **Weight seeds embedded**: {'Yes' if result.crystal_meta.shell_seed is not None else 'No (hollow)'}",
+        f"- **Conservation hash**: `{result.conservation_hash}`",
     ]
+
+    # Liminal ID
+    if result.crystal_meta.liminal:
+        lc = result.crystal_meta.liminal
+        lines.extend([
+            "",
+            "### Liminal ID (12-component address in transition space)\n",
+            f"- **LC**: `{lc.to_string()}`",
+            f"- s={lc.s:.2f} (stage) | q={lc.q:.3f} (square) | o={lc.o:.3f} (orbit)",
+            f"- c={lc.c:.3f} (control) | t={lc.t:.1f} (transform) | sigma={lc.sigma:.0f} (symmetry)",
+            f"- mu={lc.mu:.3f} (mycelium) | nu={lc.nu:.1f} (neural) | z={lc.z:.3f} (zero-point)",
+            f"- l={lc.l:.1f} (live-lock) | g={lc.g:.2f} (geometry) | r={lc.r:.4f} (restore)",
+        ])
+
+    # Mycelium hook
+    if result.crystal_meta.mycelium_hook:
+        mh = result.crystal_meta.mycelium_hook
+        lines.extend([
+            "",
+            "### Mycelium Hook (live connectivity)\n",
+            f"- **File ID**: `{mh.file_id}`",
+            f"- **Edges**: {len(mh.edge_weights)} neighbors",
+            f"- **Routing score**: {mh.routing_score:.3f}",
+            f"- **Bridge count**: {mh.bridge_count}",
+            f"- **Resonance freq**: {mh.resonance_freq:.3f}",
+            f"- **Created**: {mh.creation_time}",
+        ])
+
+    # N27 state
+    if result.crystal_meta.n27_state:
+        n27 = result.crystal_meta.n27_state
+        lines.extend([
+            "",
+            "### N27 State (27-state transition automaton)\n",
+            f"- **State**: {n27.state_label} (index {n27.state_index}/26)",
+            f"- **Energy**: {n27.energy:.3f} (lower = more stable)",
+            f"- **Active transitions**: {', '.join(n27.active_transitions) if n27.active_transitions else 'none'}",
+            f"- **Transition vector**: [{', '.join(f'{v:.2f}' for v in n27.transition_vector)}]",
+        ])
+
     return "\n".join(lines)
 
 
@@ -656,5 +724,147 @@ def qshrink_inspect(path: str) -> str:
             "",
             "### Weight Seeds: **HOLLOW** (identity-only envelope, no weight data)",
         ])
+
+    # Liminal ID
+    if meta.liminal:
+        lines.extend([
+            "",
+            f"### Liminal ID\n",
+            f"- `{meta.liminal.to_string()}`",
+        ])
+
+    # Mycelium hook
+    if meta.mycelium_hook:
+        mh = meta.mycelium_hook
+        lines.extend([
+            "",
+            "### Mycelium Hook\n",
+            f"- **File ID**: `{mh.file_id}`",
+            f"- **Edges**: {len(mh.edge_weights)}",
+            f"- **Routing score**: {mh.routing_score:.3f}",
+            f"- **Created**: {mh.creation_time}",
+        ])
+
+    # N27 state
+    if meta.n27_state:
+        lines.extend([
+            "",
+            "### N27 State\n",
+            f"- **State**: {meta.n27_state.state_label} (idx {meta.n27_state.state_index})",
+            f"- **Energy**: {meta.n27_state.energy:.3f}",
+            f"- **Active**: {', '.join(meta.n27_state.active_transitions) or 'none'}",
+        ])
+
+    return "\n".join(lines)
+
+
+def qshrink_batch(directory: str = "", dry_run: bool = True) -> str:
+    """Batch crystallize ALL files in a directory through the TRUE pipeline.
+
+    Processes every file through the 4-lens analysis, finds A-points,
+    assigns liminal IDs and mycelium hooks, and writes a crystal manifest.
+
+    Args:
+        directory: Directory to process (default: MCP/data/).
+        dry_run: If True, analyze only (no output files). If False, crystallize.
+
+    Returns batch statistics and manifest summary.
+    """
+    from .qshrink_pipeline import batch_crystallize
+
+    d = Path(directory) if directory else DATA_DIR
+    if not d.exists():
+        return f"Directory not found: {d}"
+
+    store = _get_weight_store()
+    result = batch_crystallize(d, weight_store=store, dry_run=dry_run)
+
+    mode = "DRY RUN (analysis only)" if dry_run else "CRYSTALLIZATION"
+    lines = [
+        f"## Batch {mode}: `{d.name}/`\n",
+        f"- **Total files**: {result.total_files}",
+        f"- **Crystallized**: {result.crystallized}",
+        f"- **Errors**: {result.errors}",
+        f"- **Original size**: {result.total_original_bytes / 1024 / 1024:.1f}MB",
+    ]
+
+    if not dry_run:
+        lines.extend([
+            f"- **Output size**: {result.total_output_bytes / 1024 / 1024:.1f}MB",
+            f"- **Savings**: {result.savings_pct:.1f}%",
+        ])
+
+    # Element distribution
+    elements = {"S": 0, "F": 0, "C": 0, "R": 0}
+    for entry in result.results:
+        elem = entry.get("element", "")
+        if elem in elements:
+            elements[elem] += 1
+
+    lines.extend([
+        "",
+        "### Element Distribution\n",
+        f"- S (Earth/Square): {elements['S']} files",
+        f"- F (Fire/Flower): {elements['F']} files",
+        f"- C (Water/Cloud): {elements['C']} files",
+        f"- R (Air/Fractal): {elements['R']} files",
+        "",
+        f"Manifest written to: `{d.name}/crystal_manifest.json`",
+    ])
+
+    return "\n".join(lines)
+
+
+def qshrink_tesseract(directory: str = "", copy_mode: bool = True) -> str:
+    """Reorganize a directory into a 4D hologram tesseract structure.
+
+    Creates CRYSTAL_4D/{element}/{mode}/{archetype}/{octave}/ directories
+    (4 x 3 x 12 x 3 = 432 leaf positions) and places each file at its
+    A-point position after crystallization.
+
+    Every file gets:
+    - Full 4-lens analysis
+    - A-point (4D crystal position)
+    - 12-component Liminal ID
+    - Mycelium hooks with live metrics
+    - N27 transition state
+    - Placement in the tesseract hologram
+
+    Args:
+        directory: Directory to reorganize (default: MCP/data/).
+        copy_mode: If True, copy files (preserve originals). If False, move.
+
+    Returns reorganization summary.
+    """
+    from .qshrink_pipeline import reorganize_to_tesseract
+
+    d = Path(directory) if directory else DATA_DIR
+    if not d.exists():
+        return f"Directory not found: {d}"
+
+    store = _get_weight_store()
+    result = reorganize_to_tesseract(d, weight_store=store, copy_mode=copy_mode)
+
+    lines = [
+        "## 4D Tesseract Hologram Reorganization\n",
+        f"- **Source**: `{d.name}/`",
+        f"- **Crystal root**: `{result['crystal_root']}`",
+        f"- **Directories created**: {result['directories_created']}",
+        f"- **Files processed**: {result['total']}",
+        f"- **Files placed**: {result['placed']}",
+        f"- **Errors**: {result['errors']}",
+        f"- **Mode**: {'Copy (originals preserved)' if copy_mode else 'Move (originals relocated)'}",
+        "",
+        "### Tesseract Structure\n",
+        "```",
+        "CRYSTAL_4D/",
+        "  S_Earth/  F_Fire/  C_Water/  R_Air/",
+        "    Cardinal/  Fixed/  Mutable/",
+        "      01_Aries/ ... 12_Pisces/",
+        "        W1_Su/  W2_Me/  W3_Sa/",
+        "```",
+        "",
+        f"Manifest: `{result['manifest_path']}`",
+    ]
 
     return "\n".join(lines)
