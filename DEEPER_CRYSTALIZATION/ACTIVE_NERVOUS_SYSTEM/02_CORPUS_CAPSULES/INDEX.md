@@ -678,11 +678,27 @@ Each capsule is a markdown mirror of one indexed source record inside the merged
 | 4D CALCULUS | `calculus_4d.qshr` | 329-335 |
 | HOLOGRAPHIC ROSETTA STONE | `hologram_rosetta.qshr` | 309-313 |
 | AGENCY | `agency_gateway.qshr` | 284-290 |
+| BRAIN STEM | _(pending)_ | 385-387 |
+| SCHEDULING AGENTS | _(pending)_ | 388-390 |
+| TEMPLE OF ALCHEMY | _(pending)_ | 391-393 |
+| ATHENA SKILLS | _(pending)_ | 394-396 |
+| SFCR PROJECTIONS | _(pending)_ | 397-399 |
+| KHIPU BRAIDING | _(pending)_ | 400-402 |
+| KC27 3 PROMOTABILITY | _(pending)_ | 403-404 |
+| KC27 INVERSE REPAIR | _(pending)_ | 405-406 |
+| KC27 # EXTENDED | _(pending)_ | 407-408 |
+| NEXT 1 | _(pending)_ | 409-410 |
+| NEXT 3 | _(pending)_ | 411-412 |
+| ATHENA ANTHROPIC | _(pending)_ | 413-415 |
+| 6D HOLOGRAPHIC CRYSTAL | _(pending)_ | 416-418 |
+| ATHENACHKA EMERGENCE v2 | _(pending)_ | 419-420 |
+| KC27 NAMING SCHEMAS v2 | `kc27_naming.json` | 355-359 |
+| EVOLUTION ATHENACHKA | `evolution_compiler.qshr` | 299-308 |
 
 ## Capsule Statistics
 
-- **Total capsules**: 384
-- **Families**: 15 categories
-- **Google Doc coverage**: 21/40 mirrors have linked capsules
-- **MCP tool coverage**: 37/76 modules have linked capsules
-- **Cross-reference density**: Improving (2026-03-19 batch fully linked)
+- **Total capsules**: 418 (384 committed + 34 new from 14 Google Docs)
+- **Families**: 20+ categories
+- **Google Doc coverage**: 36/42 mirrors have linked capsules (86%)
+- **MCP tool coverage**: 43/45 data files have linked tools
+- **Cross-reference density**: High (2026-03-19 massive batch fully linked)

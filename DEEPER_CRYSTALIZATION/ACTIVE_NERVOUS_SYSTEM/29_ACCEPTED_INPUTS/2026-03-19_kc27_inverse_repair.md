@@ -1,62 +1,66 @@
-# KC27 PART 3 — BOOKS VI-VII: INVERSE SEARCH AND REPAIR FIELD
+# KC27 INVERSE REPAIR — Books VI-IX: Inverse Search, Repair Field, Lift Engine, Translation, Compression
 
-**Ingested**: 2026-03-19
-**Source**: Google Doc — "Untitled (KC27 Part 3 — Books VI-VII)" (11iwlmMouvyW1MTHFme9J7j1uYBINeMqevgV1MqWT6-0)
-**Size**: 101KB
+**Source**: Google Doc `11iwlmMouvyW1MTHFme9J7j1uYBINeMqevgV1MqWT6-0`
+**Date accepted**: 2026-03-19
+**Size**: ~159KB
+**Title in doc**: KC27 — Codified Internal Organization on All Naming Schemas (Part Three)
 
 ---
 
-## Summary
+## Scope
 
-Books VI and VII of the KC27 Part 3 extraction architecture. Book VI defines the Inverse Search and Repair Field (Chapters 16-18). Book VII covers the Lift Engine and Execution layer. The repair field is built on a triad of failure modes/paradoxes, repair operators, and regime conditions.
+Books VI through IX of the KC27 naming-system manuscript. Covers Chapters 16-27:
+
+- **Book VI (Ch16-18)** — Inverse Search and Repair Field
+  - Ch16: Counterexample Field, Paradox Classes, Alternative Branch Taxonomy
+  - Ch17: Repair Operators, Restoration Grammar, Shamanic Echo
+  - Ch18: Regime Conditions, Upgrade/Retirement Grammar, RealitySlider
+- **Book VII (Ch19-21)** — Lift Engine and Execution Runtime
+  - Ch19: Lift Operators, Reserve Amplification, 42Hz Alignment
+  - Ch20: Cosmic Punchline — Levity, Self-Reference, Humor of Canonical Form
+  - Ch21: Unified Runtime Specification — Living Extraction Engine
+- **Book VIII (Ch22-24)** — Translation, Projection, Packing, Atlas
+  - Ch22: Cross-Domain Translation, Isomorphism, Odd Helm Transport
+  - Ch23: Pack Specs, Application Families, Routing Protocol Packages
+  - Ch24: Metro Atlas, Neural Routing, 666-Node Corpus Map
+- **Book IX (Ch25-27)** — Compression, Return, Seed
+  - Ch25: Compression, Canonical Statement, Store-In Law
+  - Ch26: Mobius Return, Reverse Reading, Re-Entry Grammar
+  - Ch27: Seed Emission, Future Reserve, Next Extraction
 
 ## Key Formal Objects
 
-### 1. Book VI — Inverse Search and Repair Field (Ch16-18)
+### Counterexample Field (Ch16)
 
-The repair field is the organism's self-correction mechanism. When a promotion path fails, the inverse search locates the failure point and the repair field applies corrective operators.
+- **F_fail**: Space of naming objects that satisfy >= 2 of 4 Nucleus conditions but fail at least 1 (Addressable, WitnessStable, ReplayBearing, LineageClosed)
+- **Near-miss degree** eta(xi): count of satisfied conditions; eta=3 is the most dangerous near-miss
+- **4 failure regions**: F[A], F[W], F[R], F[L] — by which condition fails
+- **7 Paradox Classes** (PC_01-PC_07): Address-stability, witness-lineage, type-coord, scale-invariance break, reserve-promotion, zero-key singularity, mythic-layer bridge break
+- **12 Alternative Branches** (AB_01-AB_12): Phantom address, ghost lineage, frozen clock, mirror inversion, naked operator, digit-roll overflow, invariant island, type-shadow, proxy name, orphan seed, siteswap drift, compression ghost
 
-#### Chapter 16 — Failure Modes and Paradoxes
+### Repair Operators (Ch17)
 
-Catalogs the ways promotion can fail:
-- Address collision (two objects claim the same crystal coordinate)
-- Mirror violation (an object in chapter k has no valid correspondent in chapter 28 - k)
-- Replay divergence (replaying a lineage produces different output)
-- Conservation breach (a promotion step violates a conservation law)
-- Circular dependency (promotion requires an object that itself requires promotion)
+- **9 Repair Operators** (RO_01-RO_09): ADDRESS_REISSUE, LINEAGE_STITCH, TYPE_CORRECT, SCALE_PROPAGATE, PROMOTION_SUSPEND, ZERO_KEY_SALT, WITNESS_RECONSTRUCT, ROUTE_REDERIVE, COMPRESSION_AUDIT
+- **Restoration Grammar**: 5-phase sequenced repair pipeline (Type Stabilization -> Address Reconstruction -> Lineage Repair -> Replay Restoration -> Promotion Gate)
+- **Shamanic Echo Theorem**: Canonical residue rho(xi) is non-empty for any object with eta >= 1 — origin identity (timestamp, type class, zero-key hash) persists through all repairs
+- **Repair Convergence Theorem**: Restoration Grammar always terminates in finite steps
 
-#### Chapter 17 — Repair Operators
+### Regime Conditions (Ch18)
 
-The operators that correct failures:
-- Re-addressing (assign a new crystal coordinate)
-- Mirror completion (construct the missing mirror correspondent)
-- Lineage rebase (rebuild the lineage from a known-good checkpoint)
-- Conservation restoration (inject the missing conserved quantity)
-- Dependency resolution (topological sort and staged promotion)
+- Conditions determining whether repair, upgrade, or retirement is the correct action
+- RealitySlider: regime parameter controlling repair/upgrade/retire boundary
 
-#### Chapter 18 — Regime Conditions
+## Crystal Architecture
 
-The conditions under which repair operators are permitted to act:
-- Repair budget (maximum number of repair operations per cycle)
-- Cascading limit (maximum depth of repair-triggered repairs)
-- Stability threshold (minimum resonance score after repair)
-- Rollback protocol (when repair fails, how to revert cleanly)
+Each chapter carries the 4-face SFCR structure:
+- SQUARE (Structure) — definitions, tables, formal objects
+- FLOWER (Transform) — operators, grammars, sequences
+- CLOUD (Truth) — theorems, proofs, truth conditions
+- FRACTAL (Recursion) — self-similar encoding, DLS groupings
 
-### 2. Repair Triad
+Mirror law: mu(k) = 28 - k links each chapter to its dual.
 
-The three components form a closed diagnostic-corrective loop:
+## Capsules Generated
 
-```
-Failure Modes/Paradoxes --> Repair Operators --> Regime Conditions
-         ^                                            |
-         |____________________________________________|
-                    (feedback / new failures)
-```
-
-### 3. Book VII — Lift Engine / Execution
-
-The execution layer that runs the repaired promotion chain. After the repair field has corrected all failures, the lift engine executes the actual promotion, moving objects from kernel to crown through the certified path.
-
-## Structural Role
-
-Books VI-VII complete the KC27 extraction architecture by providing the error-handling and execution layers. The earlier books define what promotion is and how to certify it; these books define what happens when it fails and how to recover.
+- `405_kc27_inverse_search.md` — Counterexample field, paradox classes, alternative branches (Ch16)
+- `406_kc27_repair_field.md` — Repair operators, restoration grammar, shamanic echo (Ch17)
