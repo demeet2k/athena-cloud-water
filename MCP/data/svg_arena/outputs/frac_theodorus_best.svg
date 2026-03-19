@@ -1,21 +1,27 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="800" height="800" viewBox="0 0 800 800">
   <g>
-  <polygon points="399,406 424,406 424,431" fill="none" stroke="#333" stroke-width="1"/>
-  <polygon points="399,406 424,431 406.3223,448.6777" fill="none" stroke="#333" stroke-width="1"/>
-  <polygon points="399,406 406.3223,448.6777 381.6824,452.9052" fill="none" stroke="#333" stroke-width="1"/>
-  <polygon points="399,406 381.6824,452.9052 358.2298,444.2464" fill="none" stroke="#333" stroke-width="1"/>
-  <polygon points="399,406 358.2298,444.2464 341.1254,426.0134" fill="none" stroke="#333" stroke-width="1"/>
-  <polygon points="399,406 341.1254,426.0134 332.955,402.3862" fill="none" stroke="#333" stroke-width="1"/>
-  <polygon points="399,406 332.955,402.3862 334.3209,377.4235" fill="none" stroke="#333" stroke-width="1"/>
-  <polygon points="399,406 334.3209,377.4235 344.4242,354.556" fill="none" stroke="#333" stroke-width="1"/>
-  <polygon points="399,406 344.4242,354.556 361.5722,336.3641" fill="none" stroke="#333" stroke-width="1"/>
-  <polygon points="399,406 361.5722,336.3641 383.593,324.5284" fill="none" stroke="#333" stroke-width="1"/>
-  <polygon points="399,406 383.593,324.5284 408.1576,319.883" fill="none" stroke="#333" stroke-width="1"/>
-  <polygon points="399,406 408.1576,319.883 433.0174,322.5266" fill="none" stroke="#333" stroke-width="1"/>
-  <polygon points="399,406 433.0174,322.5266 456.1688,331.9613" fill="none" stroke="#333" stroke-width="1"/>
-  <polygon points="399,406 456.1688,331.9613 475.9565,347.2403" fill="none" stroke="#333" stroke-width="1"/>
-  <polygon points="399,406 475.9565,347.2403 491.1282,367.1104" fill="none" stroke="#333" stroke-width="1"/>
-  <polygon points="399,406 491.1282,367.1104 500.8506,390.1424" fill="none" stroke="#333" stroke-width="1"/>
-  <polygon points="399,406 500.8506,390.1424 504.6966,414.8448" fill="none" stroke="#333" stroke-width="1"/>
+  <polygon points="404,409 429,409 429,434" fill="none" stroke="#333" stroke-width="1"/>
+  <polygon points="404,409 429,434 411.32,451.68" fill="none" stroke="#333" stroke-width="1"/>
+  <polygon points="404,409 411.32,451.68 386.68,455.91" fill="none" stroke="#333" stroke-width="1"/>
+  <polygon points="404,409 386.68,455.91 363.23,447.25" fill="none" stroke="#333" stroke-width="1"/>
+  <polygon points="404,409 363.23,447.25 346.13,429.01" fill="none" stroke="#333" stroke-width="1"/>
+  <polygon points="404,409 346.13,429.01 337.95,405.39" fill="none" stroke="#333" stroke-width="1"/>
+  <polygon points="404,409 337.95,405.39 339.32,380.42" fill="none" stroke="#333" stroke-width="1"/>
+  <polygon points="404,409 339.32,380.42 349.42,357.56" fill="none" stroke="#333" stroke-width="1"/>
+  <polygon points="404,409 349.42,357.56 366.57,339.36" fill="none" stroke="#333" stroke-width="1"/>
+  <polygon points="404,409 366.57,339.36 388.59,327.53" fill="none" stroke="#333" stroke-width="1"/>
+  <polygon points="404,409 388.59,327.53 413.16,322.88" fill="none" stroke="#333" stroke-width="1"/>
+  <polygon points="404,409 413.16,322.88 438.02,325.53" fill="none" stroke="#333" stroke-width="1"/>
+  <polygon points="404,409 438.02,325.53 461.17,334.96" fill="none" stroke="#333" stroke-width="1"/>
+  <polygon points="404,409 461.17,334.96 480.96,350.24" fill="none" stroke="#333" stroke-width="1"/>
+  <polygon points="404,409 480.96,350.24 496.13,370.11" fill="none" stroke="#333" stroke-width="1"/>
+  <polygon points="404,409 496.13,370.11 505.85,393.14" fill="none" stroke="#333" stroke-width="1"/>
+  <polygon points="404,409 505.85,393.14 509.7,417.84" fill="none" stroke="#333" stroke-width="1"/>
 </g>
+  <line x1="494.4" y1="0" x2="494.4" y2="800" stroke="#c0a040" stroke-width="0.5" stroke-opacity="0.3"/>
+  <line x1="683.3" y1="0" x2="683.3" y2="800" stroke="#c0a040" stroke-width="0.5" stroke-opacity="0.3"/>
+  <line x1="755.4" y1="0" x2="755.4" y2="800" stroke="#c0a040" stroke-width="0.5" stroke-opacity="0.3"/>
+  <line x1="0" y1="494.4" x2="800" y2="494.4" stroke="#c0a040" stroke-width="0.5" stroke-opacity="0.3"/>
+  <line x1="0" y1="683.3" x2="800" y2="683.3" stroke="#c0a040" stroke-width="0.5" stroke-opacity="0.3"/>
+  <line x1="0" y1="755.4" x2="800" y2="755.4" stroke="#c0a040" stroke-width="0.5" stroke-opacity="0.3"/>
 </svg>

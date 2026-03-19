@@ -206,7 +206,8 @@ class MomentumField:
                 # PHI-modulated distribution around the dimension mean
                 phi_offset = (PHI_INV ** (local_pos + 1)) * 0.1
                 arch_scale = 1.0 + (arch_idx - 5.5) / 36.0  # slight archetype gradient
-                self._shell_momenta[face][s] = dim_mom * arch_scale + phi_offset
+                raw = dim_mom * arch_scale + phi_offset
+                self._shell_momenta[face][s] = max(self.MOMENTUM_MIN, min(self.MOMENTUM_MAX, raw))
 
     # ── Legacy Migration ──────────────────────────────────────────────
 
@@ -299,7 +300,7 @@ class MomentumField:
                 for s_str, v in shells.items():
                     s = int(s_str)
                     if 1 <= s <= TOTAL_SHELLS:
-                        self._shell_momenta[face][s] = v
+                        self._shell_momenta[face][s] = max(self.MOMENTUM_MIN, min(self.MOMENTUM_MAX, v))
 
         for dim, val in data.get("dimension_momenta", {}).items():
             if dim in self._dimension_momenta:

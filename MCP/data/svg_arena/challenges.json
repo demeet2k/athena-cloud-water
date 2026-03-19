@@ -1,6 +1,6 @@
 {
   "meta": {
-    "total_challenges": 25,
+    "total_challenges": 33,
     "categories": 5
   },
   "challenges": [
@@ -498,6 +498,152 @@
         "cx": 400,
         "cy": 400,
         "size": 300
+      },
+      "canvas_width": 800,
+      "canvas_height": 800
+    },
+    {
+      "challenge_id": "dim_dodecahedron",
+      "name": "Dodecahedron 12-Face",
+      "description": "12-face Platonic solid projected to 2D \u2014 archetype structure",
+      "category": "dimensional",
+      "difficulty": 0.7,
+      "target_elements": 50,
+      "target_symmetry": 5,
+      "target_golden": true,
+      "reference_fn": "dodecahedron",
+      "reference_params": {
+        "cx": 400,
+        "cy": 400,
+        "size": 200
+      },
+      "canvas_width": 800,
+      "canvas_height": 800
+    },
+    {
+      "challenge_id": "dim_icosahedron",
+      "name": "Icosahedron 12-Vertex",
+      "description": "12-vertex dual of dodecahedron \u2014 archetype vertices",
+      "category": "dimensional",
+      "difficulty": 0.7,
+      "target_elements": 42,
+      "target_symmetry": 5,
+      "target_golden": true,
+      "reference_fn": "icosahedron",
+      "reference_params": {
+        "cx": 400,
+        "cy": 400,
+        "size": 200
+      },
+      "canvas_width": 800,
+      "canvas_height": 800
+    },
+    {
+      "challenge_id": "dim_sfcr_crystal",
+      "name": "SFCR Crystal",
+      "description": "Dodecahedron with SFCR element-colored faces",
+      "category": "dimensional",
+      "difficulty": 0.8,
+      "target_elements": 60,
+      "target_symmetry": 5,
+      "target_golden": true,
+      "reference_fn": "sfcr_crystal",
+      "reference_params": {
+        "cx": 400,
+        "cy": 400,
+        "size": 200
+      },
+      "canvas_width": 800,
+      "canvas_height": 800
+    },
+    {
+      "challenge_id": "dim_mobius",
+      "name": "Mobius Strip",
+      "description": "Non-orientable surface \u2014 topological inversion of the crystal",
+      "category": "dimensional",
+      "difficulty": 0.8,
+      "target_elements": 20,
+      "target_symmetry": 0,
+      "target_golden": false,
+      "reference_fn": "mobius_strip",
+      "reference_params": {
+        "cx": 400,
+        "cy": 400,
+        "R": 250,
+        "w": 0.25
+      },
+      "canvas_width": 800,
+      "canvas_height": 800
+    },
+    {
+      "challenge_id": "dim_containment",
+      "name": "Dimensional Containment",
+      "description": "Nested rings: 3D to 12D weave operator hierarchy",
+      "category": "dimensional",
+      "difficulty": 0.75,
+      "target_elements": 40,
+      "target_symmetry": 12,
+      "target_golden": true,
+      "reference_fn": "dimensional_containment",
+      "reference_params": {
+        "cx": 400,
+        "cy": 400,
+        "size": 250
+      },
+      "canvas_width": 800,
+      "canvas_height": 800
+    },
+    {
+      "challenge_id": "dim_sigma60",
+      "name": "Sigma-60 Field",
+      "description": "12 archetypes x 5 golden rotations icosahedral observation",
+      "category": "dimensional",
+      "difficulty": 0.85,
+      "target_elements": 80,
+      "target_symmetry": 12,
+      "target_golden": true,
+      "reference_fn": "sigma60_field",
+      "reference_params": {
+        "cx": 400,
+        "cy": 400,
+        "size": 300
+      },
+      "canvas_width": 800,
+      "canvas_height": 800
+    },
+    {
+      "challenge_id": "dim_crystal_4d",
+      "name": "Crystal 4D Full",
+      "description": "Tesseract + Mobius wrap + containment rings \u2014 complete 4D projection",
+      "category": "dimensional",
+      "difficulty": 0.95,
+      "target_elements": 100,
+      "target_symmetry": 4,
+      "target_golden": true,
+      "reference_fn": "crystal_4d",
+      "reference_params": {
+        "cx": 400,
+        "cy": 400,
+        "size": 200
+      },
+      "canvas_width": 1000,
+      "canvas_height": 1000
+    },
+    {
+      "challenge_id": "dim_weave_w9",
+      "name": "W9 Crown Wheel",
+      "description": "Enneadic weave operator \u2014 9-station transformation cycle",
+      "category": "dimensional",
+      "difficulty": 0.7,
+      "target_elements": 25,
+      "target_symmetry": 9,
+      "target_golden": false,
+      "reference_fn": "weave_wheel",
+      "reference_params": {
+        "cx": 400,
+        "cy": 400,
+        "size": 200,
+        "order": 9
       },
       "canvas_width": 800,
       "canvas_height": 800
