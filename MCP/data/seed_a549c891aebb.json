@@ -1,0 +1,69 @@
+{
+  "genome_id": "a549c891aebb",
+  "generation": 3,
+  "score": 0.8353053944372862,
+  "emergence_score": 0.0,
+  "lineage_depth": 2,
+  "n_layers": 5,
+  "layers": [
+    {
+      "primitive": "metatron_cube",
+      "params": {
+        "cx": 405,
+        "cy": 437,
+        "r": 173
+      },
+      "transform": "rotate(-42.4,400,400)",
+      "opacity": 1.0
+    },
+    {
+      "primitive": "dodecahedron",
+      "params": {
+        "cx": 569,
+        "cy": 370,
+        "size": 176,
+        "angle_x": 0.5571522996870656,
+        "angle_z": 0.9346158557642518
+      },
+      "transform": "rotate(44.9,400,400)",
+      "opacity": 1.0
+    },
+    {
+      "primitive": "dodecahedron",
+      "params": {
+        "cx": 590,
+        "cy": 370,
+        "size": 176,
+        "angle_x": 0.6255961495949592,
+        "angle_z": 0.9346158557642518
+      },
+      "transform": "rotate(44.9,400,400)",
+      "opacity": 1.0
+    },
+    {
+      "primitive": "mobius_strip",
+      "params": {
+        "cx": 376,
+        "cy": 203,
+        "R": 190,
+        "angle_x": 0.21058143065073615,
+        "angle_z": 0.4064263954888848
+      },
+      "transform": "rotate(44.3,400,400)",
+      "opacity": 1.0
+    },
+    {
+      "primitive": "mobius_strip",
+      "params": {
+        "cx": 376,
+        "cy": 208,
+        "R": 175,
+        "angle_x": 0.21058143065073615,
+        "angle_z": 0.373945242859136
+      },
+      "transform": "rotate(44.3,400,400)",
+      "opacity": 1.0
+    }
+  ],
+  "crystallized_at": "2026-03-19T23:01:39.797828+00:00"
+}

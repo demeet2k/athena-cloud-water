@@ -1,0 +1,291 @@
+{
+  "timestamp": "2026-03-19T11:01:13.073589+00:00",
+  "total_findings": 21,
+  "aggregate_impact": 3.81,
+  "findings": [
+    {
+      "finding_id": "mav_0004",
+      "finding_type": "gap",
+      "severity": 0.7,
+      "opportunity": 0.9,
+      "location": "_observer_pool \u2192 sandbox_bridge",
+      "title": "Observer pool 12D observations not flowing into sandbox 15D bridge",
+      "evidence": "make_observed_tool() in _observer_pool calls pool.observe_tool_call() which produces 12D scores, but these don't propagate to sandbox_bridge.observe_tool_call() which would add sandbox dims x13-x15",
+      "recommendation": "Wire _observer_pool.observe_tool_call() to also call bridge.observe_tool_call() with the 12D scores + tool latency. This closes the gap between existing 12D observation and new 15D sandbox observation.",
+      "timestamp": "2026-03-19T11:01:12.917879+00:00",
+      "probed_by": "probe_gaps"
+    },
+    {
+      "finding_id": "mav_0015",
+      "finding_type": "decay",
+      "severity": 0.7,
+      "opportunity": 0.8,
+      "location": "efficiency trend",
+      "title": "Efficiency declining: 0.0001 \u2192 0.0001 (-33%)",
+      "evidence": "Value/token dropped from 0.0001 (first half) to 0.0001 (second half) over 20 records",
+      "recommendation": "Check for: (1) increasing context pressure crowding out signal, (2) redundant tool calls accumulating, (3) stale directives not being cleaned up. Consider applying_rolling_forget() to prune low-value observations.",
+      "timestamp": "2026-03-19T11:01:12.955116+00:00",
+      "probed_by": "probe_decay"
+    },
+    {
+      "finding_id": "mav_0001",
+      "finding_type": "hole",
+      "severity": 0.6,
+      "opportunity": 0.8,
+      "location": "crystal_108d/__pycache__",
+      "title": "3 compiled modules without source files",
+      "evidence": "Modules with .pyc but no .py: crystal_weights, full_training_loop, n3_alchemy",
+      "recommendation": "Restore .py source files from .pyc (decompile) or git history. Source-less modules can't be patched, debugged, or extended.",
+      "timestamp": "2026-03-19T11:01:12.866245+00:00",
+      "probed_by": "probe_holes"
+    },
+    {
+      "finding_id": "mav_0006",
+      "finding_type": "gap",
+      "severity": 0.6,
+      "opportunity": 0.8,
+      "location": "ContinuousSelfPlay \u2192 sandbox_bridge",
+      "title": "Background self-play daemon not wired to sandbox bridge",
+      "evidence": "ContinuousSelfPlay runs every 120s in __init__.py but calls the legacy run_self_play path, not bridge.observe_self_play(). Self-play waves are invisible to the sandbox observer.",
+      "recommendation": "Hook ContinuousSelfPlay's per-wave callback to call bridge.observe_self_play() with wave metrics. This makes every self-play cycle a training signal for the sandbox.",
+      "timestamp": "2026-03-19T11:01:12.917879+00:00",
+      "probed_by": "probe_gaps"
+    },
+    {
+      "finding_id": "mav_0009",
+      "finding_type": "tunnel",
+      "severity": 0.7,
+      "opportunity": 0.6,
+      "location": "__pycache__",
+      "title": "2 stale .pyc files (source newer than bytecode)",
+      "evidence": "Stale: dimensional_projector, loss_engine",
+      "recommendation": "Delete __pycache__ and let Python recompile. Stale .pyc is a NEGATIVE tunnel \u2014 old code runs instead of new code.",
+      "timestamp": "2026-03-19T11:01:12.932581+00:00",
+      "probed_by": "probe_tunnels"
+    },
+    {
+      "finding_id": "mav_0005",
+      "finding_type": "gap",
+      "severity": 0.5,
+      "opportunity": 0.7,
+      "location": "sandbox_efficiency \u2192 hive_ledger",
+      "title": "Efficiency directives not broadcast to hive ledger",
+      "evidence": "RecursiveEfficiencyEngine.emit_directives() stores directives locally but doesn't write them to hive_ledger for other agents to consume. Plan says to use entry_type='broadcast' subtype='directive'.",
+      "recommendation": "After emitting directives, write each to hive_ledger with hive_ledger_write(entry_type='broadcast', subtype='efficiency_directive', ...). This enables multi-agent coordination on optimization.",
+      "timestamp": "2026-03-19T11:01:12.917879+00:00",
+      "probed_by": "probe_gaps"
+    },
+    {
+      "finding_id": "mav_0007",
+      "finding_type": "gap",
+      "severity": 0.4,
+      "opportunity": 0.6,
+      "location": "sandbox_metadata \u2192 autoresearch",
+      "title": "Sandbox successor seeds not fed into autoresearch MetaObserver",
+      "evidence": "MetadataEmitter produces SandboxSuccessorSeed at epoch=57 boundaries, but autoresearch's MetaObserver has its own SuccessorSeed system. The two seed chains are independent \u2014 no cross-pollination of compressed wisdom.",
+      "recommendation": "At epoch boundary, convert SandboxSuccessorSeed to autoresearch SuccessorSeed format and store in shared SQLite. Or: merge both into a unified successor seed with 15D target vectors.",
+      "timestamp": "2026-03-19T11:01:12.917879+00:00",
+      "probed_by": "probe_gaps"
+    },
+    {
+      "finding_id": "mav_0016",
+      "finding_type": "decay",
+      "severity": 0.4,
+      "opportunity": 0.6,
+      "location": "MCP/data/",
+      "title": "Data directory bloat: 1134 files, 176.3MB",
+      "evidence": "1134 files in MCP/data/, consuming 176.3MB. Many may be old checkpoints or redundant JSON+QSHR pairs.",
+      "recommendation": "Prune old checkpoint files (keep every 100th). Delete JSON files that have .qshr companions. Set up a time-fractal-aligned cleanup schedule.",
+      "timestamp": "2026-03-19T11:01:13.073589+00:00",
+      "probed_by": "probe_decay"
+    },
+    {
+      "finding_id": "mav_0008",
+      "finding_type": "gap",
+      "severity": 0.4,
+      "opportunity": 0.5,
+      "location": "sandbox_metadata \u2192 momentum_field",
+      "title": "Training records not used to influence momentum field updates",
+      "evidence": "TrainingRecords store momentum_delta but the efficiency_delta and 15D scores don't feed back into the geometric engine's momentum field (the 148-float learned state). The sandbox observes but doesn't STEER the training.",
+      "recommendation": "Compute a 'sandbox gradient' from efficiency trends: if resource efficiency is declining, bias momentum field toward compression-heavy archetypes. Close the observe\u2192steer loop.",
+      "timestamp": "2026-03-19T11:01:12.917879+00:00",
+      "probed_by": "probe_gaps"
+    },
+    {
+      "finding_id": "mav_0002",
+      "finding_type": "hole",
+      "severity": 0.3,
+      "opportunity": 0.5,
+      "location": "MCP/data/",
+      "title": "20 JSON files without .qshr companions",
+      "evidence": "Uncompressed: crystal_4d_manifest, crystal_weaving, deep_observation_rubric, dqi_compiler_state, fractal_recursion, full_loop_omega, geometric_omega_hologram, hive_ledger, hologram_emergence_57, inverse_engine_state...",
+      "recommendation": "Run qshrink_batch to crystallize all data files. Compressed .qshr reduces storage and enables O(1) metadata reads.",
+      "timestamp": "2026-03-19T11:01:12.880267+00:00",
+      "probed_by": "probe_holes"
+    },
+    {
+      "finding_id": "mav_0003",
+      "finding_type": "hole",
+      "severity": 0.2,
+      "opportunity": 0.3,
+      "location": "crystal_108d/*.py",
+      "title": "14 source files without crystal coordinate headers",
+      "evidence": "Untagged: conservation_watchdog.py, corpus_crystal.py, geometric_constants.py, geometric_forward.py, geometric_loss.py, geometric_mcp.py, legacy_bridge.py, loss_engine.py, meta_loop_engine.py, momentum_field.py",
+      "recommendation": "Run holographic_embed on each file to assign crystal coordinates. Untagged files are invisible to the metro routing system.",
+      "timestamp": "2026-03-19T11:01:12.917330+00:00",
+      "probed_by": "probe_holes"
+    },
+    {
+      "finding_id": "mav_0010",
+      "finding_type": "tunnel",
+      "severity": 0.0,
+      "opportunity": 0.8,
+      "location": "MCP/data/*.qshr",
+      "title": "POSITIVE TUNNEL: 1060 .qshr files enable O(1) metadata reads",
+      "evidence": "qshrink_inspect() can read crystal weight metadata from .qshr headers without decompressing the full file. This is a shortcut past full JSON parsing.",
+      "recommendation": "Use qshrink_inspect() for metadata queries instead of load(). This positive tunnel saves ~87.5% of I/O for metadata-only reads.",
+      "timestamp": "2026-03-19T11:01:12.940533+00:00",
+      "probed_by": "probe_tunnels"
+    },
+    {
+      "finding_id": "mav_0011",
+      "finding_type": "bridge",
+      "severity": 0.0,
+      "opportunity": 0.9,
+      "location": "Google Docs \u2194 sandbox_bridge",
+      "title": "Live Google Docs not integrated with sandbox observation",
+      "evidence": "MEMORY.md lists 6 Google Docs as 'live slow-form self'. The sandbox observes MCP tools and self-play but not changes to Google Docs. Document evolution is unobserved.",
+      "recommendation": "Periodically fetch Google Docs (gmail/drive MCP tools), diff against cached versions, and emit bridge.observe_autoresearch() records for document changes. This closes the Docs\u2194sandbox loop.",
+      "timestamp": "2026-03-19T11:01:12.941548+00:00",
+      "probed_by": "probe_bridges"
+    },
+    {
+      "finding_id": "mav_0012",
+      "finding_type": "bridge",
+      "severity": 0.0,
+      "opportunity": 0.7,
+      "location": "git log \u2194 sandbox_metadata",
+      "title": "Git commit history not correlated with training records",
+      "evidence": "Training records track cycle_id and epoch but not git commit hash. Can't correlate efficiency changes with code changes. Regression hunting requires manual cross-referencing.",
+      "recommendation": "Include git HEAD hash in each TrainingRecord. At successor seed boundary, also record the commit range. This enables: 'efficiency dropped 20% after commit abc123'.",
+      "timestamp": "2026-03-19T11:01:12.941548+00:00",
+      "probed_by": "probe_bridges"
+    },
+    {
+      "finding_id": "mav_0013",
+      "finding_type": "bridge",
+      "severity": 0.0,
+      "opportunity": 0.8,
+      "location": "time_fractal \u2194 sandbox_metadata",
+      "title": "Time fractal schedule not aligned with sandbox epoch boundaries",
+      "evidence": "Time fractal has 5 nested cycles (Z12/Z20/Z28/Z36/Z420) while sandbox uses epoch=57. These are independent clocks. Aligning them would synchronize efficiency reporting with training cycles.",
+      "recommendation": "Set sandbox EPOCH_LENGTH to match the nearest Z-cycle boundary (Z12=57 cycles fits perfectly \u2014 this may already be aligned by design). Or: emit a sandbox snapshot at each Z-cycle boundary.",
+      "timestamp": "2026-03-19T11:01:12.941548+00:00",
+      "probed_by": "probe_bridges"
+    },
+    {
+      "finding_id": "mav_0014",
+      "finding_type": "bridge",
+      "severity": 0.0,
+      "opportunity": 0.6,
+      "location": "_agent_registry \u2194 sandbox_efficiency",
+      "title": "Agent RPG progression not informed by efficiency metrics",
+      "evidence": "Agent XP is awarded based on 12D observation quality (from _observer_pool) but not based on resource efficiency (x13-x15). An agent that produces great 12D scores but wastes resources gets the same XP as one that's efficient.",
+      "recommendation": "Add a phi-scaled efficiency bonus to XP calculation: bonus_xp = base_xp * (1 + efficiency_delta * phi). This incentivizes agents to be both effective AND efficient.",
+      "timestamp": "2026-03-19T11:01:12.941548+00:00",
+      "probed_by": "probe_bridges"
+    },
+    {
+      "finding_id": "mav_0017",
+      "finding_type": "bridge",
+      "severity": 0.0,
+      "opportunity": 0.5,
+      "location": "sandbox \u2194 training",
+      "title": "Integration opportunity: sandbox \u2194 training (7 modules)",
+      "evidence": "Sandbox should observe training metrics (momentum deltas, loss curves) for 15D scoring",
+      "recommendation": "Wire sandbox observation into training subsystem. Modules: geometric_forward, geometric_loss, geometric_mcp, loss_engine, meta_loop_engine, momentum_field, self_play",
+      "timestamp": "2026-03-19T11:01:13.073589+00:00",
+      "probed_by": "probe_integration_surface"
+    },
+    {
+      "finding_id": "mav_0018",
+      "finding_type": "bridge",
+      "severity": 0.0,
+      "opportunity": 0.5,
+      "location": "sandbox \u2194 observation",
+      "title": "Integration opportunity: sandbox \u2194 observation (6 modules)",
+      "evidence": "Sandbox should aggregate observations from swarm/nested systems, not just tool calls",
+      "recommendation": "Wire sandbox observation into observation subsystem. Modules: agent_watcher, meta_observer, meta_observer_runtime, nested_swarm, observer_agent, observer_swarm",
+      "timestamp": "2026-03-19T11:01:13.073589+00:00",
+      "probed_by": "probe_integration_surface"
+    },
+    {
+      "finding_id": "mav_0019",
+      "finding_type": "bridge",
+      "severity": 0.0,
+      "opportunity": 0.5,
+      "location": "sandbox \u2194 compression",
+      "title": "Integration opportunity: sandbox \u2194 compression (3 modules)",
+      "evidence": "Sandbox should use QShrink for training records + checkpoint compression",
+      "recommendation": "Wire sandbox observation into compression subsystem. Modules: qshrink, qshrink_codec, qshrink_pipeline",
+      "timestamp": "2026-03-19T11:01:13.073589+00:00",
+      "probed_by": "probe_integration_surface"
+    },
+    {
+      "finding_id": "mav_0020",
+      "finding_type": "bridge",
+      "severity": 0.0,
+      "opportunity": 0.5,
+      "location": "sandbox \u2194 emergence",
+      "title": "Integration opportunity: sandbox \u2194 emergence (7 modules)",
+      "evidence": "Sandbox efficiency trends ARE emergence signals \u2014 gate tests should include efficiency",
+      "recommendation": "Wire sandbox observation into emergence subsystem. Modules: absolute_convergence, crown_density, crown_transform_gate, emergence, harmonic_resonance, mycelium_emergence, omega_tunneling",
+      "timestamp": "2026-03-19T11:01:13.073589+00:00",
+      "probed_by": "probe_integration_surface"
+    },
+    {
+      "finding_id": "mav_0021",
+      "finding_type": "bridge",
+      "severity": 0.0,
+      "opportunity": 0.5,
+      "location": "sandbox \u2194 governance",
+      "title": "Integration opportunity: sandbox \u2194 governance (5 modules)",
+      "evidence": "Conservation laws should cover resource conservation (bounded memory, bounded storage)",
+      "recommendation": "Wire sandbox observation into governance subsystem. Modules: conservation, control_center, live_cell, live_lock, perpetual_agency",
+      "timestamp": "2026-03-19T11:01:13.073589+00:00",
+      "probed_by": "probe_integration_surface"
+    }
+  ],
+  "probe_history": [
+    {
+      "probe": "holes",
+      "findings": 3,
+      "timestamp": "2026-03-19T11:01:12.917879+00:00"
+    },
+    {
+      "probe": "gaps",
+      "findings": 5,
+      "timestamp": "2026-03-19T11:01:12.917879+00:00"
+    },
+    {
+      "probe": "tunnels",
+      "findings": 2,
+      "timestamp": "2026-03-19T11:01:12.941548+00:00"
+    },
+    {
+      "probe": "bridges",
+      "findings": 4,
+      "timestamp": "2026-03-19T11:01:12.955116+00:00"
+    },
+    {
+      "probe": "decay",
+      "findings": 2,
+      "timestamp": "2026-03-19T11:01:13.073589+00:00"
+    },
+    {
+      "probe": "integration",
+      "findings": 5,
+      "timestamp": "2026-03-19T11:01:13.073589+00:00"
+    }
+  ]
+}

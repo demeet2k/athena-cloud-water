@@ -4,7 +4,7 @@
 """
 SVG MCP Tools — Agent-Facing SVG Generation Interface
 ======================================================
-16 MCP tools for SVG self-play + transcendence + nervous system + 108D:
+19 MCP tools for SVG self-play + transcendence + nervous system + 108D:
 
   1. svg_challenge(category, difficulty)  — list/generate challenges
   2. svg_generate(challenge_id, primitive, params)  — generate SVG
@@ -22,6 +22,9 @@ SVG MCP Tools — Agent-Facing SVG Generation Interface
  14. svg_108d_panel(panel)                — individual 108D panel
  15. svg_108d_inversion()                 — 108D inversion cascade (3D→108D)
  16. svg_108d_inversion_panel(panel)      — individual inversion panel
+ 17. svg_inverse_double_fold()             — 3D^(3D⁻¹) double fold
+ 18. svg_numerical_inversion()             — ALL 12 crystal calcs × 1/x ACTUAL numbers
+ 19. svg_woven_inversion()                — 3D⁻¹ reweaved W3→W5→W7→W9 → 12D⁻¹ + A+
 """
 
 from typing import Optional
@@ -478,11 +481,32 @@ def register_svg_tools(mcp) -> None:
         return f"108D inversion cascade saved to: {path}"
 
     @mcp.tool()
+    def svg_inverse_double_fold() -> str:
+        """Generate the inverse double fold SVG: 3D^(3D⁻¹) ∧ (3D⁻¹)^3D.
+
+        The form raised to its own inverse — flipped AND reversed.
+        Shows: (1) 9-point W9 seed interaction matrix where each wreath
+        meets each anti-wreath, (2) double fold cascade showing D² at
+        every level (3²=9, 6²=36, 36×3=108).
+
+        The diagonal = self-annihilation (Su·-Su → Z*).
+        The off-diagonal = cross-creation.
+        M · Mᵀ = symmetric fixed point = holographic encoding.
+
+        Saves to MCP/data/svg_arena/outputs/ and returns confirmation.
+        """
+        from .svg_108d_projection import save_inverse_double_fold
+        path = save_inverse_double_fold()
+        return f"Inverse double fold saved to: {path}"
+
+    @mcp.tool()
     def svg_108d_inversion_panel(panel: str = "3d_pair") -> str:
         """Render a single panel from the inversion cascade.
 
         Available panels:
           3d_pair          — 3D seed + 3D⁻¹ anti-seed = hexagram
+          inverse_double_fold — 3D^(3D⁻¹) ∧ (3D⁻¹)^3D = W9 seed
+          double_fold_cascade — D² self-squaring at every level
           mobius_inversion — 4D→6D Möbius half-twist chirality
           wuxing_inversion — 6D→8D Wu Xing generative+destructive
           planetary_inv    — 8D→10D exaltation/detriment opposition
@@ -498,7 +522,9 @@ def register_svg_tools(mcp) -> None:
         """
         from .svg_primitives import SVGCanvas
         from .svg_108d_projection import (
-            _render_3d_pair, _render_mobius_inversion,
+            _render_3d_pair, _render_inverse_double_fold,
+            _render_double_fold_cascade,
+            _render_mobius_inversion,
             _render_wuxing_inversion, _render_planetary_inversion,
             _render_matrix_inversion, _render_triple_crown_expansion,
             _render_w_cascade, _render_containment_count,
@@ -506,6 +532,8 @@ def register_svg_tools(mcp) -> None:
 
         dispatch = {
             "3d_pair": _render_3d_pair,
+            "inverse_double_fold": _render_inverse_double_fold,
+            "double_fold_cascade": _render_double_fold_cascade,
             "mobius_inversion": _render_mobius_inversion,
             "wuxing_inversion": _render_wuxing_inversion,
             "planetary_inv": _render_planetary_inversion,
@@ -523,3 +551,62 @@ def register_svg_tools(mcp) -> None:
         canvas = SVGCanvas(800, 800)
         canvas.add(fn(400, 400, 300))
         return canvas.render()
+
+    # ------------------------------------------------------------------
+    # Numerical Inversion — ACTUAL Crystal Values × 1/x
+    # ------------------------------------------------------------------
+
+    @mcp.tool()
+    def svg_numerical_inversion() -> str:
+        """Generate the full numerical inversion SVG — ALL 12 crystal calculations × 1/x.
+
+        Takes EVERY actual computed value from geometric_constants.py and
+        cross_lens.py and computes its exact mathematical inverse (1/x).
+
+        12 panels of real numbers:
+          1. PHI cascade (φ, φ⁻¹, φ⁻², φ⁻³)
+          2. Bridge weights (SF=0.618→1.618, SC=0.5→2.0, SR=0.382→2.618)
+          3. w-operator (|w|=0.707→|w⁻¹|=1.414)
+          4. Attractor values (0.25→4.0, 1/6→6.0)
+          5. Flower rings (decay φ⁻ⁿ → growth φⁿ)
+          6. E8 face boosts (0.333→3.0, 0.222→4.5)
+          7. Element lens weights (1.5→0.667)
+          8. Cross-lens transitions (log→exp, linear→1/linear)
+          9. Weave periods (W3=140→0.00714)
+         10. Containment counts (1890→0.000529)
+         11. w-spiral |w^n| trajectory
+         12. Vesica + transform φ-weights
+
+        Plus 3 graphical panels: bridge topology, flower ring decay/growth,
+        w-spiral compression/expansion.
+
+        Saves to MCP/data/svg_arena/outputs/ and returns confirmation.
+        """
+        from .svg_108d_projection import save_numerical_inversion
+        path = save_numerical_inversion()
+        return f"Numerical inversion (all 12 crystal calculations × 1/x) saved to: {path}"
+
+    @mcp.tool()
+    def svg_woven_inversion() -> str:
+        """Generate the woven inversion cascade: 3D⁻¹ reweaved through W3→W5→W7→W9 → 12D⁻¹.
+
+        You cannot just invert 108D — the weaving routes differently.
+        Start at 3D (simple flip: wreaths 1.0/0.618/0.382 → 1.0/1.618/2.618),
+        then reweave through each operator with INVERTED strand weights.
+
+        At each level, original decays (φ⁻ⁿ → 0) while inverted EXPLODES
+        (φⁿ → ∞). The A+ cross-ratio shows exponential divergence:
+
+          3D:  A+ = ×2.62
+          4D:  A+ = ×32.0 (Möbius |w|→|w⁻¹| amplifies)
+          6D:  A+ = ×83.8 (W3 reweave)
+          8D:  A+ = ×416.6 (W5 reweave)
+          10D: A+ = ×3,936 (W7 reweave)
+          12D: A+ = ×70,624 (W9 crown EXPLOSION)
+
+        6 woven level panels + A+ divergence chart.
+        Saves to MCP/data/svg_arena/outputs/ and returns confirmation.
+        """
+        from .svg_108d_projection import save_woven_inversion
+        path = save_woven_inversion()
+        return f"Woven inversion cascade (3D⁻¹ → 12D⁻¹ via W3→W5→W7→W9) saved to: {path}"

@@ -23,6 +23,7 @@ from .geometric_constants import (
 )
 from .geometric_forward import ForwardResult
 from .momentum_field import MomentumField
+from .hybrid_math import QuaternionicGradient
 
 
 @dataclass
@@ -147,33 +148,86 @@ class GeometricLoss:
         )
 
     def momentum_gradient(self, obs: Observation12D, face: str, shell: int) -> float:
-        """Compute momentum gradient for a specific element-shell position.
+        """Compute SCALAR momentum gradient (backward compatible).
 
-        Maps 12D observation to a scalar gradient for the momentum field.
-        Water (C) always returns 0 (locked).
+        Calls momentum_gradient_quaternionic and projects to scalar.
+        """
+        qgrad = self.momentum_gradient_quaternionic(obs, face, shell)
+        return qgrad.weighted_scalar({"D": 0.4, "Ω": 0.2, "Σ": 0.15, "Ψ": 0.25})
+
+    def momentum_gradient_quaternionic(
+        self, obs: Observation12D, face: str, shell: int
+    ) -> QuaternionicGradient:
+        """Compute QUATERNIONIC momentum gradient for a specific element-shell position.
+
+        Maps 12D observation to a 4-component gradient in the quad-polar operator space:
+          D-component:  discrete improvement signal (attractor-relative balance)
+          Ω-component:  continuous gradient (smooth interpolation toward equilibrium)
+          Σ-component:  stochastic escape signal (from observation variance)
+          Ψ-component:  spectral alignment signal (from cross-element structure)
+
+        Water (C) always returns zero quaternion (locked).
+
+        Uses attractor-relative gradient: each element's gradient is computed
+        relative to the MEAN across ALL elements (not a fixed 0.5 baseline).
         """
         if face == "C":
-            return 0.0  # Water is locked
+            return QuaternionicGradient()  # Water is locked — zero quaternion
 
         # Gather all dimensions that couple to this element
         relevant_dims = [dim for dim, elem in DIM_TO_ELEMENT.items() if elem == face]
-
         if not relevant_dims:
-            return 0.0
+            return QuaternionicGradient()
 
-        # Gradient = mean of relevant dimension scores - attractor baseline
-        baseline = 0.5  # neutral observation
+        # Compute this element's mean observation score
         dim_scores = [obs.scores.get(dim, 0.0) for dim in relevant_dims]
         mean_score = sum(dim_scores) / len(dim_scores)
 
-        # Gradient direction: above baseline = increase momentum, below = decrease
-        gradient = mean_score - baseline
+        # Compute GLOBAL mean across ALL non-Water dimensions for baseline
+        all_non_water_dims = [dim for dim, elem in DIM_TO_ELEMENT.items() if elem != "C"]
+        all_scores = [obs.scores.get(dim, 0.0) for dim in all_non_water_dims]
+        global_mean = sum(all_scores) / max(len(all_scores), 1)
+
+        # ── D-component: discrete attractor-relative balance ──
+        # How far this element deviates from global mean
+        d_gradient = (global_mean - mean_score) * 0.5
+
+        # ── Ω-component: continuous gradient toward phi equilibrium ──
+        # Pull toward golden mean (1.618) not path_value (0.25) which is below floor.
+        # This prevents single-element collapse: strong pull when far from phi.
+        from .momentum_field import get_momentum_field
+        mf = get_momentum_field()
+        current_momentum = mf.get_momentum(face, max(1, shell))
+        attractor_target = mf.MOMENTUM_EQUILIBRIUM  # phi = 1.618
+        omega_gradient = (attractor_target - current_momentum) * 0.03
+
+        # ── Σ-component: stochastic escape signal ──
+        # High when this element's scores have high variance (rugged landscape)
+        if len(dim_scores) > 1:
+            score_var = sum((s - mean_score) ** 2 for s in dim_scores) / len(dim_scores)
+            sigma_gradient = score_var * (global_mean - mean_score)
+        else:
+            sigma_gradient = 0.0
+
+        # ── Ψ-component: spectral alignment ──
+        # Cross-element structure signal — from the full 12D observation pattern
+        # Measures how this element's dimensions relate to the overall structure
+        psi_gradient = 0.0
+        for dim in relevant_dims:
+            score = obs.scores.get(dim, 0.0)
+            # Spectral contribution: alignment with the dominant observation direction
+            psi_gradient += (score - global_mean) * (obs.total_score - 0.5)
+        psi_gradient /= max(len(relevant_dims), 1)
 
         # Scale by commitment (committed observations have stronger signal)
-        if obs.commitment_rate > 0:
-            gradient *= 1.5
+        commitment_boost = 1.2 if obs.commitment_rate > 0 else 1.0
 
-        return gradient
+        return QuaternionicGradient(
+            d=d_gradient * commitment_boost,
+            omega=omega_gradient * commitment_boost,
+            sigma=sigma_gradient * commitment_boost,
+            psi=psi_gradient * commitment_boost,
+        )
 
     def should_keep(self, obs_before: Observation12D, obs_after: Observation12D) -> bool:
         """Decide whether to keep a momentum update.
@@ -183,5 +237,13 @@ class GeometricLoss:
         return obs_after.total_score >= obs_before.total_score
 
     def compute_all_gradients(self, obs: Observation12D) -> dict[str, float]:
-        """Compute gradients for all 4 elements (C is always 0)."""
+        """Compute scalar gradients for all 4 elements (C is always 0)."""
         return {face: self.momentum_gradient(obs, face, 1) for face in FACES}
+
+    def compute_all_gradients_quaternionic(self, obs: Observation12D) -> dict[str, QuaternionicGradient]:
+        """Compute QUATERNIONIC gradients for all 4 elements.
+
+        Returns a dict of face → QuaternionicGradient with full 4-pole
+        gradient information for each SFCR element.
+        """
+        return {face: self.momentum_gradient_quaternionic(obs, face, 1) for face in FACES}

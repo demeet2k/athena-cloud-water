@@ -1,0 +1,71 @@
+{
+  "genome_id": "32fd0fdb9d6d",
+  "generation": 1,
+  "score": 0.7773871580631487,
+  "emergence_score": 0.023227216868538347,
+  "lineage_depth": 1,
+  "n_layers": 5,
+  "layers": [
+    {
+      "primitive": "sfcr_crystal",
+      "params": {
+        "cx": 463,
+        "cy": 305,
+        "size": 177,
+        "angle_x": 0.5927123584805181,
+        "angle_z": 1.062407418247173
+      },
+      "transform": "rotate(154.9,400,400)",
+      "opacity": 1.0
+    },
+    {
+      "primitive": "sfcr_crystal",
+      "params": {
+        "cx": 250,
+        "cy": 200,
+        "size": 81,
+        "angle_x": 0.83724987506173,
+        "angle_z": 0.17827039303359826
+      },
+      "transform": "",
+      "opacity": 1.0
+    },
+    {
+      "primitive": "concentric_circles",
+      "params": {
+        "cx": 594,
+        "cy": 363,
+        "r_outer": 111,
+        "n": 5,
+        "fill": "none",
+        "stroke": "#333"
+      },
+      "transform": "rotate(-66.0,400,400)",
+      "opacity": 0.949470630453102
+    },
+    {
+      "primitive": "weave_wheel",
+      "params": {
+        "cx": 580,
+        "cy": 263,
+        "size": 181,
+        "order": 9
+      },
+      "transform": "",
+      "opacity": 0.6299762575140784
+    },
+    {
+      "primitive": "icosahedron",
+      "params": {
+        "cx": 229,
+        "cy": 316,
+        "size": 190,
+        "angle_x": 0.18837883063150407,
+        "angle_z": 1.1150165072029565
+      },
+      "transform": "rotate(85.3,400,400)",
+      "opacity": 1.0
+    }
+  ],
+  "crystallized_at": "2026-03-19T19:05:37.249264+00:00"
+}

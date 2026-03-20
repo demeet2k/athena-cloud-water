@@ -1,0 +1,70 @@
+{
+  "genome_id": "c0f3d9fe50b7",
+  "generation": 3,
+  "score": 0.8304716773157397,
+  "emergence_score": 0.0,
+  "lineage_depth": 2,
+  "n_layers": 5,
+  "layers": [
+    {
+      "primitive": "sigma60_field",
+      "params": {
+        "cx": 467,
+        "cy": 422,
+        "size": 146
+      },
+      "transform": "rotate(38.7,400,400)",
+      "opacity": 0.5575156728902165
+    },
+    {
+      "primitive": "mobius_strip",
+      "params": {
+        "cx": 350,
+        "cy": 479,
+        "R": 151,
+        "angle_x": 0.7150879523572331,
+        "angle_z": 0.12072553524649307
+      },
+      "transform": "",
+      "opacity": 1.0
+    },
+    {
+      "primitive": "spiral_of_theodorus",
+      "params": {
+        "cx": 552,
+        "cy": 328,
+        "n": 18,
+        "unit": 19
+      },
+      "transform": "rotate(-83.8,400,400)",
+      "opacity": 0.8956504535764027
+    },
+    {
+      "primitive": "star_polygon",
+      "params": {
+        "cx": 404,
+        "cy": 449,
+        "r_outer": 146,
+        "r_inner": 62,
+        "n": 7,
+        "fill": "none",
+        "stroke": "#333"
+      },
+      "transform": "rotate(-28.0,400,400)",
+      "opacity": 1.0
+    },
+    {
+      "primitive": "fractal_tree",
+      "params": {
+        "x": 457,
+        "y": 737,
+        "length": 134,
+        "angle": -1.5262848714437458,
+        "depth": 6
+      },
+      "transform": "",
+      "opacity": 1.0
+    }
+  ],
+  "crystallized_at": "2026-03-19T19:05:36.511428+00:00"
+}

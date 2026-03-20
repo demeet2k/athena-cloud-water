@@ -1,0 +1,21 @@
+{
+  "epoch": 1,
+  "agent_id": "sandbox-observer",
+  "timestamp": "2026-03-19T14:13:12.184356+00:00",
+  "top_tools": "[{\"tool\": \"geometric_train\", \"avg_value\": 0.0, \"count\": 57}]",
+  "bottleneck_tools": "[{\"tool\": \"geometric_train\", \"avg_latency_ms\": 0.0}]",
+  "efficiency_trend": "[{\"cycle\": 23, \"value_per_token\": 0.0, \"value_per_ms\": 0.0}, {\"cycle\": 31, \"value_per_token\": 0.0, \"value_per_ms\": 0.0}, {\"cycle\": 39, \"value_per_token\": 0.0, \"value_per_ms\": 0.0}, {\"cycle\": 47, \"value_per_token\": 0.0, \"value_per_ms\": 0.0}, {\"cycle\": 55, \"value_per_token\": 0.0, \"value_per_ms\": 0.0}, {\"cycle\": 6, \"value_per_token\": 0.0, \"value_per_ms\": 0.0}, {\"cycle\": 14, \"value_per_token\": 0.0, \"value_per_ms\": 0.0}]",
+  "parallelism_map": "{}",
+  "directive_outcomes": "{}",
+  "avg_efficiency_delta": -2.1e-05,
+  "total_records": 57,
+  "total_tokens_consumed": 0.0,
+  "total_latency_ms": 0.0,
+  "best_value_per_token": 0.0,
+  "becoming_score": 0.0,
+  "target_vector_15d": "[0.4, 0.5, 0.0, 1.0, 0.6, 0.28, 0.5, 0.4, 0.5, 0.5, 0.4, 0.248, 1.0, 0.7, 1.0]",
+  "blocked_tools": "[]",
+  "resume_directive": "",
+  "seed_hash": "019ef74a0554eb42",
+  "parent_seed_hash": "8bbd82d440baaed6"
+}

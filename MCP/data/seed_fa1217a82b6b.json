@@ -1,0 +1,65 @@
+{
+  "genome_id": "fa1217a82b6b",
+  "generation": 3,
+  "score": 0.8202632302910525,
+  "emergence_score": 0.031193817608614394,
+  "lineage_depth": 2,
+  "n_layers": 5,
+  "layers": [
+    {
+      "primitive": "sierpinski_triangle",
+      "params": {
+        "cx": 254,
+        "cy": 529,
+        "size": 165,
+        "depth": 4
+      },
+      "transform": "rotate(-37.9,400,400)",
+      "opacity": 1.0
+    },
+    {
+      "primitive": "circle",
+      "params": {
+        "cx": 377,
+        "cy": 319,
+        "r": 136
+      },
+      "transform": "",
+      "opacity": 0.9912163417943912
+    },
+    {
+      "primitive": "icosahedron",
+      "params": {
+        "cx": 354,
+        "cy": 203,
+        "size": 137,
+        "angle_x": 0.25398521065360224,
+        "angle_z": 0.5253151601859337
+      },
+      "transform": "",
+      "opacity": 0.701667097522951
+    },
+    {
+      "primitive": "sigma60_field",
+      "params": {
+        "cx": 417,
+        "cy": 575,
+        "size": 194
+      },
+      "transform": "",
+      "opacity": 1.0
+    },
+    {
+      "primitive": "spiral_of_theodorus",
+      "params": {
+        "cx": 225,
+        "cy": 561,
+        "n": 18,
+        "unit": 36
+      },
+      "transform": "",
+      "opacity": 1.0
+    }
+  ],
+  "crystallized_at": "2026-03-19T23:01:39.337160+00:00"
+}

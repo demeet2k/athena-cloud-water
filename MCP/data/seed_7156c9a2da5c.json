@@ -1,0 +1,33 @@
+{
+  "genome_id": "7156c9a2da5c",
+  "generation": 2,
+  "score": 0.6543495429643379,
+  "emergence_score": 0.0,
+  "lineage_depth": 0,
+  "n_layers": 2,
+  "layers": [
+    {
+      "primitive": "vesica_piscis",
+      "params": {
+        "cx": 398,
+        "cy": 300,
+        "r": 129
+      },
+      "transform": "",
+      "opacity": 1.0
+    },
+    {
+      "primitive": "crystal_lattice",
+      "params": {
+        "cx": 79,
+        "cy": 96,
+        "rows": 7,
+        "cols": 7,
+        "spacing": 74
+      },
+      "transform": "",
+      "opacity": 1.0
+    }
+  ],
+  "crystallized_at": "2026-03-19T22:44:40.664667+00:00"
+}

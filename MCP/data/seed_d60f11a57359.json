@@ -1,0 +1,74 @@
+{
+  "genome_id": "d60f11a57359",
+  "generation": 3,
+  "score": 0.6592596262820362,
+  "emergence_score": 0.0,
+  "lineage_depth": 3,
+  "n_layers": 5,
+  "layers": [
+    {
+      "primitive": "dimensional_containment",
+      "params": {
+        "cx": 482,
+        "cy": 218,
+        "size": 201
+      },
+      "transform": "rotate(-73.8,400,400)",
+      "opacity": 0.698872015163417
+    },
+    {
+      "primitive": "flower_of_life",
+      "params": {
+        "cx": 494,
+        "cy": 436,
+        "r": 44,
+        "rings": 1,
+        "fill": "none",
+        "stroke": "#333"
+      },
+      "transform": "",
+      "opacity": 1.0
+    },
+    {
+      "primitive": "concentric_circles",
+      "params": {
+        "cx": 464,
+        "cy": 359,
+        "r_outer": 261,
+        "n": 5,
+        "fill": "none",
+        "stroke": "#333"
+      },
+      "transform": "",
+      "opacity": 0.3
+    },
+    {
+      "primitive": "flower_of_life",
+      "params": {
+        "cx": 476,
+        "cy": 311,
+        "r": 85,
+        "rings": 1,
+        "fill": "none",
+        "stroke": "#333"
+      },
+      "transform": "rotate(-40.3,400,400)",
+      "opacity": 0.7685908082792039
+    },
+    {
+      "primitive": "star_polygon",
+      "params": {
+        "cx": 312,
+        "cy": 464,
+        "r_outer": 115,
+        "r_inner": 116,
+        "n": 10,
+        "fill": "none",
+        "stroke": "#333"
+      },
+      "transform": "rotate(52.1,400,400)",
+      "opacity": 1.0
+    }
+  ],
+  "crystallized_at": "2026-03-19T22:44:40.625706+00:00"
+}

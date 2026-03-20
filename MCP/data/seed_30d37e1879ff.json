@@ -1,0 +1,32 @@
+{
+  "genome_id": "30d37e1879ff",
+  "generation": 2,
+  "score": 0.8485775296571836,
+  "emergence_score": 0.0,
+  "lineage_depth": 0,
+  "n_layers": 2,
+  "layers": [
+    {
+      "primitive": "metatron_cube",
+      "params": {
+        "cx": 564,
+        "cy": 410,
+        "r": 104
+      },
+      "transform": "",
+      "opacity": 1.0
+    },
+    {
+      "primitive": "sierpinski_triangle",
+      "params": {
+        "cx": 488,
+        "cy": 588,
+        "size": 204,
+        "depth": 5
+      },
+      "transform": "rotate(113.3,400,400)",
+      "opacity": 1.0
+    }
+  ],
+  "crystallized_at": "2026-03-19T18:18:04.905334+00:00"
+}

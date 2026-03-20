@@ -196,11 +196,19 @@ class GeometricEngine:
             tags = shard.get("tags", [])
 
             # Determine element from seed_vector dominant axis
+            # When all components are equal (undifferentiated), use hash-based
+            # assignment to ensure balanced distribution across all 4 elements
             if len(sv) >= 4:
-                max_idx = max(range(4), key=lambda i: sv[i])
+                max_val = max(sv[:4])
+                dominant = [i for i in range(4) if sv[i] >= max_val - 1e-6]
+                if len(dominant) > 1:
+                    # Tied — use hash for deterministic balanced assignment
+                    max_idx = hash(sid) % 4
+                else:
+                    max_idx = dominant[0]
                 element = element_names[max_idx]
             else:
-                element = "Earth"
+                element = element_names[hash(sid) % 4]
 
             # Build token set from summary, family, tags
             import re
@@ -214,6 +222,11 @@ class GeometricEngine:
                     for w in words:
                         if w not in stops and len(w) > 2:
                             tokens.add(w)
+                            # Split compound tokens (e.g. "crystal_structure" → "crystal", "structure")
+                            if '_' in w:
+                                for part in w.split('_'):
+                                    if part not in stops and len(part) > 2:
+                                        tokens.add(part)
 
             # Gate from shard position
             gate_num = hash(sid) % 16
@@ -229,6 +242,15 @@ class GeometricEngine:
                 "seed_vector": sv,
                 "family": family,
             })
+
+        # Pre-compute shell for each doc (hash-based for hex shard IDs)
+        for doc in docs:
+            doc_id = doc["id"]
+            try:
+                num = int(doc_id.replace("DOC", ""))
+            except (ValueError, AttributeError):
+                num = hash(doc_id) & 0x7FFFFFFF
+            doc["_shell"] = (num % TOTAL_SHELLS) + 1
 
         return docs
 
@@ -379,14 +401,27 @@ class GeometricEngine:
         """
         scores = {}
 
-        # Pre-compute doc 4D positions
+        # Pre-compute doc 4D positions from actual seed vectors
         doc_positions = {}
+        face_order = ["S", "F", "C", "R"]
         for doc in docs:
             doc_face = ELEMENT_TO_FACE.get(doc.get("element", "Earth"), "S")
             doc_shell = self._doc_to_shell(doc)
-            # Doc position is element-dominated with shell modulation
-            pos = {f: 0.1 for f in FACES}
-            pos[doc_face] = 0.7
+            sv = doc.get("seed_vector", [0.25, 0.25, 0.25, 0.25])
+            # Use actual seed vector + shell/hash perturbation for continuous discrimination
+            doc_id = doc.get("id", "")
+            doc_hash = hash(doc_id) & 0xFFFF  # 16-bit hash
+            pos = {}
+            for i in range(4):
+                base = sv[i] if i < len(sv) else 0.25
+                # Shell-based perturbation (~0.01 range)
+                shell_shift = (doc_shell - 18) / 3600.0
+                # Hash-based micro-perturbation (~0.005 range)
+                hash_shift = ((doc_hash >> (i * 4)) & 0xF) / 3200.0
+                pos[face_order[i]] = base + shell_shift + hash_shift
+            # Normalize so positions sum to 1.0
+            total = sum(pos.values()) or 1.0
+            pos = {f: v / total for f, v in pos.items()}
             doc_positions[doc.get("id", "")] = (pos, doc_face, doc_shell)
 
         # For each sigma view, expand by 4 faces and score docs
@@ -421,13 +456,21 @@ class GeometricEngine:
                     if doc_id not in scores or e8_score > scores[doc_id]:
                         scores[doc_id] = e8_score
 
-        # Add TF-IDF overlay (token relevance still matters)
+        # Multiplicative TF-IDF: token relevance amplifies geometry
+        # This creates genuine score discrimination per doc
         for doc in docs:
             doc_id = doc.get("id", "")
-            tfidf = idf.tfidf_score(query.tokens, doc.get("tokens", []))
             base = scores.get(doc_id, 0.0)
-            # Blend: geometry provides structure, TF-IDF provides relevance
-            scores[doc_id] = base * 0.6 + tfidf * 0.4
+            tfidf = idf.tfidf_score(query.tokens, doc.get("tokens", []))
+            # Count direct token matches
+            doc_tokens = set(doc.get("tokens", []))
+            match_count = sum(1 for t in query.tokens if t in doc_tokens)
+            # Multiplicative relevance (1.0 = no match, grows with matches)
+            relevance = 1.0 + tfidf * 2.0 + match_count * 0.3
+            # Hash perturbation for tie-breaking only (~0.001 range)
+            doc_hash = hash(doc_id) & 0xFFFF
+            perturb = doc_hash / 6553600.0
+            scores[doc_id] = base * relevance + perturb
 
         return scores
 
@@ -458,9 +501,9 @@ class GeometricEngine:
             # Platonic solid filter: vertex weight of doc's element
             platonic = FACE_TO_PLATONIC.get(doc_face)
             platonic_score = platonic["vertex_weight"] if platonic else 0.1
-            # Boost if doc element matches query element
+            # Mild boost if doc element matches query element (dampened from PHI)
             if doc_face == query.home_face:
-                platonic_score *= PHI
+                platonic_score *= 1.2
 
             # Flower of Life: distance from query shell determines ring
             shell_dist = abs(doc_shell - query.home_shell)
@@ -513,9 +556,9 @@ class GeometricEngine:
             doc_shell = self._doc_to_shell(doc)
 
             m = self.momentum.get_momentum(doc_face, doc_shell)
-            # Momentum as multiplicative boost: m > 1 amplifies, m < 1 dampens
-            # Scaled so typical momentum (~3-5) gives ~1.1-1.3x boost
-            boost = 1.0 + 0.05 * (m - 1.0)
+            # Momentum as multiplicative boost centered at 1.0:
+            # m=1.0 → boost=1.0, m=0.5 → boost=0.75, m=2.0 → boost=1.5
+            boost = 0.5 + 0.5 * m
             modulated[doc_id] = scores.get(doc_id, 0.0) * boost
 
         return modulated
@@ -545,7 +588,9 @@ class GeometricEngine:
             # Shell proximity + token overlap + element coherence + momentum stability
             shell_fit = max(0.0, 1.0 - abs(doc_shell - query.home_shell) / TOTAL_SHELLS)
             token_fit = idf.tfidf_score(query.tokens, doc.get("tokens", []))
-            element_fit = PHI_INV if doc_face == query.home_face else PHI_INV2
+            # Element fit: cross-element docs get a boost (exploration)
+            # Same-element still gets base credit but not dominant
+            element_fit = 0.5 + (0.118 if doc_face == query.home_face else 0.0)
             mom_stability = 1.0 / (1.0 + abs(
                 self.momentum.get_momentum(doc_face, doc_shell) - ATTRACTOR["water_momentum"]
             ) * 0.1)
@@ -584,9 +629,33 @@ class GeometricEngine:
                 path_contributions=path_contribs,
             ))
 
-        # Sort by action (minimize)
+        # Sort by action (minimize) with element diversity
         ranked.sort(key=lambda c: c.action)
-        ranked = ranked[:max_results]
+
+        # Ensure element diversity: reserve at least 2 slots for non-dominant elements
+        if len(ranked) > max_results:
+            dominant_elem = max(set(c.element for c in ranked),
+                              key=lambda e: sum(1 for c in ranked if c.element == e))
+            diverse = [c for c in ranked if c.element != dominant_elem][:3]
+            dominant = [c for c in ranked if c.element == dominant_elem]
+            # Mix: fill with dominant, inserting diverse docs at positions
+            result_list = []
+            div_idx = 0
+            for i, c in enumerate(dominant):
+                if len(result_list) >= max_results:
+                    break
+                result_list.append(c)
+                # Insert a diverse doc every 3 dominant docs
+                if (i + 1) % 3 == 0 and div_idx < len(diverse):
+                    result_list.append(diverse[div_idx])
+                    div_idx += 1
+            # Append remaining diverse
+            while div_idx < len(diverse) and len(result_list) < max_results:
+                result_list.append(diverse[div_idx])
+                div_idx += 1
+            ranked = result_list[:max_results]
+        else:
+            ranked = ranked[:max_results]
 
         # Overall resonance and commit witness
         overall_resonance = sum(c.resonance for c in ranked) / max(len(ranked), 1)
@@ -638,22 +707,61 @@ class GeometricEngine:
 
         Uses the inverted index for O(query_tokens × avg_postings) lookup
         instead of scanning all 14,730+ docs linearly.
+
+        Ensures minimum representation of all 4 elements to prevent
+        Earth-dominated results from starving other perspectives.
         """
         # Get candidate indices via inverted index (fast)
         candidate_indices = idf.candidate_doc_indices(query.tokens)
         if not candidate_indices:
-            return []
+            # Fallback: sample balanced docs when no token overlap
+            import random
+            rng = random.Random(hash(tuple(query.tokens)))
+            by_elem = {"Earth": [], "Fire": [], "Water": [], "Air": []}
+            for i, doc in enumerate(docs):
+                by_elem.setdefault(doc.get("element", "Earth"), []).append(i)
+            fallback = set()
+            per_elem = self.E8_CANDIDATE_LIMIT // 4
+            for indices in by_elem.values():
+                fallback.update(rng.sample(indices, min(per_elem, len(indices))))
+            candidate_indices = fallback
 
-        # Score only the candidates
-        scored = []
+        # Score only the candidates, grouped by element
+        by_element: dict[str, list] = {"Earth": [], "Fire": [], "Water": [], "Air": []}
         for idx in candidate_indices:
             if idx < len(docs):
                 doc = docs[idx]
                 tfidf = idf.tfidf_score(query.tokens, doc.get("tokens", []))
-                scored.append((doc, tfidf))
+                elem = doc.get("element", "Earth")
+                by_element.setdefault(elem, []).append((doc, tfidf))
 
-        scored.sort(key=lambda x: x[1], reverse=True)
-        return [d for d, _ in scored[:self.E8_CANDIDATE_LIMIT]]
+        # Sort each element's candidates by score
+        for elem in by_element:
+            by_element[elem].sort(key=lambda x: x[1], reverse=True)
+
+        # Ensure minimum per-element representation (at least 25% of limit per element)
+        min_per_element = self.E8_CANDIDATE_LIMIT // 8  # 25 per element
+        result = []
+        for elem in ["Earth", "Fire", "Water", "Air"]:
+            candidates = by_element.get(elem, [])
+            result.extend(candidates[:min_per_element])
+
+        # Fill remaining slots with best overall candidates
+        remaining = self.E8_CANDIDATE_LIMIT - len(result)
+        all_scored = []
+        for elem_list in by_element.values():
+            all_scored.extend(elem_list)
+        all_scored.sort(key=lambda x: x[1], reverse=True)
+
+        used_ids = {d.get("id") for d, _ in result}
+        for doc, score in all_scored:
+            if len(result) >= self.E8_CANDIDATE_LIMIT:
+                break
+            if doc.get("id") not in used_ids:
+                result.append((doc, score))
+                used_ids.add(doc.get("id"))
+
+        return [d for d, _ in result]
 
     def forward(self, query: str | QueryState, max_results: int = 10) -> ForwardResult:
         """Full geometric forward pass: 6 layers through sacred geometry."""
@@ -698,6 +806,215 @@ class GeometricEngine:
 
         return result
 
+    # ── Observer-Biased Forward ──────────────────────────────────────
+
+    def forward_for_observer(self, query: str | QueryState, observer, max_results: int = 10):
+        """Run an element-biased forward pass for a single observer agent.
+
+        The observer's element gets upweighted in momentum modulation,
+        so Square observers "see" Earth-heavy structure, Flower observers
+        see Fire-driven connections, etc.
+
+        Returns an ObserverResult (from observer_agent.py).
+        """
+        from .observer_agent import ObserverResult
+        from .archetype_roles import get_role
+
+        t0 = time.time()
+
+        # Layer 1: Project query, then OVERRIDE home_face to observer's element
+        if isinstance(query, str):
+            qs = self._project_query(query)
+        else:
+            qs = query
+
+        docs = self.doc_registry
+        if not docs:
+            return ObserverResult(agent=observer, elapsed_ms=0)
+
+        if self._idf_cache is None:
+            self._idf_cache = _IdfTable(docs)
+        idf = self._idf_cache
+
+        candidate_docs = self._tfidf_prefilter(docs, idf, qs)
+        if not candidate_docs:
+            return ObserverResult(agent=observer, elapsed_ms=(time.time() - t0) * 1000)
+
+        # CRITICAL: Create observer-biased query state
+        # Each observer sees the query from its own element's perspective
+        from copy import copy
+        biased_qs = copy(qs)
+        biased_qs.home_face = observer.element  # Observer projects from its element
+
+        # Bias the 4D projection toward observer's element
+        bias = observer.element_bias
+        biased_q4d = dict(qs.q_4d) if qs.q_4d else {f: 0.25 for f in FACES}
+        biased_q4d[observer.element] = biased_q4d.get(observer.element, 0.25) * bias
+        q_total = sum(biased_q4d.values())
+        if q_total > 0:
+            biased_q4d = {f: v / q_total for f, v in biased_q4d.items()}
+        biased_qs.q_4d = biased_q4d
+
+        # Layers 2-4 with biased query
+        views_60 = self._sigma_rotate(biased_q4d)
+        centroids = self._archetype_centroids(views_60)
+        e8_scores = self._e8_score_docs(views_60, candidate_docs, idf, biased_qs)
+        sacred_scores = self._sacred_filter(e8_scores, candidate_docs, biased_qs, centroids)
+
+        # Layer 5: Momentum modulation
+        modulated = self._momentum_modulate(sacred_scores, candidate_docs)
+
+        # Layer 5.5: Observer element boost — docs matching observer's element
+        # get a direct score multiplier. This is what makes F-observers see Fire docs.
+        obs_face = observer.element
+        for doc in candidate_docs:
+            doc_id = doc.get("id", "")
+            doc_face = ELEMENT_TO_FACE.get(doc.get("element", "Earth"), "S")
+            if doc_face == obs_face:
+                modulated[doc_id] = modulated.get(doc_id, 0.0) * observer.element_bias
+
+        # Layer 6: Commit with biased query
+        result = self._commit(biased_qs, modulated, candidate_docs, idf, max_results)
+
+        # Convert ForwardResult → ObserverResult
+        ranked_ids = [c.doc_id for c in result.candidates]
+        ranked_scores = [c.merged_score for c in result.candidates]
+
+        # Path contributions: average across top results
+        path_contribs = {f: 0.0 for f in FACES}
+        for c in result.candidates[:5]:
+            for f, v in c.path_contributions.items():
+                path_contribs[f] += v
+        n_top = min(len(result.candidates), 5) or 1
+        path_contribs = {f: v / n_top for f, v in path_contribs.items()}
+
+        # Discrimination: std of scores (higher = more selective)
+        if len(ranked_scores) >= 2:
+            mean_s = sum(ranked_scores) / len(ranked_scores)
+            discrimination = math.sqrt(
+                sum((s - mean_s) ** 2 for s in ranked_scores) / len(ranked_scores)
+            )
+        else:
+            discrimination = 0.0
+
+        # 12D observation: compute from the result structure
+        role = get_role(observer.archetype_idx)
+        obs_12d = self._compute_observer_12d(result, observer, role, qs)
+
+        # Weight deltas: gradient signals from this observer
+        weight_deltas = {}
+        for c in result.candidates[:5]:
+            bk = bridge_key(observer.element, ELEMENT_TO_FACE.get(c.element, "S"))
+            if bk and observer.element != ELEMENT_TO_FACE.get(c.element, "S"):
+                weight_deltas.setdefault("bridge", {})[bk] = (
+                    weight_deltas.get("bridge", {}).get(bk, 0.0) + c.resonance * 0.01
+                )
+
+        elapsed = (time.time() - t0) * 1000
+
+        return ObserverResult(
+            agent=observer,
+            ranked_doc_ids=ranked_ids,
+            ranked_scores=ranked_scores,
+            path_contributions=path_contribs,
+            observation_12d=obs_12d,
+            weight_deltas=weight_deltas,
+            resonance=result.resonance,
+            desire=sum(c.desire for c in result.candidates[:5]) / max(len(result.candidates[:5]), 1),
+            discrimination=discrimination,
+            elapsed_ms=elapsed,
+            committed=result.committed,
+        )
+
+    def _compute_observer_12d(self, result: ForwardResult, observer,
+                               role, query: QueryState) -> dict:
+        """Compute 12D meta-observation scores for an observer's forward pass.
+
+        Each dimension captures a genuine quality signal from the forward result.
+        """
+        candidates = result.candidates
+        n = max(len(candidates), 1)
+
+        # x1: Structure — shell diversity AND archetype coverage
+        shells = set(c.shell for c in candidates[:10])
+        archetypes = set(((c.shell - 1) // 3) + 1 for c in candidates[:10])
+        x1 = min(1.0, (len(shells) / 8.0 + len(archetypes) / 6.0) / 2)
+
+        # x2: Semantics — score discrimination (how well can we tell docs apart)
+        if len(candidates) >= 2:
+            scores_list = [c.merged_score for c in candidates[:10]]
+            mean_s = sum(scores_list) / len(scores_list)
+            variance = sum((s - mean_s) ** 2 for s in scores_list) / len(scores_list)
+            x2 = min(1.0, math.sqrt(variance) * 5)  # stdev scaled to [0,1]
+        else:
+            x2 = 0.2
+
+        # x3: Coordination — multi-element AND multi-family coverage
+        elements = set(c.element for c in candidates[:10])
+        x3 = min(1.0, len(elements) / 3.0)  # 3 elements = 1.0
+
+        # x4: Recursion — resonance quality (how well the result matches query)
+        x4 = min(1.0, result.resonance * 1.5)
+
+        # x5: Contradiction — tension between score and resonance
+        if candidates:
+            top_score = candidates[0].merged_score
+            x5 = min(1.0, abs(result.resonance - min(1.0, top_score)) * 2 + 0.3)
+        else:
+            x5 = 0.5
+
+        # x6: Emergence — cross-element pairs AND novel element in results
+        n_cross = len(result.cross_element_pairs_used) if result.cross_element_pairs_used else 0
+        obs_elem_in_results = any(
+            ELEMENT_TO_FACE.get(c.element) == observer.element for c in candidates[:5]
+        )
+        x6 = min(1.0, n_cross / 4.0 + (0.3 if obs_elem_in_results else 0.0))
+
+        # x7: Legibility — committed + resonance quality
+        x7 = 0.8 if result.committed else 0.3
+        x7 = min(1.0, x7 + result.resonance * 0.2)
+
+        # x8: Routing — observer's element present in top-3 results
+        if candidates:
+            top3_faces = [ELEMENT_TO_FACE.get(c.element, "S") for c in candidates[:3]]
+            x8 = 0.9 if observer.element in top3_faces else 0.5
+        else:
+            x8 = 0.3
+
+        # x9: Grounding — resonance × discrimination product
+        x9 = min(1.0, result.resonance + x2 * 0.3)
+
+        # x10: Compression — ratio of top score to total
+        if candidates and candidates[0].merged_score > 0:
+            total_score = sum(c.merged_score for c in candidates)
+            x10 = min(1.0, candidates[0].merged_score / max(total_score / n, 0.01) * 0.4)
+        else:
+            x10 = 0.3
+
+        # x11: Interop — bridge weight utilization
+        x11 = min(1.0, n_cross / 3.0 + len(elements) / 8.0)
+
+        # x12: Potential — mean desire + exploration bonus
+        mean_desire = sum(c.desire for c in candidates[:5]) / max(len(candidates[:5]), 1)
+        explore_bonus = 0.2 if len(elements) >= 3 else 0.0
+        x12 = min(1.0, mean_desire + explore_bonus + x2 * 0.2)
+
+        # Weight by archetype role emphasis
+        scores = {
+            "x1_structure": x1, "x2_semantics": x2, "x3_coordination": x3,
+            "x4_recursion": x4, "x5_contradiction": x5, "x6_emergence": x6,
+            "x7_legibility": x7, "x8_routing": x8, "x9_grounding": x9,
+            "x10_compression": x10, "x11_interop": x11, "x12_potential": x12,
+        }
+
+        # Apply archetype dim_weights if available (dict: dim_name → multiplier)
+        if hasattr(role, 'dim_weights') and role.dim_weights:
+            for dim_name, weight in role.dim_weights.items():
+                if dim_name in scores and isinstance(weight, (int, float)):
+                    scores[dim_name] = min(1.0, scores[dim_name] * weight)
+
+        return scores
+
     # ── Helpers ────────────────────────────────────────────────────────
 
     @staticmethod
@@ -709,7 +1026,8 @@ class GeometricEngine:
         try:
             num = int(doc_id.replace("DOC", ""))
         except (ValueError, AttributeError):
-            num = 0
+            # Hash-based shell for non-DOC IDs (hex shard IDs)
+            num = hash(doc_id) & 0x7FFFFFFF
         return (num % TOTAL_SHELLS) + 1
 
 

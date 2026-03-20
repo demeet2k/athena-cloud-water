@@ -1,0 +1,70 @@
+{
+  "genome_id": "4c2d3c81dd86",
+  "generation": 3,
+  "score": 0.7229946768682569,
+  "emergence_score": 0.0,
+  "lineage_depth": 3,
+  "n_layers": 5,
+  "layers": [
+    {
+      "primitive": "concentric_circles",
+      "params": {
+        "cx": 253,
+        "cy": 218,
+        "r_outer": 350,
+        "n": 6,
+        "fill": "none",
+        "stroke": "#333"
+      },
+      "transform": "",
+      "opacity": 1.0
+    },
+    {
+      "primitive": "sri_yantra",
+      "params": {
+        "cx": 341,
+        "cy": 552,
+        "size": 238
+      },
+      "transform": "",
+      "opacity": 1.0
+    },
+    {
+      "primitive": "concentric_circles",
+      "params": {
+        "cx": 223,
+        "cy": 273,
+        "r_outer": 341,
+        "n": 6,
+        "fill": "none",
+        "stroke": "#333"
+      },
+      "transform": "",
+      "opacity": 1.0
+    },
+    {
+      "primitive": "sigma60_field",
+      "params": {
+        "cx": 288,
+        "cy": 365,
+        "size": 286
+      },
+      "transform": "",
+      "opacity": 1.0
+    },
+    {
+      "primitive": "regular_polygon",
+      "params": {
+        "cx": 421,
+        "cy": 467,
+        "r": 221,
+        "n": 3,
+        "fill": "none",
+        "stroke": "#333"
+      },
+      "transform": "",
+      "opacity": 1.0
+    }
+  ],
+  "crystallized_at": "2026-03-19T19:05:37.214249+00:00"
+}

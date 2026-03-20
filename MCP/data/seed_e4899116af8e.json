@@ -1,0 +1,64 @@
+{
+  "genome_id": "e4899116af8e",
+  "generation": 1,
+  "score": 0.7668061640441417,
+  "emergence_score": 0.08618198662733789,
+  "lineage_depth": 1,
+  "n_layers": 5,
+  "layers": [
+    {
+      "primitive": "mobius_strip",
+      "params": {
+        "cx": 545,
+        "cy": 447,
+        "R": 197,
+        "angle_x": 0.45244399068412333,
+        "angle_z": 0.25638816794933483
+      },
+      "transform": "rotate(-162.8,400,400)",
+      "opacity": 0.6883754100599075
+    },
+    {
+      "primitive": "circle",
+      "params": {
+        "cx": 377,
+        "cy": 372,
+        "r": 136
+      },
+      "transform": "",
+      "opacity": 0.9912163417943912
+    },
+    {
+      "primitive": "sigma60_field",
+      "params": {
+        "cx": 447,
+        "cy": 575,
+        "size": 194
+      },
+      "transform": "",
+      "opacity": 1.0
+    },
+    {
+      "primitive": "koch_snowflake",
+      "params": {
+        "cx": 436,
+        "cy": 357,
+        "size": 231,
+        "depth": 4
+      },
+      "transform": "",
+      "opacity": 0.9733098662629853
+    },
+    {
+      "primitive": "sri_yantra",
+      "params": {
+        "cx": 416,
+        "cy": 529,
+        "size": 317
+      },
+      "transform": "rotate(-158.2,400,400)",
+      "opacity": 1.0
+    }
+  ],
+  "crystallized_at": "2026-03-19T23:01:39.340160+00:00"
+}

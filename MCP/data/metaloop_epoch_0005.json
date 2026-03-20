@@ -1,0 +1,13 @@
+{
+  "epoch": 5,
+  "cycle_range": [
+    228,
+    284
+  ],
+  "avg_delta": 0.0898767951442057,
+  "kept_ratio": 1.0,
+  "total_directives": 64,
+  "total_actions": 64,
+  "final_magnitude": 10.246103990079003,
+  "timestamp": "2026-03-19T03:34:41-0700"
+}

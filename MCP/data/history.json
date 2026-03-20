@@ -1,0 +1,33 @@
+{
+  "meta": {
+    "total_rounds": 2,
+    "best_overall": 0.5917498625981985,
+    "timestamp": "2026-03-19T23:01:37.711265+00:00"
+  },
+  "rounds": [
+    {
+      "round_id": 1,
+      "challenge_id": "dim_dodecahedron",
+      "challenge_name": "Dodecahedron 12-Face",
+      "best_score": 0.5917498625981985,
+      "attempts": 2,
+      "improvement_trajectory": [
+        0.5917498625981985,
+        0.5860609134804903
+      ],
+      "timestamp": "2026-03-19T23:01:37.704265+00:00"
+    },
+    {
+      "round_id": 2,
+      "challenge_id": "cryst_hex_lattice",
+      "challenge_name": "Hexagonal Crystal Lattice",
+      "best_score": 0.5726957220579342,
+      "attempts": 2,
+      "improvement_trajectory": [
+        0.5726957220579342,
+        0.5718910791937759
+      ],
+      "timestamp": "2026-03-19T23:01:37.707265+00:00"
+    }
+  ]
+}

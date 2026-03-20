@@ -1,0 +1,64 @@
+{
+  "genome_id": "772840e51998",
+  "generation": 3,
+  "score": 0.7155119730092248,
+  "emergence_score": 0.0,
+  "lineage_depth": 3,
+  "n_layers": 5,
+  "layers": [
+    {
+      "primitive": "spiral_of_theodorus",
+      "params": {
+        "cx": 526,
+        "cy": 297,
+        "n": 17,
+        "unit": 18
+      },
+      "transform": "rotate(-83.8,400,400)",
+      "opacity": 0.8956504535764027
+    },
+    {
+      "primitive": "sigma60_field",
+      "params": {
+        "cx": 473,
+        "cy": 298,
+        "size": 122
+      },
+      "transform": "",
+      "opacity": 1.0
+    },
+    {
+      "primitive": "sigma60_field",
+      "params": {
+        "cx": 501,
+        "cy": 463,
+        "size": 112
+      },
+      "transform": "rotate(38.7,400,400)",
+      "opacity": 0.5575156728902165
+    },
+    {
+      "primitive": "icosahedron",
+      "params": {
+        "cx": 600,
+        "cy": 419,
+        "size": 185,
+        "angle_x": 1.0394150509489588,
+        "angle_z": 0.9411275234659201
+      },
+      "transform": "rotate(29.5,400,400)",
+      "opacity": 1.0
+    },
+    {
+      "primitive": "metatron_cube",
+      "params": {
+        "cx": 271,
+        "cy": 375,
+        "r": 65
+      },
+      "transform": "",
+      "opacity": 0.7719803930270339
+    }
+  ],
+  "crystallized_at": "2026-03-19T19:05:36.513413+00:00"
+}

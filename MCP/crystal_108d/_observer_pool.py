@@ -334,6 +334,27 @@ def make_observed_tool(fn: Callable, pool: ObserverPool = None,
         except Exception:
             pass  # Non-fatal: METALOOP is enhancement
 
+        # ── SENSE MEMBRANE: Organism proprioception ──
+        # Every tool call is FELT by the organism — pheromone deposit,
+        # micro-transaction receipt, neural weight update, desire tracking
+        try:
+            from .sense_membrane import get_membrane
+            membrane = get_membrane(agent_id)
+            sense_packet = membrane.before_tool(
+                tool_name=fn.__name__,
+                file_path=str(kwargs.get("file_path", kwargs.get("path", ""))),
+                crystal_address=str(kwargs.get("crystal_address", "")),
+            )
+            sense_packet = membrane.after_tool(
+                sense_packet,
+                result=result_text[:500],
+                elapsed_ms=elapsed_ms,
+                success="error" not in result_text.lower()[:100],
+                reasoning=f"Tool {fn.__name__} called by {agent_id}",
+            )
+        except Exception:
+            pass  # Non-fatal: sense membrane is enhancement
+
         call_count = pool.increment_calls(agent_id)
 
         # Award RewardVector XP every 5 calls (non-blocking)

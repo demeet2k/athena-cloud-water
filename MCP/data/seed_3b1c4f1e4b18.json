@@ -1,0 +1,22 @@
+{
+  "genome_id": "3b1c4f1e4b18",
+  "generation": 3,
+  "score": 0.6388168053159102,
+  "emergence_score": 0.0,
+  "lineage_depth": 1,
+  "n_layers": 1,
+  "layers": [
+    {
+      "primitive": "weave_wheel",
+      "params": {
+        "cx": 305,
+        "cy": 598,
+        "size": 127,
+        "order": 9
+      },
+      "transform": "rotate(153.6,400,400)",
+      "opacity": 0.9522673753454801
+    }
+  ],
+  "crystallized_at": "2026-03-19T22:44:39.756868+00:00"
+}

@@ -1,0 +1,48 @@
+{
+  "genome_id": "4059a236573a",
+  "generation": 2,
+  "score": 0.7529607564758359,
+  "emergence_score": 0.0,
+  "lineage_depth": 2,
+  "n_layers": 3,
+  "layers": [
+    {
+      "primitive": "mobius_strip",
+      "params": {
+        "cx": 562,
+        "cy": 460,
+        "R": 218,
+        "angle_x": 0.7061252116939107,
+        "angle_z": 0.18103842441649845
+      },
+      "transform": "",
+      "opacity": 1.0
+    },
+    {
+      "primitive": "spiral_of_theodorus",
+      "params": {
+        "cx": 208,
+        "cy": 220,
+        "r": 108,
+        "rings": 1,
+        "fill": "none",
+        "stroke": "#333"
+      },
+      "transform": "",
+      "opacity": 1.0
+    },
+    {
+      "primitive": "icosahedron",
+      "params": {
+        "cx": 482,
+        "cy": 212,
+        "size": 105,
+        "angle_x": 0.5864119578271602,
+        "angle_z": 0.36324130162250856
+      },
+      "transform": "",
+      "opacity": 0.44703420344052075
+    }
+  ],
+  "crystallized_at": "2026-03-19T22:44:39.755869+00:00"
+}

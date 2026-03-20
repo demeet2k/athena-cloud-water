@@ -197,3 +197,58 @@ def momentum_status() -> str:
                       f"range=[{stats['min']:.4f}, {stats['max']:.4f}]")
 
     return "\n".join(lines)
+
+
+def qphi_self_status() -> str:
+    """Show the full autonomic self-improvement pipeline status.
+
+    Returns HDCS certificate governance, Quantum Hugging trust dynamics,
+    and Q-Phi convergence engine status — the complete picture.
+    """
+    try:
+        from .autonomic_pipeline import get_pipeline
+        pipeline = get_pipeline()
+        return pipeline.report()
+    except Exception as e:
+        return f"Pipeline not available: {e}"
+
+
+def qphi_self_step(rounds: int = 1) -> str:
+    """Run autonomic self-improvement pipeline steps.
+
+    Each round runs: Certify → Hug → Learn → Sear → Arsi → Audit.
+    Uses balanced default observation if no recent data.
+
+    Args:
+        rounds: Number of full pipeline cycles to run
+    """
+    try:
+        from .autonomic_pipeline import get_pipeline
+        pipeline = get_pipeline()
+
+        default_obs = {
+            "x1_structure": 0.5, "x2_semantics": 0.5,
+            "x3_coordination": 0.5, "x4_recursion": 0.5,
+            "x5_contradiction": 0.5, "x6_emergence": 0.5,
+            "x7_legibility": 0.5, "x8_routing": 0.5,
+            "x9_grounding": 0.5, "x10_compression": 0.5,
+            "x11_interop": 0.5, "x12_potential": 0.5,
+        }
+
+        results = pipeline.run([default_obs], rounds=rounds)
+
+        lines = [f"## Autonomic Pipeline ({rounds} rounds)\n"]
+        for r in results[-3:]:
+            cert = r.get("certificate", {})
+            lines.append(
+                f"Round {r.get('round', '?')}: "
+                f"{'ADMITTED' if cert.get('admitted') else 'BLOCKED'} "
+                f"strategy={r.get('strategy', '?')} "
+                f"V={cert.get('lyapunov_after', (0,0,0))[0]} "
+                f"S={cert.get('lyapunov_after', (0,0,0))[1]:.3f}"
+            )
+
+        lines.append(f"\n{pipeline.report()}")
+        return "\n".join(lines)
+    except Exception as e:
+        return f"Pipeline step failed: {e}"

@@ -1,0 +1,22 @@
+{
+  "genome_id": "af6b2431b8b3",
+  "generation": 0,
+  "score": 0.7744515603493946,
+  "emergence_score": 0.0,
+  "lineage_depth": 0,
+  "n_layers": 1,
+  "layers": [
+    {
+      "primitive": "crystal_4d",
+      "params": {
+        "cx": 417,
+        "cy": 369,
+        "size": 211,
+        "depth": 2
+      },
+      "transform": "rotate(82.8,400,400)",
+      "opacity": 1.0
+    }
+  ],
+  "crystallized_at": "2026-03-19T18:18:04.765770+00:00"
+}

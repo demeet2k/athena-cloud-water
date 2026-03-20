@@ -1,0 +1,35 @@
+{
+  "genome_id": "4ec835c3204d",
+  "generation": 1,
+  "score": 0.7454926057873192,
+  "emergence_score": 0.0,
+  "lineage_depth": 0,
+  "n_layers": 2,
+  "layers": [
+    {
+      "primitive": "crystal_4d",
+      "params": {
+        "cx": 426,
+        "cy": 525,
+        "size": 218
+      },
+      "transform": "",
+      "opacity": 1.0
+    },
+    {
+      "primitive": "star_polygon",
+      "params": {
+        "cx": 371,
+        "cy": 387,
+        "r_outer": 285,
+        "r_inner": 67,
+        "n": 9,
+        "fill": "none",
+        "stroke": "#333"
+      },
+      "transform": "rotate(68.8,400,400)",
+      "opacity": 1.0
+    }
+  ],
+  "crystallized_at": "2026-03-19T23:01:39.799828+00:00"
+}

@@ -1,0 +1,67 @@
+{
+  "genome_id": "30dceee1e3fd",
+  "generation": 3,
+  "score": 0.7534558303422655,
+  "emergence_score": 0.05674060938736958,
+  "lineage_depth": 1,
+  "n_layers": 5,
+  "layers": [
+    {
+      "primitive": "dodecahedron",
+      "params": {
+        "cx": 370,
+        "cy": 413,
+        "size": 146,
+        "angle_x": 0.27351895546112653,
+        "angle_z": 0.3772214720090816
+      },
+      "transform": "",
+      "opacity": 1.0
+    },
+    {
+      "primitive": "dodecahedron",
+      "params": {
+        "cx": 370,
+        "cy": 380,
+        "size": 146,
+        "angle_x": 0.25715958389074856,
+        "angle_z": 0.3772214720090816
+      },
+      "transform": "",
+      "opacity": 1.0
+    },
+    {
+      "primitive": "koch_snowflake",
+      "params": {
+        "cx": 368,
+        "cy": 376,
+        "size": 190,
+        "depth": 2
+      },
+      "transform": "",
+      "opacity": 0.7546715947408792
+    },
+    {
+      "primitive": "vesica_piscis",
+      "params": {
+        "cx": 446,
+        "cy": 350,
+        "r": 105
+      },
+      "transform": "",
+      "opacity": 1.0
+    },
+    {
+      "primitive": "koch_snowflake",
+      "params": {
+        "cx": 381,
+        "cy": 385,
+        "size": 190,
+        "depth": 2
+      },
+      "transform": "",
+      "opacity": 0.7546715947408792
+    }
+  ],
+  "crystallized_at": "2026-03-19T22:44:40.460138+00:00"
+}

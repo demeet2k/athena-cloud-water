@@ -1,0 +1,23 @@
+{
+  "genome_id": "d662c25d54f3",
+  "generation": 1,
+  "score": 0.7690731566852599,
+  "emergence_score": 0.0,
+  "lineage_depth": 1,
+  "n_layers": 1,
+  "layers": [
+    {
+      "primitive": "mobius_strip",
+      "params": {
+        "cx": 224,
+        "cy": 372,
+        "R": 211,
+        "angle_x": 0.5134533656886915,
+        "angle_z": 0.3405485163214066
+      },
+      "transform": "rotate(26.2,400,400)",
+      "opacity": 0.9433738881733738
+    }
+  ],
+  "crystallized_at": "2026-03-19T19:05:37.213247+00:00"
+}

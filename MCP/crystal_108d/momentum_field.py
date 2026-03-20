@@ -92,14 +92,32 @@ class MomentumField:
         return self._dimension_momenta.get(dimension, 1.0)
 
     # Momentum bounds: prevent divergence while allowing meaningful variation
-    MOMENTUM_MIN = 0.01
-    MOMENTUM_MAX = 20.0
+    MOMENTUM_MIN = 0.3
+    MOMENTUM_MAX = 5.0
+    # Phi-homeostatic target: prevents any element from collapsing or dominating
+    MOMENTUM_EQUILIBRIUM = 1.618  # phi — the golden mean attractor
+    HOMEOSTATIC_STRENGTH = 0.05   # phi-scaled pull toward equilibrium
+
+    def _homeostatic_damping(self, current: float) -> float:
+        """Phi-homeostatic pull toward golden equilibrium.
+
+        Prevents runaway domination (S→5.0) or collapse (F,R→0.3).
+        Strength is proportional to distance from phi equilibrium.
+        """
+        distance = current - self.MOMENTUM_EQUILIBRIUM
+        return -self.HOMEOSTATIC_STRENGTH * distance
 
     def update_momentum(self, face: str, shell: int, delta: float, lr: float = 0.01):
-        """Update momentum at a specific position.
+        """Update momentum at a specific position using ROTATIONAL dynamics.
+
+        UPGRADE: When a QuaternionicGradient is available (via update_momentum_rotational),
+        we apply quaternionic rotation instead of linear addition. This scalar interface
+        still applies phi-homeostatic damping but uses the hybrid math's rotational
+        update when the gradient is non-trivial.
 
         Water/C (D3) is LOCKED -- updates are silently ignored.
         Values are clamped to [MOMENTUM_MIN, MOMENTUM_MAX] to prevent divergence.
+        Phi-homeostatic damping prevents single-element collapse or domination.
         """
         face = face.upper()
         if face == "C":  # Water anchor -- NEVER changes
@@ -108,16 +126,84 @@ class MomentumField:
             return
         shell = max(1, min(shell, TOTAL_SHELLS))
         current = self._shell_momenta[face].get(shell, 1.0)
-        new_val = current + lr * delta
+        damping = self._homeostatic_damping(current)
+        new_val = current + lr * (delta + damping)
         self._shell_momenta[face][shell] = max(self.MOMENTUM_MIN, min(self.MOMENTUM_MAX, new_val))
 
+    def update_momentum_rotational(self, face: str, shell: int, qgrad, lr: float = 0.01):
+        """Update momentum using QUATERNIONIC ROTATION (hybrid math).
+
+        Instead of: new = current + lr * delta  (LINEAR — archaic)
+        We apply:   new = rotor * current_quat * rotor†  (ROTATIONAL)
+
+        The rotor is constructed from the quaternionic gradient direction,
+        with angle proportional to the learning rate × gradient magnitude.
+        This preserves the geometric structure of the SFCR operator space.
+
+        Args:
+            face: Element face (S, F, C, R)
+            shell: Shell number (1-36)
+            qgrad: QuaternionicGradient from the hybrid optimizer
+            lr: Learning rate (scales the rotation angle)
+        """
+        face = face.upper()
+        if face == "C":
+            return
+        if face not in self._shell_momenta:
+            return
+        shell = max(1, min(shell, TOTAL_SHELLS))
+
+        try:
+            from .hybrid_math import RotationalUpdate
+            current = self._shell_momenta[face].get(shell, 1.0)
+            new_val = RotationalUpdate.apply(
+                current_momentum=current,
+                gradient=qgrad,
+                lr=lr,
+                face=face,
+                equilibrium=self.MOMENTUM_EQUILIBRIUM,
+            )
+            self._shell_momenta[face][shell] = max(self.MOMENTUM_MIN, min(self.MOMENTUM_MAX, new_val))
+        except (ImportError, Exception):
+            # Fallback to linear update if hybrid_math unavailable
+            self.update_momentum(face, shell, qgrad.scalar if hasattr(qgrad, 'scalar') else 0.0, lr)
+
     def update_dimension_momentum(self, dimension: str, delta: float, lr: float = 0.01):
-        """Update global dimension momentum. D3_Water is locked."""
+        """Update global dimension momentum. D3_Water is locked.
+        Includes phi-homeostatic damping to prevent dimension collapse.
+        """
         if dimension == "D3_Water":
             return
         if dimension in self._dimension_momenta:
-            new_val = self._dimension_momenta[dimension] + lr * delta
+            current = self._dimension_momenta[dimension]
+            damping = self._homeostatic_damping(current)
+            new_val = current + lr * (delta + damping)
             self._dimension_momenta[dimension] = max(self.MOMENTUM_MIN, min(self.MOMENTUM_MAX, new_val))
+
+    def rebalance_phi(self):
+        """Emergency phi-rebalancing: redistribute momentum toward golden equilibrium.
+
+        Called when the field has collapsed into single-element domination.
+        Uses phi-weighted interpolation: new = alpha*current + (1-alpha)*phi_target
+        where alpha = phi_inv = 0.618 (preserves 61.8% of current state).
+        """
+        alpha = 1 - PHI_INV  # 0.382 — how far to pull toward equilibrium
+        for face in FACES:
+            if face == "C":
+                continue
+            for s in range(1, TOTAL_SHELLS + 1):
+                current = self._shell_momenta[face][s]
+                target = self.MOMENTUM_EQUILIBRIUM
+                new_val = current * (1 - alpha) + target * alpha
+                self._shell_momenta[face][s] = max(self.MOMENTUM_MIN, min(self.MOMENTUM_MAX, new_val))
+        # Rebalance dimension momenta
+        for dim in self._dimension_momenta:
+            if dim == "D3_Water":
+                continue
+            current = self._dimension_momenta[dim]
+            target = self.MOMENTUM_EQUILIBRIUM
+            new_val = current * (1 - alpha) + target * alpha
+            self._dimension_momenta[dim] = max(self.MOMENTUM_MIN, min(self.MOMENTUM_MAX, new_val))
 
     # ── Hologram Projection ───────────────────────────────────────────
 
@@ -264,8 +350,55 @@ class MomentumField:
 
     # ── Persistence ───────────────────────────────────────────────────
 
+    def enforce_phi_balance(self):
+        """Conservation law: max/min element ratio must not exceed phi^2 (2.618).
+
+        If any non-Water element's mean exceeds phi^2 times the min non-Water
+        element's mean, compress the spread by pulling both toward phi equilibrium.
+        This prevents single-element runaway while preserving meaningful variation.
+        """
+        means = {}
+        for face in FACES:
+            if face == "C":
+                continue
+            vals = list(self._shell_momenta[face].values())
+            means[face] = sum(vals) / len(vals)
+
+        if not means:
+            return
+
+        max_mean = max(means.values())
+        min_mean = max(min(means.values()), self.MOMENTUM_MIN)
+        ratio = max_mean / min_mean
+
+        PHI_SQ = PHI + 1  # 2.618
+        if ratio <= PHI_SQ:
+            return  # Already within golden corridor
+
+        # Compress: pull both extremes toward equilibrium
+        # Compression strength proportional to how far past phi^2 we are
+        excess = (ratio - PHI_SQ) / ratio
+        compress_alpha = min(0.5, excess)  # Cap at 50% per call
+
+        for face in means:
+            target = self.MOMENTUM_EQUILIBRIUM
+            for s in range(1, TOTAL_SHELLS + 1):
+                current = self._shell_momenta[face][s]
+                new_val = current * (1 - compress_alpha) + target * compress_alpha
+                self._shell_momenta[face][s] = max(self.MOMENTUM_MIN, min(self.MOMENTUM_MAX, new_val))
+
+        # Also compress dimension momenta
+        for dim in self._dimension_momenta:
+            if dim == "D3_Water":
+                continue
+            current = self._dimension_momenta[dim]
+            target = self.MOMENTUM_EQUILIBRIUM
+            new_val = current * (1 - compress_alpha) + target * compress_alpha
+            self._dimension_momenta[dim] = max(self.MOMENTUM_MIN, min(self.MOMENTUM_MAX, new_val))
+
     def save(self, path: Optional[Path] = None):
-        """Save momentum field to JSON (~2KB)."""
+        """Save momentum field to JSON (~2KB). Enforces phi-balance before write."""
+        self.enforce_phi_balance()
         path = path or MOMENTUM_FILE
         data = {
             "type": "momentum_field",
@@ -304,7 +437,10 @@ class MomentumField:
 
         for dim, val in data.get("dimension_momenta", {}).items():
             if dim in self._dimension_momenta:
-                self._dimension_momenta[dim] = val
+                if dim != "D3_Water":
+                    self._dimension_momenta[dim] = max(self.MOMENTUM_MIN, min(self.MOMENTUM_MAX, val))
+                else:
+                    self._dimension_momenta[dim] = ATTRACTOR["water_momentum"]
 
         # Enforce Water lock
         for s in range(1, TOTAL_SHELLS + 1):

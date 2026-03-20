@@ -1,0 +1,39 @@
+{
+  "cycle": 1,
+  "active_directives": [
+    {
+      "directive_id": "dir_000001",
+      "directive_type": "batch_similar",
+      "target": "query_graph|query_shell",
+      "recommendation": "Batch or parallelize query_graph + query_shell (5 co-occurrences)",
+      "priority": 0.25,
+      "evidence": "{\"tools\": [\"query_graph\", \"query_shell\"], \"co_occurrences\": 5, \"recommendation\": \"parallel\"}",
+      "emitted_at": "2026-03-19T04:23:31.656986+00:00",
+      "status": "active",
+      "impact_measured": 0.0
+    },
+    {
+      "directive_id": "dir_000002",
+      "directive_type": "batch_similar",
+      "target": "navigate_108d|query_graph",
+      "recommendation": "Batch or parallelize navigate_108d + query_graph (5 co-occurrences)",
+      "priority": 0.25,
+      "evidence": "{\"tools\": [\"navigate_108d\", \"query_graph\"], \"co_occurrences\": 5, \"recommendation\": \"parallel\"}",
+      "emitted_at": "2026-03-19T04:23:31.656986+00:00",
+      "status": "active",
+      "impact_measured": 0.0
+    },
+    {
+      "directive_id": "dir_000003",
+      "directive_type": "batch_similar",
+      "target": "geometric_train|query_graph",
+      "recommendation": "Batch or parallelize geometric_train + query_graph (5 co-occurrences)",
+      "priority": 0.25,
+      "evidence": "{\"tools\": [\"geometric_train\", \"query_graph\"], \"co_occurrences\": 5, \"recommendation\": \"parallel\"}",
+      "emitted_at": "2026-03-19T04:23:31.656986+00:00",
+      "status": "active",
+      "impact_measured": 0.0
+    }
+  ],
+  "last_updated": "2026-03-20T17:27:57.649008+00:00"
+}

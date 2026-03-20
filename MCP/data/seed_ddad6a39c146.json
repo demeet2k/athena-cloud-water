@@ -1,0 +1,32 @@
+{
+  "genome_id": "ddad6a39c146",
+  "generation": 3,
+  "score": 0.6663653817989322,
+  "emergence_score": 0.0,
+  "lineage_depth": 0,
+  "n_layers": 2,
+  "layers": [
+    {
+      "primitive": "phi_grid",
+      "params": {
+        "width": 516,
+        "height": 433,
+        "divisions": 3
+      },
+      "transform": "",
+      "opacity": 0.771372981630996
+    },
+    {
+      "primitive": "sierpinski_triangle",
+      "params": {
+        "cx": 314,
+        "cy": 254,
+        "size": 133,
+        "depth": 3
+      },
+      "transform": "",
+      "opacity": 0.8318239265098966
+    }
+  ],
+  "crystallized_at": "2026-03-19T23:01:39.425679+00:00"
+}

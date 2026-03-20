@@ -52,6 +52,21 @@ Extends the Athena Nervous System MCP server with the full 108D organism:
 
 from ._cache import JsonCache
 
+
+def _mycelium_stats() -> str:
+    """Live mycelium graph metrics."""
+    try:
+        graph = JsonCache("mycelium_graph.json").load()
+        shards = len(graph.get("shards", []))
+        edges = graph.get("edges", [])
+        total = len(edges)
+        xm = sum(1 for e in edges if e.get("medium_cross", False))
+        pct = f"{100*xm/total:.1f}%" if total else "0%"
+        return f"{shards:,} shards, {total:,} edges, {xm:,} cross-medium ({pct})"
+    except Exception:
+        return "Universal shard/edge/node schema, promotion state machine"
+
+
 def status_summary() -> str:
     """Return a compact 108D system status string."""
     shells = JsonCache("shell_registry.json").load()
@@ -61,25 +76,23 @@ def status_summary() -> str:
     clock = JsonCache("clock_projections.json").load()
     laws = JsonCache("conservation_laws.json").load()
 
+    sm = shells.get('meta', {})
+    dm = dims.get('meta', {})
+    om = organs.get('meta', {})
+    lm = locks.get('meta', {})
+    cm = clock.get('meta', {})
+    lw = laws.get('meta', {})
+
     return (
         "## 108D Crystal Hologram Status\n\n"
-        f"- **Shells**: {shells['meta']['total_shells']} | "
-        f"**Nodes**: {shells['meta']['total_nodes']} | "
-        f"**Wreaths**: {shells['meta']['wreaths']}\n"
-        f"- **Archetypes**: {shells['meta']['archetypes']} "
-        f"(cycling through {', '.join(shells['meta']['superphases'])})\n"
+        f"- **Shells**: {sm.get('total_shells', 36)} | "
+        f"**Archetypes**: {sm.get('total_archetypes', 12)} | "
+        f"**Wreaths**: {sm.get('total_wreaths', 3)} | "
+        f"**Faces**: {', '.join(sm.get('faces', ['S','F','C','R']))}\n"
         f"- **Dimensions**: 108 (crown body = 12D)\n"
-        f"- **Alternating Atlas**: {dims['meta']['alternating_spine']}\n"
-        f"- **Organ Atlas**: {organs['meta']['total_organs']} organs in "
-        f"{organs['meta']['dyads']} dyads across {organs['meta']['petals']} petals\n"
-        f"- **Live-Lock Classes**: {locks['meta']['total_classes']} "
-        f"(helm wheels: {locks['meta']['helm_wheels']})\n"
-        f"- **Master Clock**: {clock['meta']['master_clock']} beats "
-        f"({clock['meta']['formula']})\n"
-        f"- **Conservation Laws**: {laws['meta']['total_laws']} "
+        f"- **Organ Atlas**: {om.get('total_organs', '6')} organs\n"
+        f"- **Conservation Laws**: {lw.get('total_laws', 6)} "
         f"(shell, zoom, phase, archetype, face, mobius)\n"
-        f"- **Containment**: {dims['meta']['crown_body']}\n"
-        f"- **Higher Lifts**: {dims['meta']['higher_lifts']}\n"
         f"- **Möbius Kernel**: 4×4 seed with 4 constitutive lenses (S/F/C/R)\n"
         f"- **SFCR Lattice**: 15 stations, 96-slot cockpit\n"
         f"- **Stage Ladder**: S3 → S12 → Ω → A+ (16 stages)\n"
@@ -90,7 +103,7 @@ def status_summary() -> str:
         f"- **Hologram**: 4-face protocol, seed w=(1+i)/2, process grammar W=Pi_s(Phi_p(X_r))\n"
         f"- **Angel Geometry**: 6-chart manifold, Fisher-Rao, curvature R!=0, 7 axioms\n"
         f"- **Inverse Crystal**: 14-stage octave lift (3D->108D->A+), 3D seed (14 components), 2D boundary\n"
-        f"- **Mycelium Graph**: Universal shard/edge/node schema, promotion state machine\n"
+        f"- **Mycelium Graph**: {_mycelium_stats()}\n"
         f"- **Guild Hall**: Social coordination organ, quest boards, promotion membrane\n"
         f"- **Meta Observer**: 57-cycle swarm synthesis protocol (4-element × 12D observation)\n"
         f"- **E₈ Lattice**: Crystalline hybrid mathematics (dual-body, 73 files, 402 pages)\n"
@@ -179,6 +192,7 @@ def register_108d_tools(mcp) -> None:
     from .geometric_mcp import (
         geometric_forward_pass, geometric_train, geometric_status,
         geometric_checkpoint, geometric_resume, momentum_status,
+        qphi_self_status, qphi_self_step,
     )
     from .cross_lens import query_cross_lens
     from .self_reference import query_self_reference
@@ -192,7 +206,10 @@ def register_108d_tools(mcp) -> None:
     from .crown_transform_gate import query_crown_transform_gate
     from .absolute_convergence import query_absolute_convergence
     from .observer_swarm import spawn_observer_swarm, run_swarm_observation, query_swarm_status
-    from .self_play import run_swarm_self_play
+    from .crystalline_self_play import (
+        run_self_play as crystalline_self_play,
+        run_swarm_self_play,
+    )
     from .corpus_weights import query_corpus_weights
     from .weight_feedback import query_weight_feedback
     from .kc27_naming import query_kc27_naming
@@ -206,6 +223,10 @@ def register_108d_tools(mcp) -> None:
     )
     from .time_fractal import query_time_fractal
     from .conservation_watchdog import query_conservation_watchdog
+
+    # Holographic organism topology + sense membrane (v2)
+    from .organism_topology import query_organism_topology
+    from .sense_membrane import sense_membrane_status, sense_membrane_activate
 
     # 4D Upgrade modules (Octave Loop)
     from .inverse_engine import get_inverse_engine
@@ -256,13 +277,15 @@ def register_108d_tools(mcp) -> None:
         query_crystal_weights, neural_forward_pass, run_self_play,
         geometric_forward_pass, geometric_train, geometric_status,
         geometric_checkpoint, geometric_resume, momentum_status,
+        qphi_self_status, qphi_self_step,
         query_cross_lens, query_self_reference, query_steering_spine,
         query_selector_shell, query_perpetual_agency,
         query_harmonic_resonance, query_mycelium_emergence,
         query_crown_density, query_omega_tunneling,
         query_crown_transform_gate, query_absolute_convergence,
         spawn_observer_swarm, run_swarm_observation, query_swarm_status,
-        run_swarm_self_play, query_corpus_weights, query_weight_feedback,
+        run_swarm_self_play, crystalline_self_play,
+        query_corpus_weights, query_weight_feedback,
         query_kc27_naming,
         query_bridge_transport,
         query_crystal_4d_manifest,
@@ -272,6 +295,9 @@ def register_108d_tools(mcp) -> None:
         query_conservation_watchdog,
         hive_ledger_write, hive_ledger_read,
         hive_ledger_broadcasts, hive_ledger_ack, hive_ledger_status,
+        # Holographic organism topology + sense membrane (v2)
+        query_organism_topology,
+        sense_membrane_status, sense_membrane_activate,
     ]
 
     for tool_fn in _ALL_TOOLS:

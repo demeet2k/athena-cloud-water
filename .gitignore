@@ -126,3 +126,6 @@ MCP/data/sandbox_observer.db
 MCP/data/sandbox/
 MCP/data/checkpoint_*.json
 MCP/data/momentum_history.json
+MCP/data/corpus_weights_field.json
+MCP/data/mycelium_graph.json
+*.db

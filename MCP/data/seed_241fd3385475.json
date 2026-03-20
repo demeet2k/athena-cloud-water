@@ -1,0 +1,72 @@
+{
+  "genome_id": "241fd3385475",
+  "generation": 2,
+  "score": 0.7764057926443697,
+  "emergence_score": 0.0203540926307203,
+  "lineage_depth": 2,
+  "n_layers": 5,
+  "layers": [
+    {
+      "primitive": "icosahedron",
+      "params": {
+        "cx": 489,
+        "cy": 200,
+        "size": 90,
+        "angle_x": 0.5363519970752888,
+        "angle_z": 0.29844436747107117
+      },
+      "transform": "",
+      "opacity": 0.44703420344052075
+    },
+    {
+      "primitive": "mobius_strip",
+      "params": {
+        "cx": 526,
+        "cy": 436,
+        "R": 207,
+        "angle_x": 0.7061252116939107,
+        "angle_z": 0.24361345946220703
+      },
+      "transform": "",
+      "opacity": 1.0
+    },
+    {
+      "primitive": "mobius_strip",
+      "params": {
+        "cx": 537,
+        "cy": 361,
+        "R": 218,
+        "angle_x": 0.6767664893980878,
+        "angle_z": 0.1932963943881483
+      },
+      "transform": "",
+      "opacity": 1.0
+    },
+    {
+      "primitive": "icosahedron",
+      "params": {
+        "cx": 489,
+        "cy": 212,
+        "size": 105,
+        "angle_x": 0.4417907232828074,
+        "angle_z": 0.33884513713105313
+      },
+      "transform": "",
+      "opacity": 0.44703420344052075
+    },
+    {
+      "primitive": "spiral_of_theodorus",
+      "params": {
+        "cx": 206,
+        "cy": 220,
+        "r": 108,
+        "rings": 1,
+        "fill": "none",
+        "stroke": "#333"
+      },
+      "transform": "",
+      "opacity": 1.0
+    }
+  ],
+  "crystallized_at": "2026-03-19T22:44:39.755869+00:00"
+}

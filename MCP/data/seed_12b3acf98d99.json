@@ -1,0 +1,21 @@
+{
+  "genome_id": "12b3acf98d99",
+  "generation": 3,
+  "score": 0.7171411510215414,
+  "emergence_score": 0.0,
+  "lineage_depth": 0,
+  "n_layers": 1,
+  "layers": [
+    {
+      "primitive": "metatron_cube",
+      "params": {
+        "cx": 558,
+        "cy": 238,
+        "r": 191
+      },
+      "transform": "rotate(89.7,400,400)",
+      "opacity": 1.0
+    }
+  ],
+  "crystallized_at": "2026-03-19T19:05:37.123733+00:00"
+}

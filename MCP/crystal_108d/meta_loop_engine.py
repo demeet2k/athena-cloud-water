@@ -478,12 +478,16 @@ class MetaLoopEngine:
             all_resonances.append(wr.mean_resonance)
             all_observations.append(wr.mean_observation)
 
+            # Phi-balance conservation law: enforce every wave
+            self.momentum.enforce_phi_balance()
+
             # Time budget check
             elapsed_min = (time.time() - t0) / 60
             if elapsed_min > config.max_time_minutes / 3:  # 1/3 budget per cycle
                 break
 
-        # FINAL: Inversion + Poles + Hologram
+        # FINAL: Phi-balance + Inversion + Poles + Hologram
+        self.momentum.enforce_phi_balance()
         self._invert_and_balance()
 
         # Emit hologram

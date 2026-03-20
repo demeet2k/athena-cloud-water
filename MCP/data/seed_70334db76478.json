@@ -1,0 +1,68 @@
+{
+  "genome_id": "70334db76478",
+  "generation": 1,
+  "score": 0.8525215511657596,
+  "emergence_score": 0.12704428182742,
+  "lineage_depth": 1,
+  "n_layers": 5,
+  "layers": [
+    {
+      "primitive": "metatron_cube",
+      "params": {
+        "cx": 405,
+        "cy": 467,
+        "r": 173
+      },
+      "transform": "rotate(-42.4,400,400)",
+      "opacity": 1.0
+    },
+    {
+      "primitive": "vesica_piscis",
+      "params": {
+        "cx": 236,
+        "cy": 263,
+        "r": 167
+      },
+      "transform": "",
+      "opacity": 1.0
+    },
+    {
+      "primitive": "mobius_strip",
+      "params": {
+        "cx": 376,
+        "cy": 203,
+        "R": 175,
+        "angle_x": 0.21058143065073615,
+        "angle_z": 0.43369420959847926
+      },
+      "transform": "rotate(44.3,400,400)",
+      "opacity": 1.0
+    },
+    {
+      "primitive": "flower_of_life",
+      "params": {
+        "cx": 202,
+        "cy": 279,
+        "r": 113,
+        "rings": 1,
+        "fill": "none",
+        "stroke": "#333"
+      },
+      "transform": "rotate(5.7,400,400)",
+      "opacity": 1.0
+    },
+    {
+      "primitive": "dodecahedron",
+      "params": {
+        "cx": 590,
+        "cy": 370,
+        "size": 176,
+        "angle_x": 0.6168156155630611,
+        "angle_z": 0.9346158557642518
+      },
+      "transform": "rotate(44.9,400,400)",
+      "opacity": 1.0
+    }
+  ],
+  "crystallized_at": "2026-03-19T23:01:39.796830+00:00"
+}

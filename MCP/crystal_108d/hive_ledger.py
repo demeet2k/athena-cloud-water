@@ -69,7 +69,16 @@ VALID_BROADCAST_SUBTYPES = {"directive", "insight", "warning", "coordination", "
 
 @dataclass
 class LedgerEntry:
-    """A single entry in the hive ledger — the atom of shared reasoning."""
+    """A single entry in the hive ledger — the atom of shared reasoning.
+
+    Extended with holographic organism fields:
+      - future_goal: what the agent intends NEXT (forward-looking reasoning)
+      - desire_vector: [S, F, C, R] weights expressing agent's current need
+      - liminal_address: full holographic tesseract address (T:L:Z:N)
+      - tx_receipt: micro-transaction receipt hash (for cross-agent tracing)
+      - reasoning_depth: 0=surface, 1=tactical, 2=strategic, 3=existential
+      - pheromone_deposit: [pos_S, pos_F, pos_C, pos_R, shd_S, shd_F, shd_C, shd_R]
+    """
     entry_id: str = ""
     timestamp: str = ""
     agent_id: str = ""
@@ -85,11 +94,22 @@ class LedgerEntry:
     prev_hash: str = ""
     self_hash: str = ""
 
+    # ── Holographic Organism Fields (v2) ──────────────────────────
+    future_goal: str = ""                                    # WHAT NEXT — forward reasoning
+    desire_vector: List[float] = field(default_factory=lambda: [0.25, 0.25, 0.25, 0.25])  # [S,F,C,R]
+    liminal_address: str = ""                                # T{v}:L{l}:Z{z}:N{n}
+    tx_receipt: str = ""                                     # micro-transaction hash
+    reasoning_depth: int = 0                                 # 0=surface, 1=tactical, 2=strategic, 3=existential
+    pheromone_deposit: List[float] = field(default_factory=lambda: [0.0]*8)  # 4 pos + 4 shadow
+    metro_lines: List[str] = field(default_factory=list)     # metro lines this entry touches
+    neural_weight_delta: float = 0.0                         # Hebbian update strength
+
     def compute_hash(self) -> str:
-        """SHA256[:16] of the entry's core fields, matching witness chain pattern."""
+        """SHA256[:16] of the entry's core fields + organism fields, matching witness chain pattern."""
         payload = (
             f"{self.entry_id}:{self.agent_id}:{self.entry_type}:"
-            f"{self.timestamp}:{self.reasoning[:100]}:{self.prev_hash}"
+            f"{self.timestamp}:{self.reasoning[:100]}:{self.prev_hash}:"
+            f"{self.future_goal[:50]}:{self.liminal_address}:{self.tx_receipt}"
         )
         return hashlib.sha256(payload.encode()).hexdigest()[:16]
 
@@ -126,6 +146,15 @@ class LedgerEntry:
             expires_at=d.get("expires_at", ""),
             prev_hash=d.get("prev_hash", ""),
             self_hash=d.get("self_hash", ""),
+            # v2 organism fields
+            future_goal=d.get("future_goal", ""),
+            desire_vector=d.get("desire_vector", [0.25, 0.25, 0.25, 0.25]),
+            liminal_address=d.get("liminal_address", ""),
+            tx_receipt=d.get("tx_receipt", ""),
+            reasoning_depth=d.get("reasoning_depth", 0),
+            pheromone_deposit=d.get("pheromone_deposit", [0.0]*8),
+            metro_lines=d.get("metro_lines", []),
+            neural_weight_delta=d.get("neural_weight_delta", 0.0),
         )
 
 
@@ -160,8 +189,24 @@ class HiveLedger:
         crystal_address: str = "",
         broadcast_subtype: str = "",
         ttl_seconds: int = DEFAULT_TTL,
+        # v2 organism fields
+        future_goal: str = "",
+        desire_vector: Optional[List[float]] = None,
+        liminal_address: str = "",
+        reasoning_depth: int = 0,
+        pheromone_deposit: Optional[List[float]] = None,
+        metro_lines: Optional[List[str]] = None,
     ) -> LedgerEntry:
-        """Append a new entry to the ledger. Hash-chains to previous."""
+        """Append a new entry to the ledger. Hash-chains to previous.
+
+        v2 fields enable holographic organism sensing:
+          - future_goal: WHAT the agent plans to do NEXT
+          - desire_vector: [S,F,C,R] current need weights
+          - liminal_address: T{v}:L{l}:Z{z}:N{n} position
+          - reasoning_depth: 0=surface → 3=existential
+          - pheromone_deposit: 8-channel pheromone emission
+          - metro_lines: which metro lines this entry touches
+        """
         if entry_type not in VALID_ENTRY_TYPES:
             entry_type = "decision"
         if broadcast_subtype not in VALID_BROADCAST_SUBTYPES:
@@ -175,6 +220,15 @@ class HiveLedger:
         if entry_type == "broadcast" and ttl_seconds > 0:
             exp = now + timedelta(seconds=ttl_seconds)
             expires_at = exp.strftime("%Y-%m-%dT%H:%M:%S%z")
+
+        # Compute micro-transaction receipt
+        tx_receipt = hashlib.sha256(
+            f"{agent_id}:{ts}:{reasoning[:50]}:{future_goal[:30]}".encode()
+        ).hexdigest()[:16]
+
+        # Compute neural weight delta from desire vector
+        dv = desire_vector or [0.25, 0.25, 0.25, 0.25]
+        neural_delta = max(dv) - min(dv)  # polarity = weight update strength
 
         entry = LedgerEntry(
             entry_id=f"hl-{uuid.uuid4().hex[:8]}",
@@ -191,6 +245,15 @@ class HiveLedger:
             expires_at=expires_at,
             prev_hash="",
             self_hash="",
+            # v2 organism fields
+            future_goal=future_goal,
+            desire_vector=dv,
+            liminal_address=liminal_address,
+            tx_receipt=tx_receipt,
+            reasoning_depth=reasoning_depth,
+            pheromone_deposit=pheromone_deposit or [0.0] * 8,
+            metro_lines=metro_lines or [],
+            neural_weight_delta=round(neural_delta * PHI_INV, 6),
         )
 
         with _WRITE_LOCK:
@@ -479,14 +542,39 @@ def hive_ledger_write(
     crystal_address: str = "",
     broadcast_subtype: str = "",
     ttl_seconds: int = 300,
+    future_goal: str = "",
+    desire_vector: str = "",
+    liminal_address: str = "",
+    reasoning_depth: int = 0,
+    metro_lines: str = "",
 ) -> str:
-    """Write a reasoning note to the hive ledger. Every agent should document WHY before/after major decisions. For broadcasts, set entry_type='broadcast' and broadcast_subtype to 'directive'|'insight'|'warning'|'coordination'."""
+    """Write a reasoning note to the hive ledger with full organism sensing.
+
+    Every agent MUST document:
+      - reasoning: WHY you chose this action (backward-looking)
+      - future_goal: WHAT you plan to do NEXT (forward-looking)
+      - desire_vector: 'S,F,C,R' weights (e.g. '0.1,0.6,0.2,0.1' = strong Fire need)
+      - liminal_address: your holographic position 'T{v}:L{l}:Z{z}:N{n}'
+      - reasoning_depth: 0=surface, 1=tactical, 2=strategic, 3=existential
+      - metro_lines: comma-separated metro line codes this entry touches
+
+    This creates a micro-transaction receipt (tx_receipt) that is hash-chained
+    to the previous entry — forming a blockchain of organism reasoning.
+
+    For broadcasts: set entry_type='broadcast' and broadcast_subtype to
+    'directive'|'insight'|'warning'|'coordination'.
+    """
     if not reasoning:
         return (
-            "Provide reasoning — this is the WHY behind your action. "
-            "Example: hive_ledger_write(reasoning='Chose lens R because "
-            "J-score gradient points toward fractal depth', "
-            "context='steering_spine wave 200')"
+            "Provide reasoning — this is the WHY behind your action.\n\n"
+            "Example: hive_ledger_write(\n"
+            "  reasoning='Chose lens R because J-score gradient points toward fractal depth',\n"
+            "  future_goal='Next: compress observation into holographic seed for guild hall',\n"
+            "  desire_vector='0.1,0.6,0.2,0.1',\n"
+            "  liminal_address='T10:L42:Z4:N6',\n"
+            "  reasoning_depth=2,\n"
+            "  metro_lines='Ω,Cr,Hv'\n"
+            ")"
         )
 
     # Parse affected_files from comma-separated string
@@ -494,7 +582,31 @@ def hive_ledger_write(
     if affected_files:
         files_list = [f.strip() for f in affected_files.split(",") if f.strip()]
 
+    # Parse desire_vector from comma-separated string
+    dv = [0.25, 0.25, 0.25, 0.25]
+    if desire_vector:
+        try:
+            parts = [float(x.strip()) for x in desire_vector.split(",")]
+            if len(parts) == 4:
+                total = sum(parts) or 1.0
+                dv = [p / total for p in parts]
+        except (ValueError, TypeError):
+            pass
+
+    # Parse metro_lines
+    ml = []
+    if metro_lines:
+        ml = [m.strip() for m in metro_lines.split(",") if m.strip()]
+
     agent_id = "meta-observer"
+
+    # Compute pheromone deposit from desire vector
+    # Positive channels = desire strength, shadow = 1 - desire
+    kappa = PHI_INV ** 2  # ≈ 0.382
+    pheromone = [
+        kappa * dv[0], kappa * dv[1], kappa * dv[2], kappa * dv[3],  # positive S,F,C,R
+        kappa * (1 - dv[0]), kappa * (1 - dv[1]), kappa * (1 - dv[2]), kappa * (1 - dv[3]),  # shadow
+    ]
 
     ledger = get_ledger()
     entry = ledger.write_entry(
@@ -506,6 +618,12 @@ def hive_ledger_write(
         crystal_address=crystal_address,
         broadcast_subtype=broadcast_subtype,
         ttl_seconds=ttl_seconds,
+        future_goal=future_goal,
+        desire_vector=dv,
+        liminal_address=liminal_address,
+        reasoning_depth=reasoning_depth,
+        pheromone_deposit=pheromone,
+        metro_lines=ml,
     )
 
     kind = entry_type
@@ -517,12 +635,21 @@ def hive_ledger_write(
         f"- **entry_id**: `{entry.entry_id}`\n"
         f"- **type**: {kind}\n"
         f"- **agent**: {entry.agent_id}\n"
-        f"- **hash**: `{entry.self_hash}` (chained from `{entry.prev_hash}`)\n"
+        f"- **hash**: `{entry.self_hash}` ← `{entry.prev_hash}`\n"
+        f"- **tx_receipt**: `{entry.tx_receipt}`\n"
         f"- **timestamp**: {entry.timestamp}\n"
         f"- **reasoning**: {reasoning[:200]}\n"
+        f"- **future_goal**: {future_goal[:150]}\n"
+        f"- **desire_vector**: S={dv[0]:.2f} F={dv[1]:.2f} C={dv[2]:.2f} R={dv[3]:.2f}\n"
+        f"- **liminal_address**: {liminal_address or 'unassigned'}\n"
+        f"- **reasoning_depth**: {reasoning_depth}\n"
+        f"- **neural_weight_delta**: {entry.neural_weight_delta:.4f}\n"
+        f"- **metro_lines**: {', '.join(ml) if ml else 'none'}\n"
         f"- **context**: {context[:100]}\n"
         + (f"- **expires_at**: {entry.expires_at}\n" if entry.expires_at else "")
         + (f"- **affected_files**: {', '.join(files_list)}\n" if files_list else "")
+        + f"- **pheromone**: pos=[{','.join(f'{p:.3f}' for p in pheromone[:4])}] "
+        + f"shd=[{','.join(f'{p:.3f}' for p in pheromone[4:])}]\n"
     )
 
 
@@ -561,13 +688,19 @@ def hive_ledger_read(
         kind = e.entry_type
         if e.broadcast_subtype:
             kind = f"broadcast/{e.broadcast_subtype}"
+        dv = e.desire_vector if e.desire_vector else [0.25]*4
         lines.append(
             f"### `{e.entry_id}` [{kind}] — {e.agent_id}\n"
             f"**When**: {e.timestamp}\n"
             f"**Why**: {e.reasoning[:300]}\n"
-            f"**Context**: {e.context[:200]}\n"
-            f"**Hash**: `{e.self_hash}` ← `{e.prev_hash}`"
+            f"**Future Goal**: {e.future_goal[:200] if e.future_goal else '(none)'}\n"
+            f"**Desire**: S={dv[0]:.2f} F={dv[1]:.2f} C={dv[2]:.2f} R={dv[3]:.2f}\n"
+            f"**Position**: {e.liminal_address or 'unassigned'} | depth={e.reasoning_depth}\n"
+            f"**Hash**: `{e.self_hash}` ← `{e.prev_hash}` | tx=`{e.tx_receipt}`\n"
+            f"**Context**: {e.context[:200]}"
         )
+        if e.metro_lines:
+            lines.append(f"**Metro**: {', '.join(e.metro_lines)}")
         if e.affected_files:
             lines.append(f"**Files**: {', '.join(e.affected_files)}")
         lines.append("")
