@@ -1,0 +1,25 @@
+{
+  "schema": "athena.repository-migration/v2",
+  "migration_id": "migration.athena.repo.view.cloud-water.federation-v2",
+  "predecessor": {
+    "state": "repository-without-athena-v2-contract",
+    "commit": "a7fcf26683c08f090cf94b14a8aa861db599c679"
+  },
+  "successor": {
+    "rid": "athena.repo.view.cloud-water",
+    "vid": "contract-proposal-0.1.0",
+    "contract_commit": "8ffd8235251fd823a2f9c4d402d7c9451fa2c038"
+  },
+  "method": "additive-contract-overlay",
+  "status": "PROPOSED_NOT_PROMOTED",
+  "receipt": ".athena/receipts/contract-proposal.json",
+  "rollback": "Select the predecessor commit; do not rewrite either history.",
+  "preserves": [
+    "repository content",
+    "repository history",
+    "authority boundary"
+  ],
+  "defects": [
+    "Federation promotion and merge remain separate decisions."
+  ]
+}

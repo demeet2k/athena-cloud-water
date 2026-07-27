@@ -1,0 +1,14 @@
+{
+  "schema": "athena.repo-status/v2",
+  "state": "GENERATOR_LINEAGE_REQUIRED",
+  "role": "view",
+  "base_commit": "a7fcf26683c08f090cf94b14a8aa861db599c679",
+  "control_commit": "3d33fbcd6248fc2dc2991fbbab5e93a7eb184246",
+  "contract_release": "contract-proposal-0.1.0",
+  "promotion_ready": false,
+  "open_defects": [
+    "Shared organism snapshots require a generator and input tree receipt.",
+    "README similarity is not repository identity."
+  ],
+  "next_gate": "Attach generator/input/output lineage and a regeneration receipt."
+}
