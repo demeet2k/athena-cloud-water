@@ -1,0 +1,42 @@
+{
+  "schema": "ATHENA.SYNAPSE.NODE.MANIFEST.V1",
+  "node_id": "water",
+  "repository": "demeet2k/athena-cloud-water",
+  "default_branch": "master",
+  "role": "Lawful Multiplicity / Observation / search and conservation lobe",
+  "standing": "DECLARED_NO_ADAPTER",
+  "observed_revision": "a7fcf26683c08f090cf94b14a8aa861db599c679",
+  "native_surfaces": [
+    {
+      "surface_id": "water-resource",
+      "kind": "MCP_RESOURCE",
+      "reference": "athena://cloud-water",
+      "mutation_class": "READ_ONLY",
+      "evidence_ref": "blob:MCP/element_servers/cloud_server.py@f0b6bc1f9cfce2a9797ce07c18bb79d0afa386ca",
+      "notes": "FastMCP resource declared by the observed Cloud/Water element server."
+    },
+    {
+      "surface_id": "water-tool-module",
+      "kind": "MCP_TOOL_MODULE",
+      "reference": "MCP/element_servers/cloud_server.py",
+      "mutation_class": "READ_ONLY",
+      "evidence_ref": "blob:MCP/element_servers/cloud_server.py@f0b6bc1f9cfce2a9797ce07c18bb79d0afa386ca",
+      "notes": "Observed search, corpus, frontier, conservation, scoring, mirror and brain-routing tool registrations; no write operator observed in this module."
+    }
+  ],
+  "synapse_profiles": [],
+  "import_profiles": [],
+  "return_routes": ["athena://cloud-water"],
+  "authority_class": "SELF_DECLARED_NATIVE_SURFACE",
+  "truth_ceiling": "REPOSITORY_CODE_SURFACE_ONLY",
+  "evidence_refs": [
+    "commit:a7fcf26683c08f090cf94b14a8aa861db599c679",
+    "blob:MCP/element_servers/cloud_server.py@f0b6bc1f9cfce2a9797ce07c18bb79d0afa386ca"
+  ],
+  "residuals": [
+    "RUNTIME_START_UNOBSERVED",
+    "SYNAPSE_ADAPTER_NOT_IMPLEMENTED",
+    "FOREIGN_PROFILE_IMPORT_UNOBSERVED",
+    "CROSS_REPO_RECEIPT_UNOBSERVED"
+  ]
+}
