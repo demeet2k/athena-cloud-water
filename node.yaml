@@ -6,7 +6,8 @@
 # ==========================================
 # Declares this repository as a node in the distributed Athena superbrain.
 
-node_id: athena-mcp-server
+node_id: demeet2k/athena-cloud-water
+# Inherited runtime configuration; repository identity is not deployment evidence.
 role: unified
 medium_class: code
 lobe_affinity: null  # universal — serves all 4 lenses
@@ -241,7 +242,7 @@ sync_sources:
   - "https://github.com/demeet2k/athena-fractal-air"
   - "https://github.com/demeet2k/manuscript-being"
 
-github_repo: "https://github.com/demeet2k/athena-mcp-server"
+github_repo: "https://github.com/demeet2k/athena-cloud-water"
 
 tool_count: 111
 resource_count: 21
