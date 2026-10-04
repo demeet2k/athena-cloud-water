@@ -1,38 +1,42 @@
 #!/usr/bin/env python3
-"""
-Execute the FULL TRAINING LOOP: ABCD+ Crystal Transmutation
-  Stage A: 3 runs x 3 changes = 9 waves
-  Stage B: 5 runs x 4 elements = 20 waves
-  Stage C: 7 runs x 7 metals/planets = 49 waves (escalating)
-  Stage D: 9 runs x 9 completions (3x3) = 81 waves
-  Final: Invert + Rotate + Poles + QSHRINK + Hologram
+"""Run one ABCD+ cycle with the supported native momentum training engine.
+
+The former full_training_loop/crystal_weights engine is absent from this
+checkout. This entrypoint uses MetaLoopEngine, which replaces that engine;
+its output is the native momentum hologram, not a legacy weight hologram.
 """
 
+import argparse
+import json
+import math
 import sys
-import time
+from dataclasses import asdict
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).parent / "MCP"))
-
-from crystal_108d.full_training_loop import run_full_training_loop
+sys.path.insert(0, str(Path(__file__).resolve().parent / "MCP"))
 
 
-def main():
-    t0 = time.time()
+def positive_minutes(value):
+    minutes = float(value)
+    if not math.isfinite(minutes) or minutes <= 0:
+        raise argparse.ArgumentTypeError("minutes must be finite and positive")
+    return minutes
 
-    result = run_full_training_loop(
-        cycles_a=500,    # 9 waves x 500 = 4,500 cycles
-        cycles_b=400,    # 20 waves x 400 = 8,000 cycles
-        cycles_c=300,    # 49 waves x 300 = 14,700 cycles
-        cycles_d=250,    # 81 waves x 250 = 20,250 cycles
-        max_time_minutes=45,  # hard cap
-    )
 
-    print(f"\n\nDone. {result['total_cycles']} cycles, "
-          f"{result['total_waves']} waves, "
-          f"{result['total_elapsed']:.1f}s")
-    print(f"Hologram saved to: {result['hologram_path']}")
+def main(argv=None):
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--check", action="store_true", help="check native imports without training or writing data")
+    parser.add_argument("--max-time-minutes", type=positive_minutes, default=45,
+                        help="cooperative time budget checked between waves")
+    args = parser.parse_args(argv)
+    from crystal_108d.meta_loop_engine import MetaLoopEngine, MetaLoopConfig
+    if args.check:
+        print("Native MetaLoopEngine ready; legacy weight trainer is not used.")
+        return 0
+    results = MetaLoopEngine().run(MetaLoopConfig(depth=1, max_time_minutes=args.max_time_minutes))
+    print(json.dumps([asdict(result) for result in results], indent=2))
+    return 0
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())

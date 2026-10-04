@@ -20,6 +20,33 @@ def check_route_legality(route_json: str) -> str:
     Or pass "list" to see all 10 primitives and 3 invariants.
     """
     data = _moves.load()
+    if data.get("meta", {}).get("version") == "2.0" and "invariants" not in data:
+        if route_json.strip().lower() in ("list", "help", "primitives"):
+            return "## Move Primitives\n\n" + "\n\n".join(
+                f"### {p['id']}: {p['name']}\n{p['notation']}\n{p['description']}"
+                for p in data["primitives"]
+            ) + "\nHOLD: executable conservation and legality predicates are absent.\n"
+        try:
+            route = json.loads(route_json)
+        except json.JSONDecodeError:
+            return "Invalid JSON. Expected a nonempty list of move objects."
+        if isinstance(route, dict):
+            route = [route]
+        if not isinstance(route, list) or not route or any(not isinstance(move, dict) for move in route):
+            return "INVALID: expected a nonempty list of move objects."
+        known = {p['id']: p for p in data["primitives"]}
+        known.update({p['name']: p for p in data["primitives"]})
+        lines = [f"## Route Legality Check ({len(route)} moves)"]
+        for i, move in enumerate(route, 1):
+            identity = move.get("type")
+            primitive = known.get(identity) if isinstance(identity, str) else None
+            if primitive is None:
+                lines.append(f"Move {i}: INVALID undeclared primitive {identity!r}")
+            else:
+                lines.append(f"Move {i}: declared {primitive['id']} - {primitive['name']}")
+        lines.append("HOLD: declared primitive membership does not prove route legality. "
+                     "Conservation, nested consistency and returnability predicates are absent; no legality certificate is issued.")
+        return "\n".join(lines) + "\n"
 
     if route_json.strip().lower() in ("list", "help", "primitives"):
         lines = ["## Legal Move Primitives\n"]
@@ -53,6 +80,9 @@ def check_route_legality(route_json: str) -> str:
     if not isinstance(route, list):
         route = [route]
 
+    if not route or any(not isinstance(move, dict) for move in route):
+        return "INVALID: expected a nonempty list of move objects."
+
     # Validate each move
     valid_types = {p["name"] for p in data["primitives"]}
     results = []
@@ -64,7 +94,7 @@ def check_route_legality(route_json: str) -> str:
 
     for i, move in enumerate(route):
         move_type = move.get("type", "UNKNOWN")
-        if move_type not in valid_types:
+        if not isinstance(move_type, str) or move_type not in valid_types:
             results.append(f"Move {i+1}: **INVALID** type '{move_type}'")
         else:
             results.append(f"Move {i+1}: {move_type} ✓")
@@ -86,19 +116,20 @@ def check_route_legality(route_json: str) -> str:
     # Zero-factorability (simplified: check if route starts/ends at same place)
     starts = route[0].get("from", "?") if route else "?"
     ends = route[-1].get("to", "?") if route else "?"
-    zf_pass = starts == ends or "Z*" in str(route)
+    all_types_valid = all(isinstance(m.get("type"), str) and m["type"] in valid_types for m in route)
+    explicit_endpoints = all(m.get("from") not in (None, "?") and m.get("to") not in (None, "?") for m in route)
+    continuous = all(left.get("to") == right.get("from") for left, right in zip(route, route[1:]))
+    zf_pass = (all_types_valid and explicit_endpoints and continuous and starts not in (None, "?")
+               and ends not in (None, "?") and starts == ends)
     invariant_results.append(
         f"- Zero-factorability: {'✓ PASS' if zf_pass else '⚠ UNVERIFIED (route may not return to Z*)'}"
     )
 
-    # Nested consistency (always pass for simple routes)
-    invariant_results.append("- Nested consistency: ✓ PASS (all moves use valid primitives)")
+    # Primitive membership cannot attest containment at intermediate addresses.
+    invariant_results.append("- Nested consistency: HOLD (containment proof not supplied)")
 
-    # Global returnability (check for return path existence)
-    gr_pass = any(m.get("type") == "CROWN_RESET" for m in route) or zf_pass
-    invariant_results.append(
-        f"- Global returnability: {'✓ PASS' if gr_pass else '⚠ UNVERIFIED (no return path found)'}"
-    )
+    # A closed endpoint is not a proof of reversibility under a live helm.
+    invariant_results.append("- Global returnability: HOLD (reverse path proof not supplied)")
 
     # Conservation check
     conservation = []

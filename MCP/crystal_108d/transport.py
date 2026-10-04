@@ -27,6 +27,15 @@ def query_transport_stack(dimension: int) -> str:
     Pass 0 to see the full stack overview.
     """
     data = _transport.load()
+    if "stacks" in data and "per_dimension" not in data:
+        if dimension != 0:
+            return (f"HOLD: {dimension}D transport availability is not declared by the current registry.\n"
+                    "Query dimension 0 for the source-listed stack descriptions.\n")
+        return "## Full Transport Stack\n\n" + "\n\n".join(
+            f"### {stack['id']}: {stack['name']}\n"
+            f"{stack['description']}\nLayers: " + " -> ".join(stack['layers'])
+            for stack in data["stacks"]
+        ) + "\nHOLD: these descriptions do not attest dimensional unlocks or executable routes.\n"
 
     if dimension == 0:
         lines = ["## Full Transport Stack\n"]

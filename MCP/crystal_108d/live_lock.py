@@ -20,6 +20,16 @@ def compute_live_lock(address_a: str, address_b: str) -> str:
     Input: shell numbers (e.g. "5", "28") or lock class codes (e.g. "L3", "L57").
     """
     data = _locks.load()
+    if "classes" not in data:
+        if "locks" in data:
+            return (
+                "HOLD: current registry tracks active locks; it has no live-lock class lattice.\n"
+                f"Active locks: {len(data['locks'])}\n"
+                f"Max concurrent: {data['max_concurrent']}\n"
+                f"Timeout seconds: {data['timeout_seconds']}\n"
+                "No common class computed and no lock acquired.\n"
+            )
+        return "HOLD: live-lock registry contains no supported schema.\n"
     classes = data["classes"]
 
     # Parse inputs — accept shell numbers or lock codes

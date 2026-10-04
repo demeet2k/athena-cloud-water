@@ -24,6 +24,32 @@ def query_metro_line(line_type: str, index: int = 0) -> str:
     """
     data = _metro.load()
     lt = line_type.lower().strip()
+    if "lines" in data and "shell_ascent" not in data:
+        declared = data["lines"]
+        if lt in ("all", "overview"):
+            selected = declared
+        elif lt == "wreath":
+            wreath_lines = [line for line in declared if line["type"] == "wreath"]
+            if not 0 <= index < len(wreath_lines):
+                return f"Wreath index must be 0-{len(wreath_lines) - 1}."
+            selected = [wreath_lines[index]]
+        elif lt in ("shell_ascent", "archetype_column", "archetype", "column", "qo_pillar", "pillar", "mobius", "arc"):
+            # A named Mobius line exists, but the old Q/O pillar pair does not.
+            # Prefer the actual line ID only when it names a source record.
+            selected = [line for line in declared if line["id"].lower() == lt]
+            if not selected:
+                return (f"HOLD: {line_type.title()} legacy mapping is absent from the current metro registry.\n"
+                        "Query a declared line ID or code; no legacy route is inferred.\n")
+        else:
+            selected = [line for line in declared
+                        if lt in (line["id"].lower(), line.get("code", "").lower(), line["name"].lower())]
+            if not selected:
+                return f"Unknown metro line '{line_type}'. Available IDs: " + ", ".join(line["id"] for line in declared)
+        return "## Metro Lines\n\n" + "\n\n".join(
+            f"### {line['id']}: {line['name']}\n"
+            f"Type: {line['type']}\nStations: {line['stations']}\n{line['description']}"
+            for line in selected
+        ) + "\nHOLD: station membership alone does not verify route legality or source identity consistency.\n"
 
     if lt == "all" or lt == "overview":
         lines = ["## Metro Line Overview\n"]
