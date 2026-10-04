@@ -77,5 +77,17 @@ class GitlinkMetadataTests(unittest.TestCase):
         subprocess.run(['git', '-C', str(ROOT), 'submodule', 'foreach', '--recursive', 'true'],
                        check=True, capture_output=True, text=True, timeout=10)
 
+class RuntimeDependencyTests(unittest.TestCase):
+    def test_declared_dependencies_match_native_import_api(self):
+        import tomllib
+        metadata = tomllib.loads((ROOT / 'pyproject.toml').read_text(encoding='utf-8'))
+        self.assertIn('mcp[cli]>=1.0.0,<2', metadata['project']['dependencies'])
+        self.assertIn('numpy>=1.26', metadata['project']['dependencies'])
+        requirements = (ROOT / 'MCP/requirements.txt').read_text(encoding='utf-8').splitlines()
+        self.assertIn('mcp[cli]>=1.0.0,<2', requirements)
+        self.assertIn('numpy>=1.26', requirements)
+        workflow = (ROOT / '.github/workflows/ci.yml').read_text(encoding='utf-8')
+        self.assertIn('"mcp[cli]>=1.0.0,<2" "numpy>=1.26"', workflow)
+
 if __name__ == '__main__':
     unittest.main()
