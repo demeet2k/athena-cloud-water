@@ -8,7 +8,77 @@ from ._cache import JsonCache
 
 _zpoints = JsonCache("z_point_hierarchy.json")
 
+def _v2_catalog(data):
+    """Validate source identities before rendering descriptive records."""
+    if "types" in data:
+        raise ValueError("legacy and v2 catalogs conflict")
+    points = data["z_points"]
+    if not isinstance(points, list) or not points:
+        raise ValueError("z_points must be a nonempty list")
+    ids = set()
+    for point in points:
+        if not isinstance(point, dict):
+            raise ValueError("z_point must be an object")
+        for field in ("id", "name", "dimension", "description"):
+            if not isinstance(point[field], str) or not point[field].strip():
+                raise ValueError(f"missing or invalid {field}")
+        identity = point["id"].strip().casefold()
+        if identity in ids:
+            raise ValueError("duplicate z_point identity")
+        ids.add(identity)
+    for field in ("description", "convergence_law", "omega_theorem"):
+        if not isinstance(data[field], str) or not data[field].strip():
+            raise ValueError(f"missing or invalid {field}")
+    return points
+
+
+def _resolve_v2(data, selector, scope):
+    points = _v2_catalog(data)
+    if scope:
+        return "HOLD: v2 declares no scoped distributed-zero selector."
+    overview = selector in ("all", "hierarchy", "overview")
+    if overview:
+        selected = points
+    else:
+        selected = [point for point in points if selector in {
+            point[field].strip().casefold() for field in ("id", "name", "dimension")}]
+        if len(selected) != 1:
+            return (f"HOLD: Z-point selector '{selector}' is missing or ambiguous in v2. "
+                    "Use an exact source ID, name or unique dimension; legacy categories "
+                    "and tunnel routing have no declared mapping.")
+    lines = ["## Z-Point Hierarchy (v2 source descriptions)", data["description"]]
+    for point in selected:
+        lines += [f"### {point['id']} - {point['name']} ({point['dimension']})",
+                  point["description"]]
+    lines += [f"**Convergence law (declared)**: {data['convergence_law']}",
+              f"**Omega theorem (declared)**: {data['omega_theorem']}",
+              "HOLD: descriptions do not certify convergence, returnability or a legal tunnel."]
+    return "\n\n".join(lines) + "\n"
+
+
 def resolve_z_point(z_type: str, scope: str = "") -> str:
+    """Read exact v2 IDs/names/dimensions or a valid legacy hierarchy.
+
+    Unsupported legacy categories and execution proofs remain on HOLD for v2.
+    """
+    if not isinstance(z_type, str) or not z_type.strip() or not isinstance(scope, str):
+        return "HOLD: Z-point selector and scope must be strings; selector must be nonempty."
+    selector, scope = z_type.strip().casefold(), scope.strip()
+    try:
+        data = _zpoints.load()
+        if not isinstance(data, dict):
+            raise ValueError("registry must be an object")
+        meta = data.get("meta", {})
+        if not isinstance(meta, dict):
+            raise ValueError("meta must be an object")
+        if meta.get("version") == "2.0" or "z_points" in data:
+            return _resolve_v2(data, selector, scope)
+        return _resolve_legacy(data, selector, scope)
+    except (KeyError, TypeError, ValueError, OSError, IndexError) as exc:
+        return f"HOLD: Z-point registry has missing or conflicting source fields ({exc})."
+
+
+def _resolve_legacy(data, z_type: str, scope: str = "") -> str:
     """
     Navigate the Z-point hierarchy.
 
@@ -22,7 +92,6 @@ def resolve_z_point(z_type: str, scope: str = "") -> str:
 
     Optional scope narrows distributed zeros: 'Q', 'O', 'AP', 'KZ'
     """
-    data = _zpoints.load()
     zt = z_type.lower().strip()
 
     if zt in ("all", "hierarchy", "overview"):

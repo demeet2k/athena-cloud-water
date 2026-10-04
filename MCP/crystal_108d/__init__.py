@@ -67,14 +67,129 @@ def _mycelium_stats() -> str:
         return "Universal shard/edge/node schema, promotion state machine"
 
 
+
+def _status_source(name):
+    data = JsonCache(name).load()
+    if not isinstance(data, dict) or not isinstance(data.get('meta'), dict):
+        raise ValueError(f'{name}: registry and metadata objects are required')
+    return data
+
+
+def _status_records(data, key, id_key, name_key=None, count_key=None):
+    records = data[key]
+    if not isinstance(records, list) or not records:
+        raise ValueError(f'{key}: nonempty source records are required')
+    identifiers = [record[id_key] for record in records]
+    if (any(type(value) not in (int, str) or (type(value) is int and value < 1)
+                or (isinstance(value, str) and not value.strip()) for value in identifiers)
+            or len(set(identifiers)) != len(identifiers)):
+        raise ValueError(f'{key}: source identities are invalid or duplicated')
+    if count_key is not None:
+        declared = data['meta'][count_key]
+        if type(declared) is not int or declared != len(records):
+            raise ValueError(f'{key}: declared count conflicts with source records')
+    if name_key is not None and any(not isinstance(record[name_key], str) or not record[name_key].strip() for record in records):
+        raise ValueError(f'{key}: source names are missing')
+    return records
+
+
+def _source_status_v2(shells, dims, organs, locks, clock, laws):
+    """A source census; neither execution readiness nor a deployment inventory."""
+    from .shells import _validated_v2
+    from .conservation import _v2_law_report
+    from .stage_codes import _query_v2_stage
+    from .emergence import _query_v2_emergence
+
+    for data in (shells, dims, organs, locks, clock, laws):
+        if data['meta'].get('version') != '2.0':
+            raise ValueError('core registry versions are mixed or unsupported')
+    raw_shells = shells['shells']
+    if (not isinstance(raw_shells, dict)
+            or any(not isinstance(record, dict) or not isinstance(record.get('faces'), dict)
+                   for record in raw_shells.values())):
+        raise ValueError('shell source records and faces must be dictionaries')
+    shell_records, archetypes, wreaths = _validated_v2(shells)
+    for key, actual in (('total_shells', len(shell_records)), ('total_archetypes', len(archetypes)), ('total_wreaths', len(wreaths))):
+        if type(shells['meta'][key]) is not int or shells['meta'][key] != actual:
+            raise ValueError(f'{key}: declared count conflicts with source records')
+    levels = _status_records(dims, 'levels', 'dimension', 'name')
+    if any(type(record['dimension']) is not int or record['dimension'] < 1 for record in levels):
+        raise ValueError('dimension IDs must be positive integers')
+    frontier = dims['current_frontier']
+    if frontier not in {f"{record['dimension']}D" for record in levels}:
+        raise ValueError('frontier is missing or not a declared dimension')
+    if not isinstance(dims['sequence_lock'], str) or not dims['sequence_lock'].strip():
+        raise ValueError('sequence lock description is missing')
+    organ_records = _status_records(organs, 'organs', 'id', 'name', 'total_organs')
+    law_records = _status_records(laws, 'laws', 'id', 'name', 'total_laws')
+    law_report = _v2_law_report(laws)
+    if law_report.startswith('HOLD:'):
+        raise ValueError(law_report)
+    active_locks = locks['locks']
+    if not isinstance(active_locks, list) or any(type(locks[k]) is not int or locks[k] < 1 for k in ('max_concurrent', 'timeout_seconds')):
+        raise ValueError('source lock collection or limits are invalid')
+    clocks = clock['clocks']
+    if not isinstance(clocks, dict) or not clocks:
+        raise ValueError('clock records are missing')
+    for key, record in clocks.items():
+        if not isinstance(key, str) or type(record['period_hours']) is not int or record['period_hours'] < 1:
+            raise ValueError('clock IDs or period hours are invalid')
+    stages = _status_source('stage_codes.json')
+    emergence = _status_source('dimensional_emergence.json')
+    for data, report in ((stages, _query_v2_stage(stages, 'all')), (emergence, _query_v2_emergence(emergence, 'all'))):
+        if data['meta'].get('version') != '2.0' or report.startswith('HOLD:'):
+            raise ValueError('stage or emergence source is missing or conflicting')
+    metro = _status_source('metro_lines.json')
+    lines = _status_records(metro, 'lines', 'id', 'name', 'total_lines')
+    cell = _status_source('live_cell_constitution.json')
+    requirements = _status_records(cell, 'requirements', 'id', 'name')
+    if not isinstance(cell['alive_threshold'], str) or not cell['alive_threshold'].strip():
+        raise ValueError('live-cell threshold description is missing')
+    chapters = _status_source('hologram_chapters.json')
+    chapter_records = _status_records(chapters, 'chapters', 'id', 'name', 'total_chapters')
+    nodes = _status_source('node_registry.json')
+    node_records = _status_records(nodes, 'nodes', 'node_id', count_key='total_nodes')
+    for data, expected in ((metro, '3.0'), (cell, '1.0'), (chapters, '2.0')):
+        if data['meta'].get('version') != expected:
+            raise ValueError('metro, live-cell or chapter source version is unsupported')
+    if {r['id'] for r in chapter_records} != set(range(1, len(chapter_records) + 1)):
+        raise ValueError('chapter source IDs conflict with declared range')
+    describe = lambda records, id_key, name_key: ', '.join(f"{r[id_key]}: {r[name_key]}" for r in records)
+    rows = [
+        '## 108D Crystal Hologram Status — Source Census',
+        f"- **Shells**: {len(shell_records)} | **Archetypes**: {len(archetypes)} | **Wreaths**: {len(wreaths)} | **Faces**: {', '.join(shells['meta']['faces'])}",
+        f"- **Archetype Records**: {', '.join(f'{key}: {value["name"]}' for key, value in archetypes.items())}",
+        f"- **Wreath Records**: {', '.join(f'{key}: {value["name"]}' for key, value in wreaths.items())}",
+        f"- **Dimension Records**: {len(levels)} — {describe(levels, 'dimension', 'name')}",
+        f"- **Declared Frontier**: {frontier}; **Sequence Lock**: {dims['sequence_lock']}",
+        f"- **Organ Records**: {len(organ_records)} — {describe(organ_records, 'id', 'name')}",
+        f"- **Conservation Descriptions**: {len(law_records)} — {describe(law_records, 'id', 'name')}",
+        f"- **Source-record Locks**: {len(active_locks)}; limit {locks['max_concurrent']}; timeout {locks['timeout_seconds']} seconds",
+        f"- **Clock Records**: {len(clocks)} — {', '.join(f'{key}: {value["period_hours"]} hours' for key, value in clocks.items())}",
+        f"- **Stage Records**: {len(stages['stages'])} — {', '.join(stages['stages'])}; declared cycle total {stages['total_per_cycle']}; including FINAL {sum(r['waves'] for r in stages['stages'].values())}",
+        f"- **Emergence Transitions**: {len(emergence['emergence_sequence'])} — {', '.join(r['from']+' -> '+r['to'] for r in emergence['emergence_sequence'])}",
+        f"- **Metro Records**: {len(lines)} — {describe(lines, 'id', 'name')}",
+        f"- **Live-cell Requirement Descriptions**: {len(requirements)} — {describe(requirements, 'id', 'name')}; {cell['alive_threshold']}",
+        f"- **Chapter Records**: {len(chapter_records)} — {describe(chapter_records, 'id', 'name')}",
+        f"- **Declared Node Records**: {len(node_records)} — {', '.join(r['node_id'] for r in node_records)}",
+        'HOLD: source declarations do not verify node availability, live-cell satisfaction, execution readiness, conservation certificates or legacy dimensional/kernel/lens mappings. Stage FINAL accounting remains unverified. Graph metrics are not sampled by this census.',
+    ]
+    return '\n'.join(rows) + '\n'
+
+
 def status_summary() -> str:
     """Return a compact 108D system status string."""
-    shells = JsonCache("shell_registry.json").load()
-    dims = JsonCache("dimensional_ladder.json").load()
-    organs = JsonCache("organ_atlas.json").load()
-    locks = JsonCache("live_lock_registry.json").load()
-    clock = JsonCache("clock_projections.json").load()
-    laws = JsonCache("conservation_laws.json").load()
+    try:
+        shells, dims, organs, locks, clock, laws = (
+            _status_source(name) for name in ('shell_registry.json', 'dimensional_ladder.json',
+                'organ_atlas.json', 'live_lock_registry.json', 'clock_projections.json', 'conservation_laws.json'))
+        versions = [data['meta'].get('version') for data in (shells, dims, organs, locks, clock, laws)]
+        if '2.0' in versions or isinstance(shells.get('shells'), dict):
+            return _source_status_v2(shells, dims, organs, locks, clock, laws)
+        if versions != ['1.0'] * 6:
+            return 'HOLD: status source versions are missing, mixed or unsupported.'
+    except (OSError, KeyError, TypeError, ValueError) as exc:
+        return f'HOLD: status source is unavailable, malformed or conflicting ({exc}).'
 
     sm = shells.get('meta', {})
     dm = dims.get('meta', {})

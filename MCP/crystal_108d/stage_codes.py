@@ -13,11 +13,53 @@ from ._cache import JsonCache
 
 _stages = JsonCache("stage_codes.json")
 
+
+def _query_v2_stage(data, code):
+    try:
+        stages = data['stages']
+        if not isinstance(stages, dict) or set(stages) != {'A', 'B', 'C', 'D', 'FINAL'}:
+            raise ValueError('source stage identities are missing or undeclared')
+        for stage in stages.values():
+            if (type(stage['waves']) is not int or stage['waves'] < 1
+                    or not all(isinstance(stage[k], str) and stage[k].strip() for k in ('description', 'focus'))):
+                raise ValueError('stage record is incomplete')
+        total, cycles, meta_total = (data[k] for k in ('total_per_cycle', 'meta_loop_cycles', 'total_per_meta_loop'))
+        if any(type(n) is not int or n < 1 for n in (total, cycles, meta_total)):
+            raise ValueError('source cycle totals must be positive integers')
+        if code.upper() not in stages and code.lower() != 'all':
+            return f"HOLD: v2 has no source mapping for '{code}'. Declared Stage codes: {', '.join(stages)}; legacy dimension codes, zero families, hub lattice and sigma60 are absent."
+        selected = stages.items() if code.lower() == 'all' else [(code.upper(), stages[code.upper()])]
+        lines = ['## Source Stage Codes']
+        for key, stage in selected:
+            lines += [f"### Stage {key}", f"- **Waves**: {stage['waves']}",
+                      f"- **Description**: {stage['description']}", f"- **Focus**: {stage['focus']}"]
+        base_sum = sum(stage['waves'] for key, stage in stages.items() if key != 'FINAL')
+        full_sum = base_sum + stages['FINAL']['waves']
+        lines += [f'**Declared Total per Cycle**: {total}', f'**Declared Meta-loop Cycles**: {cycles}',
+                  f'**Declared Total per Meta-loop**: {meta_total}',
+                  f'**Record Sums**: A+B+C+D = {base_sum}; including FINAL = {full_sum}.']
+        if total != full_sum or meta_total != total * cycles:
+            lines.append('HOLD: source totals do not establish whether FINAL is included in cycle accounting; no execution schedule is certified.')
+        return '\n'.join(lines) + '\n'
+    except (KeyError, TypeError, ValueError) as exc:
+        return f'HOLD: stage registry has missing or conflicting source fields ({exc}).'
+
+
 def query_stage_code(code: str = "all") -> str:
-    """Query a stage code (S3, S4, S4M, S5Σ, S6M, S8, S12, Ω, A+, etc.) or 'all' for the full ladder.
+    """Read v2 A/B/C/D/FINAL source stages or all; unsupported legacy selectors HOLD.
+    For a valid legacy registry, query a stage code (S3, S4, S4M, S5Σ, S6M, S8, S12, Ω, A+, etc.) or 'all' for the full ladder.
     Also: 'zeros' for zero families, 'hubs' for hub lattice, 'sigma60' for metro packet."""
-    d = _stages.load()
+    try:
+        d = _stages.load()
+    except (OSError, ValueError, TypeError) as exc:
+        return f'HOLD: stage source is unavailable or unreadable ({exc}).'
+    if not isinstance(d, dict) or not isinstance(d.get('meta'), dict):
+        return 'HOLD: stage source requires a registry object and metadata object.'
+    if not isinstance(code, str) or not code.strip():
+        return 'Invalid stage code: expected nonempty text.'
     code = code.strip()
+    if d.get('meta', {}).get('version') == '2.0' or isinstance(d.get('stages'), dict):
+        return _query_v2_stage(d, code)
 
     # Special queries
     if code.lower() in ("zeros", "zero", "z"):
