@@ -12,13 +12,73 @@ Each schema represents one layer of the execution membrane.
 The metro map traces the soul's path through one complete cycle.
 """
 
-from ._cache import JsonCache
+from ._cache import JsonCache, DATA_DIR
+from .registry_sources import query_registry, ARCHIVES
 
 _CELL = JsonCache("live_cell_constitution.json")
 
+
+def _load_cell_source():
+    try:
+        if not (DATA_DIR / 'live_cell_constitution.json').is_file():
+            return None, 'HOLD: current live-cell JSON is missing; archive selection must be explicit.'
+        data = _CELL.load()
+    except (OSError, ValueError, TypeError) as exc:
+        return None, f'HOLD: live-cell source is unavailable or unreadable ({exc}).'
+    if not isinstance(data, dict) or not isinstance(data.get('meta'), dict):
+        return None, 'HOLD: live-cell source requires registry and metadata objects.'
+    return data, None
+
+
+def _requirement_catalog(data):
+    """Recognize the tracked requirement schema, separately from archived cell schemas."""
+    return 'requirements' in data or data['meta'].get('type') == 'live_cell_constitution'
+
+
+def _query_requirements(data, component):
+    try:
+        if 'cell_schema' in data:
+            raise ValueError('requirement catalog conflicts with archived cell schema family')
+        if data['meta'].get('type') != 'live_cell_constitution' or data['meta'].get('version') != '1.0':
+            raise ValueError('requirement source family or version is unsupported')
+        records = data['requirements']
+        if (not isinstance(records, list) or len(records) != 7
+                or any(not isinstance(record, dict) for record in records)
+                or {record['id'] for record in records} != {f'LC{i}' for i in range(1, 8)}):
+            raise ValueError('seven unique LC1..LC7 requirement records are required')
+        for record in records:
+            if not all(isinstance(record[k], str) and record[k].strip() for k in ('id', 'name', 'description')):
+                raise ValueError('requirement fields must be nonempty source strings')
+        if not all(isinstance(data[k], str) and data[k].strip() for k in ('description', 'alive_threshold')):
+            raise ValueError('source description or threshold statement is missing')
+        selected = records
+        if component.startswith('requirement:'):
+            query = component.split(':', 1)[1].strip().casefold()
+            selected = [r for r in records if query in (r['id'].casefold(), r['name'].casefold())]
+            if len(selected) != 1:
+                return 'Unknown live-cell requirement. Use an exact source ID or name: ' + ', '.join(r['id'] for r in records)
+        elif component not in ('all', 'requirements', 'status'):
+            if (component in ('schemas', 'metro', 'liminal', 'soul', 'route')
+                    or component.startswith(('schema:', 'station:'))):
+                return (f"HOLD: requirement catalog does not declare '{component}' cell schemas, execution metro, "
+                        'route signatures, liminal coordinates or soul stamps; no proof is available.')
+            return 'Unknown component. Use all, requirements, requirement:<exact source ID or name>.'
+        lines = ['## Live Cell Requirement Catalog (source descriptions)', data['description']]
+        for record in selected:
+            lines += [f"### {record['id']}: {record['name']}", record['description']]
+        lines += [f"**Declared Alive Threshold**: {data['alive_threshold']}",
+                  'HOLD: descriptions and caller assertions do not verify requirement satisfaction. Source-bound address, graph, weight, observation, mutation, compression and recovery evidence with evaluators is required; no liveness certificate is issued.']
+        return '\n'.join(lines) + '\n'
+    except (KeyError, TypeError, ValueError) as exc:
+        return f'HOLD: live-cell requirement source has missing or conflicting fields ({exc}).'
+
+
 def query_live_cell(component: str = "all") -> str:
     """
-    Query the NEXT-Omega Live Cell Constitution.
+    Read the source live-cell constitution.
+
+    The current requirement catalog supports all, requirements and requirement:<ID/name>.
+    The components below apply only to a supported archived cell-schema source.
 
     Components:
       - all       : Full constitution overview
@@ -30,47 +90,28 @@ def query_live_cell(component: str = "all") -> str:
       - soul      : Soul stamp schema
       - route     : Route types and signature
     """
-    data = _CELL.load()
+    if isinstance(component, str) and component.strip().lower().startswith('archive:'):
+        return query_registry('live_cell_constitution.json', _CELL, component, _legacy_live_cell, _query_requirements)
+    data, error = _load_cell_source()
+    if error:
+        return error
+    if not isinstance(component, str) or not component.strip():
+        return 'Invalid live-cell component: expected nonempty text.'
     comp = component.strip().lower()
+    if _requirement_catalog(data):
+        return _query_requirements(data, comp)
+    return query_registry('live_cell_constitution.json', _CELL, component, _legacy_live_cell, _query_requirements)
 
-    if comp == "all":
-        return _format_all(data)
-    elif comp == "schemas":
-        return _format_schemas(data)
-    elif comp.startswith("schema:"):
-        return _format_one_schema(data, comp.split(":", 1)[1])
-    elif comp == "metro":
-        return _format_metro(data)
-    elif comp.startswith("station:"):
-        return _format_station(data, comp.split(":", 1)[1])
-    elif comp == "liminal":
-        return _format_liminal(data)
-    elif comp == "soul":
-        return _format_soul(data)
-    elif comp == "route":
-        return _format_routes(data)
-    else:
-        return (
-            f"Unknown component '{component}'. Use: all, schemas, "
-            "schema:<name>, metro, station:<code>, liminal, soul, route"
-        )
 
 def live_cell_status() -> str:
     """Return a status summary for the resource endpoint."""
-    data = _CELL.load()
-    m = data["meta"]
-    schemas = data["cell_schema"]
-    stations = data["metro_map"]["stations"]
-    return (
-        "## NEXT-Omega Live Cell Constitution\n\n"
-        f"**Minimum Lawful Unit**: `{m['minimum_lawful_unit']}`\n"
-        f"**Schemas**: {m['total_schemas']} "
-        f"({', '.join(schemas.keys())})\n"
-        f"**Metro Stations**: {m['metro_stations']} "
-        f"(M00 Root -> MD0 Loop)\n"
-        f"**Route Signature**: `{m['route_signature']}`\n"
-        f"**Source**: {m['source']}\n"
-    )
+    data, error = _load_cell_source()
+    if error:
+        return error
+    if _requirement_catalog(data):
+        return _query_requirements(data, 'status')
+    return query_registry('live_cell_constitution.json', _CELL, 'all', _legacy_live_cell_status, _query_requirements)
+
 
 # ── Formatters ──────────────────────────────────────────────────────
 
@@ -113,9 +154,9 @@ def _format_schemas(data: dict) -> str:
 
 def _format_one_schema(data: dict, name: str) -> str:
     schemas = data["cell_schema"]
-    # Case-insensitive match
+    # Exact case-insensitive identity; a partial selector cannot choose an arbitrary schema.
     for key, schema in schemas.items():
-        if key.lower() == name.lower() or name.lower() in key.lower():
+        if key.lower() == name.lower():
             lines = [f"## {key} (v{schema['version']})\n", schema["description"], "\n**Fields**:"]
             for field, desc in schema["fields"].items():
                 lines.append(f"  - `{field}`: {desc}")
@@ -187,3 +228,44 @@ def _format_routes(data: dict) -> str:
         lines.append(f"### {rtype}")
         lines.append(f"  {info['from']} -> {info['to']}: {info['description']}")
     return "\n".join(lines)
+
+
+def _legacy_live_cell(data, component):
+    comp = component.strip().lower()
+    if comp == "all":
+        return _format_all(data)
+    elif comp == "schemas":
+        return _format_schemas(data)
+    elif comp.startswith("schema:"):
+        return _format_one_schema(data, comp.split(":", 1)[1])
+    elif comp == "metro":
+        return _format_metro(data)
+    elif comp.startswith("station:"):
+        return _format_station(data, comp.split(":", 1)[1])
+    elif comp == "liminal":
+        return _format_liminal(data)
+    elif comp == "soul":
+        return _format_soul(data)
+    elif comp == "route":
+        return _format_routes(data)
+    else:
+        return (
+            f"Unknown component '{component}'. Use: all, schemas, "
+            "schema:<name>, metro, station:<code>, liminal, soul, route"
+        )
+
+
+def _legacy_live_cell_status(data, _):
+    m = data["meta"]
+    schemas = data["cell_schema"]
+    stations = data["metro_map"]["stations"]
+    return (
+        "## NEXT-Omega Live Cell Constitution\n\n"
+        f"**Minimum Lawful Unit**: `{m['minimum_lawful_unit']}`\n"
+        f"**Schemas**: {m['total_schemas']} "
+        f"({', '.join(schemas.keys())})\n"
+        f"**Metro Stations**: {m['metro_stations']} "
+        f"(M00 Root -> MD0 Loop)\n"
+        f"**Route Signature**: `{m['route_signature']}`\n"
+        f"**Source**: {m['source']}\n"
+    )

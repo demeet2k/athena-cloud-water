@@ -10,10 +10,11 @@ plus the 6-step A+ crown transform.
 """
 
 from ._cache import JsonCache
+from .registry_sources import query_registry
 
 _OCTAVE = JsonCache("inverse_crystal_octave.json")
 
-def query_octave_stage(stage: str = "all") -> str:
+def _legacy_query_octave_stage(data: dict, stage: str) -> str:
     """
     Query the octave lift stages.
 
@@ -24,7 +25,6 @@ def query_octave_stage(stage: str = "all") -> str:
       - weaves  : Only stages with weave operators (S03/S05/S07/S09)
       - controls: Only odd control shells (S04/S06/S08)
     """
-    data = _OCTAVE.load()
     s = stage.strip().upper()
 
     if s == "ALL":
@@ -39,7 +39,7 @@ def query_octave_stage(stage: str = "all") -> str:
         # Try dimension match
         return _format_by_dimension(data, stage)
 
-def query_crown_transform(step: str = "all") -> str:
+def _legacy_query_crown_transform(data: dict, step: str) -> str:
     """
     Query the A+ crown transform.
 
@@ -50,7 +50,6 @@ def query_crown_transform(step: str = "all") -> str:
       - live        : The live crystal formula
       - traditions  : 36-shell tradition map
     """
-    data = _OCTAVE.load()
     s = step.strip().lower()
 
     if s == "all":
@@ -65,9 +64,8 @@ def query_crown_transform(step: str = "all") -> str:
         # Try name match
         return _format_crown_by_name(data, s)
 
-def inverse_octave_status() -> str:
+def _legacy_inverse_octave_status(data: dict) -> str:
     """Return a status summary for the resource endpoint."""
-    data = _OCTAVE.load()
     m = data["meta"]
     return (
         "## Inverse Crystal Octave\n\n"
@@ -99,10 +97,12 @@ def _format_one_stage(data: dict, stage_id: str) -> str:
 
 def _format_by_dimension(data: dict, dim: str) -> str:
     dim_upper = dim.strip().upper().replace(" ", "")
-    for stage in data["octave_stages"]:
-        to = stage["to"].upper().replace(" ", "").replace("_", "")
-        if dim_upper in to or dim_upper == stage["from"].upper():
-            return _render_stage(stage)
+    matches = [stage for stage in data['octave_stages']
+               if dim_upper == stage['to'].upper().replace(' ', '').replace('_', '')]
+    if len(matches) == 1:
+        return _render_stage(matches[0])
+    if len(matches) > 1:
+        return 'HOLD: source dimension selector is ambiguous; use an exact stage ID.'
     ids = [s["id"] for s in data["octave_stages"]]
     return f"Dimension '{dim}' not found. Available stages: {', '.join(ids)}"
 
@@ -204,7 +204,7 @@ def _format_crown_step(data: dict, num: int) -> str:
 def _format_crown_by_name(data: dict, name: str) -> str:
     name_lower = name.lower()
     for step in data["crown_transform"]["steps"]:
-        if name_lower in step["name"].lower():
+        if name_lower == step["name"].lower():
             return _format_crown_step(data, step["step"])
     names = [s["name"] for s in data["crown_transform"]["steps"]]
     return f"Step '{name}' not found. Available: {', '.join(names)}"
@@ -235,3 +235,17 @@ def _format_traditions(data: dict) -> str:
             lines.append(f"  - {t}")
         lines.append("")
     return "\n".join(lines)
+
+
+def query_octave_stage(stage: str = "all") -> str:
+    """Read current catalog; archive:<component> explicitly reads pinned descriptions."""
+    return query_registry("inverse_crystal_octave.json", _OCTAVE, stage, _legacy_query_octave_stage)
+
+
+def query_crown_transform(step: str = "all") -> str:
+    """Read current catalog; archive:<component> explicitly reads pinned descriptions."""
+    return query_registry("inverse_crystal_octave.json", _OCTAVE, step, _legacy_query_crown_transform)
+
+
+def inverse_octave_status() -> str:
+    return query_registry("inverse_crystal_octave.json", _OCTAVE, "all", lambda data, _: _legacy_inverse_octave_status(data))
