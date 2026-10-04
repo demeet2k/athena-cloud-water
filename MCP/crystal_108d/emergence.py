@@ -66,7 +66,38 @@ def _query_v2_emergence(data, comp):
         return f'HOLD: emergence registry has missing or conflicting source fields ({exc}).'
 
 
-def query_emergence(component: str = "all") -> str:
+def query_emergence(component: str = "all", source: str = "current") -> str:
+    """
+    Read the source dimensional emergence path.
+
+    V2 exposes sequence positions or exact from->to pairs; unsupported proofs HOLD.
+    The component descriptions below refer to valid legacy registries.
+
+    Components:
+      - all         : Full emergence overview
+      - phases      : All 7 emergence phases
+      - phase:N     : Specific phase by index (1-7) or name (e.g. phase:4D->6D)
+      - kernel      : Kernel embedding law and chain
+      - lenses      : Cross-lens upgrade sequence by stage
+      - lens:STAGE  : Lens state at a specific stage (e.g. lens:6D)
+      - bodies      : Body directory mapping
+
+    Source: current (default), or explicit archive for pinned historical
+    descriptions and clock MODEL only. Archive results never certify runtime.
+    """
+    if source == "archive":
+        from .core_archive import render_core_archive
+        return render_core_archive("dimensional_emergence.json", lambda data: _render_query_emergence(data, component), component)
+    if source != "current":
+        return "HOLD: source must be current or explicit archive."
+    try:
+        data = _EMERGENCE.load()
+    except (OSError, ValueError, TypeError) as exc:
+        return f'HOLD: emergence source is unavailable or unreadable ({exc}).'
+    return _render_query_emergence(data, component)
+
+
+def _render_query_emergence(data: dict, component: str = "all") -> str:
     """
     Read the source dimensional emergence path.
 
@@ -82,10 +113,6 @@ def query_emergence(component: str = "all") -> str:
       - lens:STAGE  : Lens state at a specific stage (e.g. lens:6D)
       - bodies      : Body directory mapping
     """
-    try:
-        data = _EMERGENCE.load()
-    except (OSError, ValueError, TypeError) as exc:
-        return f'HOLD: emergence source is unavailable or unreadable ({exc}).'
     if not isinstance(data, dict) or not isinstance(data.get('meta'), dict):
         return 'HOLD: emergence source requires a registry object and metadata object.'
     if not isinstance(component, str) or not component.strip():

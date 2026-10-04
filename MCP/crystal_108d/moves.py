@@ -10,7 +10,28 @@ from ._cache import JsonCache
 
 _moves = JsonCache("move_primitives.json")
 
-def check_route_legality(route_json: str) -> str:
+def check_route_legality(route_json: str, source: str = "current") -> str:
+    """
+    Check a proposed route against the 3 legality invariants and 10 move primitives.
+
+    Input: JSON string describing the route as a list of moves.
+    Each move should have: {"type": "STEP_SHELL|ROTATE_WREATH|...", "from": ..., "to": ...}
+
+    Or pass "list" to see all 10 primitives and 3 invariants.
+
+    Source: current (default), or explicit archive for pinned historical
+    descriptions and clock MODEL only. Archive results never certify runtime.
+    """
+    if source == "archive":
+        from .core_archive import render_core_archive
+        return render_core_archive("move_primitives.json", lambda data: _render_check_route_legality(data, route_json), route_json)
+    if source != "current":
+        return "HOLD: source must be current or explicit archive."
+    data = _moves.load()
+    return _render_check_route_legality(data, route_json)
+
+
+def _render_check_route_legality(data: dict, route_json: str) -> str:
     """
     Check a proposed route against the 3 legality invariants and 10 move primitives.
 
@@ -19,7 +40,6 @@ def check_route_legality(route_json: str) -> str:
 
     Or pass "list" to see all 10 primitives and 3 invariants.
     """
-    data = _moves.load()
     if data.get("meta", {}).get("version") == "2.0" and "invariants" not in data:
         if route_json.strip().lower() in ("list", "help", "primitives"):
             return "## Move Primitives\n\n" + "\n\n".join(

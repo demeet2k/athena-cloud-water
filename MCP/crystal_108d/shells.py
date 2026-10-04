@@ -178,14 +178,32 @@ def query_superphase(tag: str) -> str:
         + "\n"
     )
 
-def query_archetype(index: int) -> str:
+def query_archetype(index: int, source: str = "current") -> str:
+    """
+    Query an archetype (1-12) across all three wreaths.
+
+    Returns: archetype name, all shells carrying this archetype,
+    and their wreath/superphase context.
+
+    Source: current (default), or explicit archive for pinned historical
+    descriptions and clock MODEL only. Archive results never certify runtime.
+    """
+    if source == "archive":
+        from .core_archive import render_core_archive
+        return render_core_archive("shell_registry.json", lambda data: _render_query_archetype(data, index), index)
+    if source != "current":
+        return "HOLD: source must be current or explicit archive."
+    data = _shells.load()
+    return _render_query_archetype(data, index)
+
+
+def _render_query_archetype(data: dict, index: int) -> str:
     """
     Query an archetype (1-12) across all three wreaths.
 
     Returns: archetype name, all shells carrying this archetype,
     and their wreath/superphase context.
     """
-    data = _shells.load()
     parsed = _index(index, 12)
     if parsed is None:
         return f"Invalid archetype index {index}. Must be 1-12."

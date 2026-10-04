@@ -45,14 +45,30 @@ def _query_v2_stage(data, code):
         return f'HOLD: stage registry has missing or conflicting source fields ({exc}).'
 
 
-def query_stage_code(code: str = "all") -> str:
+def query_stage_code(code: str = "all", source: str = "current") -> str:
     """Read v2 A/B/C/D/FINAL source stages or all; unsupported legacy selectors HOLD.
     For a valid legacy registry, query a stage code (S3, S4, S4M, S5Σ, S6M, S8, S12, Ω, A+, etc.) or 'all' for the full ladder.
-    Also: 'zeros' for zero families, 'hubs' for hub lattice, 'sigma60' for metro packet."""
+    Also: 'zeros' for zero families, 'hubs' for hub lattice, 'sigma60' for metro packet.
+
+    Source: current (default), or explicit archive for pinned historical
+    descriptions and clock MODEL only. Archive results never certify runtime.
+    """
+    if source == "archive":
+        from .core_archive import render_core_archive
+        return render_core_archive("stage_codes.json", lambda data: _render_query_stage_code(data, code), code)
+    if source != "current":
+        return "HOLD: source must be current or explicit archive."
     try:
         d = _stages.load()
     except (OSError, ValueError, TypeError) as exc:
         return f'HOLD: stage source is unavailable or unreadable ({exc}).'
+    return _render_query_stage_code(d, code)
+
+
+def _render_query_stage_code(d: dict, code: str = "all") -> str:
+    """Read v2 A/B/C/D/FINAL source stages or all; unsupported legacy selectors HOLD.
+    For a valid legacy registry, query a stage code (S3, S4, S4M, S5Σ, S6M, S8, S12, Ω, A+, etc.) or 'all' for the full ladder.
+    Also: 'zeros' for zero families, 'hubs' for hub lattice, 'sigma60' for metro packet."""
     if not isinstance(d, dict) or not isinstance(d.get('meta'), dict):
         return 'HOLD: stage source requires a registry object and metadata object.'
     if not isinstance(code, str) or not code.strip():

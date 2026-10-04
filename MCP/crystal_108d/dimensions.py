@@ -121,14 +121,32 @@ def dimensional_lift(from_dim: int, to_dim: int) -> str:
 
     return "\n".join(lines) + "\n"
 
-def query_containment(shell_or_dimension: int) -> str:
+def query_containment(shell_or_dimension: int, source: str = "current") -> str:
+    """
+    Get the weave containment chain.
+
+    If given a dimension (3-12), shows how many sub-bodies nest inside.
+    Shows the full B_12 = W_9(B_10) = ... expansion.
+
+    Source: current (default), or explicit archive for pinned historical
+    descriptions and clock MODEL only. Archive results never certify runtime.
+    """
+    if source == "archive":
+        from .core_archive import render_core_archive
+        return render_core_archive("dimensional_ladder.json", lambda data: _render_query_containment(data, shell_or_dimension), shell_or_dimension)
+    if source != "current":
+        return "HOLD: source must be current or explicit archive."
+    data = _dims.load()
+    return _render_query_containment(data, shell_or_dimension)
+
+
+def _render_query_containment(data: dict, shell_or_dimension: int) -> str:
     """
     Get the weave containment chain.
 
     If given a dimension (3-12), shows how many sub-bodies nest inside.
     Shows the full B_12 = W_9(B_10) = ... expansion.
     """
-    data = _dims.load()
     if "containment_chain" not in data:
         return "HOLD: containment_chain is absent from the current dimensional registry.\n"
     chain = data["containment_chain"]

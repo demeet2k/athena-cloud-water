@@ -52,7 +52,34 @@ def _legacy_motion_error(motion):
     return None
 
 
-def query_conservation(motion_json: str) -> str:
+def query_conservation(motion_json: str, source: str = "current") -> str:
+    """
+    Read conservation laws, or check explicit supported legacy-v1 measurements.
+
+    The v2 catalog is descriptive; motion evaluation returns HOLD without an evaluator.
+
+    Pass 'list' to see source laws (legacy registries also declare round-trip classes).
+
+    For checking, pass JSON: {"shell_deltas": [1,-1], "wreath_rotations": [1,1,1],
+    "face_shifts": [1,1,1,1], "archetype_shifts": [0],
+    "mobius_flips": 2, "zoom_deltas": [1,-1]}
+
+    Source: current (default), or explicit archive for pinned historical
+    descriptions and clock MODEL only. Archive results never certify runtime.
+    """
+    if source == "archive":
+        from .core_archive import render_core_archive
+        return render_core_archive("conservation_laws.json", lambda data: _render_query_conservation(data, motion_json), motion_json)
+    if source != "current":
+        return "HOLD: source must be current or explicit archive."
+    try:
+        data = _laws.load()
+    except (OSError, ValueError, TypeError) as exc:
+        return f'HOLD: conservation source is unavailable or unreadable ({exc}).'
+    return _render_query_conservation(data, motion_json)
+
+
+def _render_query_conservation(data: dict, motion_json: str) -> str:
     """
     Read conservation laws, or check explicit supported legacy-v1 measurements.
 
@@ -64,10 +91,6 @@ def query_conservation(motion_json: str) -> str:
     "face_shifts": [1,1,1,1], "archetype_shifts": [0],
     "mobius_flips": 2, "zoom_deltas": [1,-1]}
     """
-    try:
-        data = _laws.load()
-    except (OSError, ValueError, TypeError) as exc:
-        return f'HOLD: conservation source is unavailable or unreadable ({exc}).'
     if not isinstance(data, dict) or not isinstance(data.get('meta'), dict):
         return 'HOLD: conservation source requires a registry object and metadata object.'
 
