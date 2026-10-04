@@ -18,8 +18,14 @@ def parse_108d_address(address: str) -> dict | None:
 
     Also accepts shorthand like: Xi108:Su:1:5 (wreath:archetype:shell)
     """
+    # Source-listed face address: Xi108:W2:A2:S5:S.
+    m = re.fullmatch(r"Xi108:W(\d+):A(\d+):S(\d+):([SFCR])", address)
+    if m:
+        return {"wreath": int(m.group(1)), "archetype": int(m.group(2)),
+                "shell": int(m.group(3)), "face": m.group(4)}
+
     # Full format
-    m = re.match(
+    m = re.fullmatch(
         r"Xi108:W(\d+):A(\d+):S(\d+):u(\d+):"
         r"(Su|Me|Sa):(L\d+|L\d{2,3}):(Q|O|Z|E10|AP|KZ|Core):([\w-]+)",
         address
@@ -37,7 +43,7 @@ def parse_108d_address(address: str) -> dict | None:
         }
 
     # Shorthand: Xi108:Su:3:15
-    m = re.match(r"Xi108:(Su|Me|Sa):(\d+):(\d+)", address)
+    m = re.fullmatch(r"Xi108:(Su|Me|Sa):(\d+):(\d+)", address)
     if m:
         return {
             "superphase": m.group(1),
@@ -46,7 +52,7 @@ def parse_108d_address(address: str) -> dict | None:
         }
 
     # Minimal: Xi108:S{shell}
-    m = re.match(r"Xi108:S(\d+)", address)
+    m = re.fullmatch(r"Xi108:S(\d+)", address)
     if m:
         return {"shell": int(m.group(1))}
 
@@ -76,6 +82,8 @@ def navigate_108d(
     shells_data = _shells.load()
     dims_data = _dims.load()
 
+    parsed = {}
+
     # If address string provided, parse it
     if address:
         parsed = parse_108d_address(address)
@@ -88,10 +96,14 @@ def navigate_108d(
                 "  Xi108:S5 (minimal: shell only)"
             )
         shell = parsed.get("shell", shell)
+        face = parsed.get("face", face)
         if "archetype" in parsed:
             archetype = str(parsed["archetype"])
         if "superphase" in parsed:
             wreath = parsed["superphase"]
+
+    if isinstance(shells_data["shells"], dict):
+        return _navigate_v2(shells_data, dims_data, shell, archetype, wreath, dimension, face, parsed)
 
     lines = ["## 108D Navigation Result\n"]
 
@@ -160,4 +172,50 @@ def navigate_108d(
             "- address (Xi108:...)"
         )
 
+    return "\n".join(lines) + "\n"
+
+
+def _navigate_v2(shells_data, dims_data, shell, archetype, wreath, dimension, face, parsed):
+    """Read actual v2 records without inventing v1 node/dimension metadata."""
+    records = list(shells_data["shells"].values())
+    if dimension > 0 and (shell or archetype or wreath or face):
+        return "HOLD: current registries do not map shell/archetype/wreath/face selectors to dimensions."
+
+    if face and face not in shells_data["meta"]["faces"]:
+        return f"INVALID face {face!r}. Valid: {shells_data['meta']['faces']}"
+    if shell != 0:
+        entry = shells_data["shells"].get(str(shell))
+        if entry is None:
+            return f"Shell {shell} out of range or absent from source registry."
+        if parsed.get("wreath", entry["wreath_index"]) != entry["wreath_index"]:
+            return "INVALID: address wreath conflicts with the source shell record."
+        if archetype and archetype.lower() not in (str(entry["archetype_index"]), entry["archetype"].lower()):
+            return "INVALID: address archetype conflicts with the source shell record."
+        if wreath and wreath.lower() != entry["wreath"].lower():
+            return "INVALID: address superphase conflicts with the source shell record."
+        selected = [entry]
+    elif archetype:
+        selected = [entry for entry in records
+                    if archetype.lower() in (str(entry["archetype_index"]), entry["archetype"].lower())]
+    elif wreath:
+        selected = [entry for entry in records if wreath.lower() == entry["wreath"].lower()]
+    elif dimension > 0:
+        from .dimensions import resolve_dimensional_body
+        return resolve_dimensional_body(dimension)
+    else:
+        return "Provide a shell, archetype, wreath, dimension or source-listed address."
+    if wreath:
+        selected = [entry for entry in selected if wreath.lower() == entry["wreath"].lower()]
+    if not selected:
+        return "No source shell records match the requested archetype or wreath."
+    lines = ["## 108D Navigation Result"]
+    for entry in selected:
+        lines.extend([f"### Shell {entry['shell_id']} - {entry['archetype']}",
+                      f"Wreath: {entry['wreath']}", f"Archetype: #{entry['archetype_index']}",
+                      f"Mirror: S{entry['mirror_shell']}", f"Neighbors: {entry['neighbors']}"])
+        for code, location in entry["faces"].items():
+            if not face or code == face:
+                lines.append(f"Face {code}: {location['address']} (gate {location['gate']})")
+    if any(key in parsed for key in ("unit", "live_lock", "portal", "instance")):
+        lines.append("HOLD: source shell registry does not attest unit/live-lock/portal/instance mappings.")
     return "\n".join(lines) + "\n"

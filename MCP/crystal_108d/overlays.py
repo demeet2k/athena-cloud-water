@@ -5,10 +5,11 @@
 """4 overlay registries (lens, alchemy, animal, completion) and Sigma-15."""
 
 from ._cache import JsonCache
+from .registry_sources import query_registry, _catalog
 
 _overlays = JsonCache("overlay_registries.json")
 
-def query_overlay(registry: str, index: int = 0) -> str:
+def _legacy_query_overlay(data: dict, registry: str, index: int = 0) -> str:
     """
     Query any of the 4 overlay registries.
 
@@ -21,7 +22,6 @@ def query_overlay(registry: str, index: int = 0) -> str:
 
     Index (optional): specific entry within the registry (1-based).
     """
-    data = _overlays.load()
     reg = registry.lower().strip()
 
     # Map aliases
@@ -77,7 +77,7 @@ def query_overlay(registry: str, index: int = 0) -> str:
             lines.append(f"  - {dp}")
     return "\n".join(lines) + "\n"
 
-def query_sigma15(sigma: int) -> str:
+def _legacy_query_sigma15(data: dict, sigma: int) -> str:
     """
     Get a Sigma-15 lens combination by mask index (1-15).
 
@@ -86,7 +86,6 @@ def query_sigma15(sigma: int) -> str:
 
     Mask 15 (SFCR) = complete local pattern / local aether.
     """
-    data = _overlays.load()
     combos = data["4_lens"]["sigma_15_combinations"]
 
     if sigma < 1 or sigma > 15:
@@ -100,3 +99,29 @@ def query_sigma15(sigma: int) -> str:
         f"- **Sigma-60 expansion**: 4 quadrants × this combination\n"
         f"- **Is aether**: {'Yes (SFCR = complete local pattern)' if combo['mask'] == 15 else 'No'}\n"
     )
+
+
+def query_overlay(registry: str, index: int = 0) -> str:
+    """Read the current catalog or explicit archive:<registry>; index is 1-based."""
+    if type(index) is not int or index < 0:
+        return 'Invalid overlay index: expected a nonnegative integer.'
+    def render(data, component):
+        if index and component.lower() in ('all', 'overview'):
+            return 'HOLD: an entry index requires a specific overlay registry.'
+        return _legacy_query_overlay(data, component, index)
+    def catalog(data, component):
+        if index:
+            return 'HOLD: current overlay catalog has no legacy registry-entry index mapping.'
+        return _catalog('overlay_registries.json', data, component)
+    return query_registry('overlay_registries.json', _overlays, registry, render, catalog)
+
+
+def query_sigma15(sigma: int, source: str = 'json') -> str:
+    """Read a descriptive Sigma mask; source='archive' explicitly selects reviewed QSHR."""
+    if type(sigma) is not int or not 1 <= sigma <= 15:
+        return 'Invalid Sigma index: expected integer 1-15.'
+    if source not in ('json', 'archive'):
+        return 'Invalid source: expected json or archive.'
+    selector = 'archive:all' if source == 'archive' else f'mask:{sigma}'
+    return query_registry('overlay_registries.json', _overlays, selector,
+                          lambda data, component: _legacy_query_sigma15(data, sigma))

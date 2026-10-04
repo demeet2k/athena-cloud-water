@@ -251,6 +251,18 @@ def compute_bridge_weight(
     source = source.upper()
     target = target.upper()
 
+    valid_elements = {element["code"] for element in data["elements"].values()}
+    if source not in valid_elements or target not in valid_elements:
+        return "Invalid element code. Use a source-declared S, F, C, or R element."
+
+    lock_periods = {
+        "L3": 3, "L5": 5, "L7": 7,
+        "L35": 15, "L37": 21, "L57": 35,
+        "L357": 105,
+    }
+    if live_lock_a.upper() not in lock_periods or live_lock_b.upper() not in lock_periods:
+        return "Invalid live-lock class. Use: " + ", ".join(lock_periods) + "."
+
     if source == target:
         return (
             f"## Self-Loop Weight: {source} → {source}\n\n"
@@ -263,14 +275,9 @@ def compute_bridge_weight(
     if not bridge:
         return f"No bridge found for {source}→{target}. Valid: SF, SC, SR, FC, FR, CR."
 
-    # Parse live-lock periods
-    lock_periods = {
-        "L3": 3, "L5": 5, "L7": 7,
-        "L35": 15, "L37": 21, "L57": 35,
-        "L357": 105,
-    }
-    period_a = lock_periods.get(live_lock_a.upper(), 3)
-    period_b = lock_periods.get(live_lock_b.upper(), 3)
+    # The caller's declared locks must resolve exactly; no default is evidence.
+    period_a = lock_periods[live_lock_a.upper()]
+    period_b = lock_periods[live_lock_b.upper()]
 
     # Compute LCM of lock periods
     lcm_period = (period_a * period_b) // math.gcd(period_a, period_b)

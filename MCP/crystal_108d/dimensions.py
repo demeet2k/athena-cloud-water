@@ -18,6 +18,15 @@ def resolve_dimensional_body(dimension: int) -> str:
     Dimensions: 3, 4, 5, 6, 7, 8, 9, 10, 11, 12
     """
     data = _dims.load()
+    if "levels" in data and "dimensions" not in data:
+        entry = next((d for d in data["levels"] if d["dimension"] == dimension), None)
+        if entry is None:
+            return f"Dimension {dimension} not found. Valid: {[d['dimension'] for d in data['levels']]}"
+        lines = [f"## {entry['dimension']}D - {entry['name']}", entry['description']]
+        if "gates" in entry:
+            lines.append("Gates: " + ", ".join(entry["gates"]))
+        lines.append("Sequence lock: " + data["sequence_lock"])
+        return "\n".join(lines) + "\n"
     dim_entry = None
     for d in data["dimensions"]:
         if d["dimension"] == dimension:
@@ -71,6 +80,17 @@ def dimensional_lift(from_dim: int, to_dim: int) -> str:
     Example: dimensional_lift(4, 12) traces E4 -> O5 -> E6 -> O7 -> E8 -> O9 -> E10 -> O11 -> E12
     """
     data = _dims.load()
+    if "levels" in data and "dimensions" not in data:
+        low, high = sorted((from_dim, to_dim))
+        levels = [d for d in data["levels"] if low <= d["dimension"] <= high]
+        if not levels:
+            return f"No dimensions found in range {low}-{high}."
+        return "\n".join([
+            f"## Dimensional Lift: {low}D -> {high}D",
+            "Sequence lock: " + data["sequence_lock"],
+            *[f"- {d['dimension']}D: {d['name']} - {d['description']}" for d in levels],
+            "HOLD: v2 lists levels; it does not attest odd/even transport or containment edges.",
+        ]) + "\n"
 
     if from_dim > to_dim:
         from_dim, to_dim = to_dim, from_dim
@@ -101,14 +121,34 @@ def dimensional_lift(from_dim: int, to_dim: int) -> str:
 
     return "\n".join(lines) + "\n"
 
-def query_containment(shell_or_dimension: int) -> str:
+def query_containment(shell_or_dimension: int, source: str = "current") -> str:
+    """
+    Get the weave containment chain.
+
+    If given a dimension (3-12), shows how many sub-bodies nest inside.
+    Shows the full B_12 = W_9(B_10) = ... expansion.
+
+    Source: current (default), or explicit archive for pinned historical
+    descriptions and clock MODEL only. Archive results never certify runtime.
+    """
+    if source == "archive":
+        from .core_archive import render_core_archive
+        return render_core_archive("dimensional_ladder.json", lambda data: _render_query_containment(data, shell_or_dimension), shell_or_dimension)
+    if source != "current":
+        return "HOLD: source must be current or explicit archive."
+    data = _dims.load()
+    return _render_query_containment(data, shell_or_dimension)
+
+
+def _render_query_containment(data: dict, shell_or_dimension: int) -> str:
     """
     Get the weave containment chain.
 
     If given a dimension (3-12), shows how many sub-bodies nest inside.
     Shows the full B_12 = W_9(B_10) = ... expansion.
     """
-    data = _dims.load()
+    if "containment_chain" not in data:
+        return "HOLD: containment_chain is absent from the current dimensional registry.\n"
     chain = data["containment_chain"]
 
     lines = [

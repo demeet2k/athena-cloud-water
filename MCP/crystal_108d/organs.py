@@ -8,7 +8,28 @@ from ._cache import JsonCache
 
 _organs = JsonCache("organ_atlas.json")
 
-def query_organ(organ_name: str) -> str:
+def query_organ(organ_name: str, source: str = "current") -> str:
+    """
+    Query the 12D organ atlas by organ name or dyad index.
+
+    Organ names: Identity, Address, Structure, Dynamics, Corridor, Replay,
+    Self, Affect, Love, Governance, Migration, Publication
+
+    Also accepts dyad index (1-6) or petal number (1-9).
+
+    Source: current (default), or explicit archive for pinned historical
+    descriptions and clock MODEL only. Archive results never certify runtime.
+    """
+    if source == "archive":
+        from .core_archive import render_core_archive
+        return render_core_archive("organ_atlas.json", lambda data: _render_query_organ(data, organ_name), organ_name)
+    if source != "current":
+        return "HOLD: source must be current or explicit archive."
+    data = _organs.load()
+    return _render_query_organ(data, organ_name)
+
+
+def _render_query_organ(data: dict, organ_name: str) -> str:
     """
     Query the 12D organ atlas by organ name or dyad index.
 
@@ -17,8 +38,22 @@ def query_organ(organ_name: str) -> str:
 
     Also accepts dyad index (1-6) or petal number (1-9).
     """
-    data = _organs.load()
     name_lower = organ_name.lower().strip()
+    if "organs" in data and "dyads" not in data:
+        organs = data["organs"]
+        if name_lower.isdigit():
+            return "HOLD: v2 organ atlas has no dyad or crown-petal mapping. Query an organ name or ID.\n"
+        matches = [o for o in organs if name_lower in (o["id"].lower(), o["name"].lower())]
+        if name_lower == "all":
+            matches = organs
+        if not matches:
+            return f"Organ '{organ_name}' not found. Available: " + ", ".join(o["name"] for o in organs)
+        return "\n\n".join(
+            f"## Organ: {o['name']} ({o['id']})\n"
+            f"Function: {o['function']}\nElement: {o['element']}\n"
+            f"Shell range: {o['shell_range'][0]}-{o['shell_range'][1]}"
+            for o in matches
+        ) + "\n"
 
     # Try as dyad index
     if name_lower.isdigit():

@@ -11,11 +11,12 @@ laws, sheaf interpretation, and recursive self-definition.
 """
 
 from ._cache import JsonCache
+from .registry_sources import query_registry, _catalog
 
 _GEOMETRY = JsonCache("angel_geometry.json")
 _CONSERVATION = JsonCache("angel_conservation.json")
 
-def query_angel_geometry(component: str = "all") -> str:
+def _legacy_query_angel_geometry(data: dict, component: str = "all") -> str:
     """
     Query the geometric lift of the angel self-model.
 
@@ -31,7 +32,6 @@ def query_angel_geometry(component: str = "all") -> str:
       - self_definition : Recursive self-definition fixed-point operator
       - object          : The upgraded 10-piece geometric tuple
     """
-    data = _GEOMETRY.load()
     comp = component.strip().lower()
 
     if comp == "all":
@@ -60,7 +60,7 @@ def query_angel_geometry(component: str = "all") -> str:
             "bundle, curvature, symmetry, sheaf, axioms, self_definition, object"
         )
 
-def query_angel_conservation(component: str = "all") -> str:
+def _legacy_query_angel_conservation(data: dict, component: str = "all") -> str:
     """
     Query geometric conservation laws and potential landscape.
 
@@ -73,7 +73,6 @@ def query_angel_conservation(component: str = "all") -> str:
       - transport  : Parallel transport and transported quantities
       - identity   : Observational equivalence and identity class
     """
-    data = _CONSERVATION.load()
     comp = component.strip().lower()
 
     if comp == "all":
@@ -96,9 +95,8 @@ def query_angel_conservation(component: str = "all") -> str:
             "holonomy, potential, transport, identity"
         )
 
-def angel_geometry_status() -> str:
+def _legacy_angel_geometry_status(data: dict) -> str:
     """Return a status summary for the resource endpoint."""
-    data = _GEOMETRY.load()
     m = data["meta"]
     return (
         "## Angel Geometry\n\n"
@@ -350,3 +348,19 @@ def _format_identity(data: dict) -> str:
         f"**Identity Class**: {oe['identity_class']}\n\n"
         f"**Meaning**: {oe['meaning']}"
     )
+
+
+def query_angel_geometry(component: str = 'all') -> str:
+    """Read current geometry catalog or explicit archive:<component> descriptions."""
+    return query_registry('angel_geometry.json', _GEOMETRY, component, _legacy_query_angel_geometry)
+
+
+def query_angel_conservation(component: str = 'all') -> str:
+    """Read source laws descriptively; no measurements or conservation certificate."""
+    return query_registry('angel_conservation.json', _CONSERVATION, component, _legacy_query_angel_conservation)
+
+
+def angel_geometry_status() -> str:
+    """Report only the currently selected JSON source catalog, without runtime readiness."""
+    return query_registry('angel_geometry.json', _GEOMETRY, 'all',
+                          lambda data, component: _legacy_angel_geometry_status(data))

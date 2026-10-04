@@ -10,6 +10,95 @@ from .constants import SUPERPHASE_NAMES
 _shells = JsonCache("shell_registry.json")
 _hologram = JsonCache("hologram_chapters.json")
 
+
+def _index(value, limit):
+    """Accept integers and decimal integer strings, without lossy coercion."""
+    if isinstance(value, bool) or not isinstance(value, (int, str)):
+        return None
+    if isinstance(value, str):
+        value = value.strip()
+        if (not value.isascii() or not value.isdecimal()
+                or len(value.lstrip("0")) > len(str(limit))):
+            return None
+        value = int(value.lstrip("0") or "0")
+    return value if 1 <= value <= limit else None
+
+
+def _validated_v2(data):
+    """Check declared identities and catalog membership before reporting them."""
+    shells, archetypes, wreaths = data['shells'], data['archetypes'], data['wreaths']
+    if not all(isinstance(catalog, dict) for catalog in (shells, archetypes, wreaths)):
+        raise ValueError('v2 shell catalogs must be dictionaries')
+    for key, shell in shells.items():
+        number = _index(key, 36)
+        if number is None or type(shell['shell_id']) is not int or shell['shell_id'] != number:
+            raise ValueError('shell key and identity conflict')
+        if (type(shell['archetype_index']) is not int or type(shell['wreath_index']) is not int
+                or type(shell['mirror_shell']) is not int
+                or not isinstance(shell['neighbors'], list)
+                or any(type(n) is not int for n in shell['neighbors'])):
+            raise ValueError('shell indices must be integers')
+        a = archetypes[str(shell['archetype_index'])]
+        w = wreaths[str(shell['wreath_index'])]
+        if (shell['archetype'] != a['name'] or shell['wreath'] != w['name']
+                or shell['phase'] != a['phase'] or shell['element_primary'] != a['element']):
+            raise ValueError('shell and catalog fields conflict')
+        if str(shell['mirror_shell']) not in shells or any(str(n) not in shells for n in shell['neighbors']):
+            raise ValueError('shell reference is missing')
+        if (not isinstance(shell['faces'], dict)
+                or any(not isinstance(record, dict) for record in shell['faces'].values())):
+            raise ValueError('shell faces and face records must be dictionaries')
+        if set(shell['faces']) != set(data['meta']['faces']):
+            raise ValueError('declared faces conflict')
+        for face, record in shell['faces'].items():
+            expected = f"Xi108:W{shell['wreath_index']}:A{shell['archetype_index']}:S{number}:{face}"
+            if record['address'] != expected or not isinstance(record['gate'], str):
+                raise ValueError('face address and shell identity conflict')
+    for catalog, field, count in ((archetypes, 'archetype_index', 12), (wreaths, 'wreath_index', 3)):
+        if set(catalog) != {str(i) for i in range(1, count + 1)}:
+            raise ValueError('catalog identities are missing or undeclared')
+        for key, record in catalog.items():
+            members = record['shells']
+            actual = [v['shell_id'] for v in shells.values() if v[field] == int(key)]
+            if (not isinstance(members, list) or any(type(n) is not int for n in members)
+                    or len(set(members)) != len(members) or set(members) != set(actual)):
+                raise ValueError('catalog shell membership conflicts')
+    if set(shells) != {str(i) for i in range(1, 37)}:
+        raise ValueError('shell identities are missing or undeclared')
+    return shells, archetypes, wreaths
+
+
+def _v2_report(data, kind, selector):
+    try:
+        shells, archetypes, wreaths = _validated_v2(data)
+        if kind == 'shell':
+            s = shells[str(selector)]
+            w = wreaths[str(s['wreath_index'])]
+            lines = [f"## Shell {s['shell_id']} - {s['archetype']}",
+                     f"- **Archetype**: #{s['archetype_index']} - {s['archetype']}",
+                     f"- **Wreath**: {s['wreath']} ({w['quality']})",
+                     f"- **Phase**: {s['phase']}", f"- **Primary Element**: {s['element_primary']}",
+                     f"- **Mirror Shell**: S{s['mirror_shell']}", f"- **Neighbors**: {s['neighbors']}"]
+            lines += [f"- **Face {face}**: {r['address']} (gate {r['gate']})" for face, r in s['faces'].items()]
+        elif kind == 'archetype':
+            a = archetypes[str(selector)]
+            lines = [f"## Archetype #{selector} - {a['name']}",
+                     f"- **Phase**: {a['phase']}", f"- **Element**: {a['element']}",
+                     f"Appears in {len(a['shells'])} source-declared shells:"]
+            lines += [f"- **S{n}**: {shells[str(n)]['wreath']}, mirror S{shells[str(n)]['mirror_shell']}" for n in a['shells']]
+        else:
+            matches = [w for w in wreaths.values() if selector in (w['name'].lower(), SUPERPHASE_NAMES.get(w['name'], '').lower())]
+            if len(matches) != 1:
+                return f"Unknown superphase '{selector}'. Use: sulfur/Su, mercury/Me, salt/Sa"
+            w = matches[0]
+            lines = [f"## Superphase: {SUPERPHASE_NAMES.get(w['name'], w['name'])} ({w['name']})",
+                     f"- **Quality**: {w['quality']}", f"- **Shells**: {w['shells']}"]
+            lines += [f"- S{n}: {shells[str(n)]['archetype']}" for n in w['shells']]
+        return '\n'.join(lines) + '\n\nHOLD: v2 does not declare legacy node counts, cumulative counts, dimension visibility or action laws.\n'
+    except (KeyError, TypeError, ValueError) as exc:
+        return f"HOLD: shell registry has missing or conflicting source fields ({exc})."
+
+
 def query_shell(shell_number: int) -> str:
     """
     Query a specific shell (1-36) in the 108D mega-cascade.
@@ -18,9 +107,14 @@ def query_shell(shell_number: int) -> str:
     dimension first visible, and action description.
     """
     data = _shells.load()
-    shell_number = int(shell_number)
-    if shell_number < 1 or shell_number > 36:
+    parsed = _index(shell_number, 36)
+    if parsed is None:
         return f"Invalid shell {shell_number}. Must be 1-36."
+
+    shell_number = parsed
+    if (data.get("meta", {}).get("version") == "2.0"
+            or isinstance(data.get("shells"), dict)):
+        return _v2_report(data, "shell", shell_number)
 
     shell = data["shells"][shell_number - 1]
     wreath_info = None
@@ -48,7 +142,12 @@ def query_superphase(tag: str) -> str:
     Returns: shell range, node count, function, archetype list.
     """
     data = _shells.load()
-    tag_lower = tag.lower()
+    if not isinstance(tag, str) or not tag.strip():
+        return "Invalid superphase. Use: sulfur/Su, mercury/Me, salt/Sa"
+    tag_lower = tag.strip().lower()
+    if (data.get("meta", {}).get("version") == "2.0"
+            or isinstance(data.get("shells"), dict)):
+        return _v2_report(data, "wreath", tag_lower)
 
     # Normalize tag
     wreath_key = None
@@ -79,17 +178,40 @@ def query_superphase(tag: str) -> str:
         + "\n"
     )
 
-def query_archetype(index: int) -> str:
+def query_archetype(index: int, source: str = "current") -> str:
+    """
+    Query an archetype (1-12) across all three wreaths.
+
+    Returns: archetype name, all shells carrying this archetype,
+    and their wreath/superphase context.
+
+    Source: current (default), or explicit archive for pinned historical
+    descriptions and clock MODEL only. Archive results never certify runtime.
+    """
+    if source == "archive":
+        from .core_archive import render_core_archive
+        return render_core_archive("shell_registry.json", lambda data: _render_query_archetype(data, index), index)
+    if source != "current":
+        return "HOLD: source must be current or explicit archive."
+    data = _shells.load()
+    return _render_query_archetype(data, index)
+
+
+def _render_query_archetype(data: dict, index: int) -> str:
     """
     Query an archetype (1-12) across all three wreaths.
 
     Returns: archetype name, all shells carrying this archetype,
     and their wreath/superphase context.
     """
-    data = _shells.load()
-    index = int(index)
-    if index < 1 or index > 12:
+    parsed = _index(index, 12)
+    if parsed is None:
         return f"Invalid archetype index {index}. Must be 1-12."
+
+    index = parsed
+    if (data.get("meta", {}).get("version") == "2.0"
+            or isinstance(data.get("shells"), dict)):
+        return _v2_report(data, "archetype", index)
 
     shells = [s for s in data["shells"] if s["archetype_index"] == index]
     name = shells[0]["archetype_name"]
@@ -107,7 +229,7 @@ def query_archetype(index: int) -> str:
 
 def read_hologram_chapter(chapter: int) -> str:
     """
-    Read an ATHENA CRYSTAL 108+ HOLOGRAM chapter (1-21).
+    Read a source-declared chapter (v2: 1-27; legacy: 1-21).
 
     These are the 21 chapters of the full 108D A+ organism specification:
       1: Inherited Body Diagnosis
@@ -133,8 +255,26 @@ def read_hologram_chapter(chapter: int) -> str:
       21: Final Canonical One-Line Definition & A+ Crown Seal
     """
     data = _hologram.load()
-    if chapter < 1 or chapter > 21:
-        return f"Invalid chapter {chapter}. Must be 1-21."
+    v2 = data.get('meta', {}).get('version') == '2.0'
+    limit = 27 if v2 else 21
+    parsed = _index(chapter, limit)
+    if parsed is None:
+        return f"Invalid chapter {chapter}. Must be 1-{limit}."
+    chapter = parsed
+    if v2:
+        try:
+            chapters = data['chapters']
+            ids = [record['id'] for record in chapters]
+            if (any(type(n) is not int for n in ids) or len(set(ids)) != len(ids)
+                    or set(ids) != set(range(1, limit + 1))):
+                raise ValueError('chapter identities are missing, duplicated or undeclared')
+            ch = next(record for record in chapters if record['id'] == chapter)
+            return (f"## 108D Hologram - Chapter {ch['id']}: {ch['name']}\n\n"
+                    f"**Description**: {ch['description']}\n\n"
+                    f"**Source Mirror Law**: {data['mirror_law']}\n\n"
+                    "HOLD: v2 does not declare legacy key concepts, Earth invariants, four projections or shared invariants.\n")
+        except (KeyError, TypeError, ValueError) as exc:
+            return f"HOLD: hologram registry has missing or conflicting source fields ({exc})."
 
     ch = data["chapters"][chapter - 1]
     return (

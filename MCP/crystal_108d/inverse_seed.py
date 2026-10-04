@@ -11,10 +11,11 @@ and 2D holographic boundary.
 """
 
 from ._cache import JsonCache
+from .registry_sources import query_registry
 
 _SEED = JsonCache("inverse_crystal_seed.json")
 
-def query_4d_seed(component: str = "all") -> str:
+def _legacy_query_4d_seed(data: dict, component: str) -> str:
     """
     Query the Phase I 4D tesseract seed.
 
@@ -25,7 +26,6 @@ def query_4d_seed(component: str = "all") -> str:
       - registers  : 4 registers (Body, Route, Time, Witness)
       - invariants : 10 invariants that cannot be lost through any lift
     """
-    data = _SEED.load()
     comp = component.strip().lower()
 
     if comp == "all":
@@ -44,7 +44,7 @@ def query_4d_seed(component: str = "all") -> str:
             "registers, invariants"
         )
 
-def query_3d_crystal(component: str = "all") -> str:
+def _legacy_query_3d_crystal(data: dict, component: str) -> str:
     """
     Query the 3D seed crystal and 2D holographic boundary.
 
@@ -57,7 +57,6 @@ def query_3d_crystal(component: str = "all") -> str:
       - elements     : Four elemental anchors A4 with quality plane
       - viability    : Viability machine (R, M, Phi, L, C)
     """
-    data = _SEED.load()
     comp = component.strip().lower()
 
     if comp == "all":
@@ -80,9 +79,8 @@ def query_3d_crystal(component: str = "all") -> str:
             "boundary, encoding, zero, elements, viability"
         )
 
-def inverse_seed_status() -> str:
+def _legacy_inverse_seed_status(data: dict) -> str:
     """Return a status summary for the resource endpoint."""
-    data = _SEED.load()
     seed = data["three_d_seed"]
     return (
         "## Inverse Crystal Seed\n\n"
@@ -269,3 +267,17 @@ def _format_viability(data: dict) -> str:
             lines.append(f"### {comp['symbol']} -- {comp['name']}")
             lines.append(f"{comp['definition']}\n")
     return "\n".join(lines)
+
+
+def query_4d_seed(component: str = "all") -> str:
+    """Read current catalog; archive:<component> explicitly reads pinned descriptions."""
+    return query_registry("inverse_crystal_seed.json", _SEED, component, _legacy_query_4d_seed)
+
+
+def query_3d_crystal(component: str = "all") -> str:
+    """Read current catalog; archive:<component> explicitly reads pinned descriptions."""
+    return query_registry("inverse_crystal_seed.json", _SEED, component, _legacy_query_3d_crystal)
+
+
+def inverse_seed_status() -> str:
+    return query_registry("inverse_crystal_seed.json", _SEED, "all", lambda data, _: _legacy_inverse_seed_status(data))

@@ -11,10 +11,11 @@ shells, and the 20-step regeneration protocol.
 """
 
 from ._cache import JsonCache
+from .registry_sources import query_registry
 
 _COMPLETE = JsonCache("inverse_crystal_complete.json")
 
-def query_projection_stack(direction: str = "all") -> str:
+def _legacy_query_projection_stack(data: dict, direction: str) -> str:
     """
     Query the full projection stack.
 
@@ -25,7 +26,6 @@ def query_projection_stack(direction: str = "all") -> str:
       - regen  : 20-step regeneration protocol
       - terminal: Terminal statement (seed = stone = generator = crystal)
     """
-    data = _COMPLETE.load()
     d = direction.strip().lower()
 
     if d == "all":
@@ -43,7 +43,7 @@ def query_projection_stack(direction: str = "all") -> str:
             f"Unknown direction '{direction}'. Use: all, up, down, regen, terminal"
         )
 
-def query_weave_operator(weave: str = "all") -> str:
+def _legacy_query_weave_operator(data: dict, weave: str) -> str:
     """
     Query weave operators and control shells.
 
@@ -55,7 +55,6 @@ def query_weave_operator(weave: str = "all") -> str:
       - controls : 3 control shells (C7/C9/C11)
       - clock    : Master clock Z420
     """
-    data = _COMPLETE.load()
     w = weave.strip().upper()
 
     if w == "ALL":
@@ -71,9 +70,8 @@ def query_weave_operator(weave: str = "all") -> str:
             f"Unknown weave '{weave}'. Use: all, W3, W5, W7, controls, clock"
         )
 
-def inverse_complete_status() -> str:
+def _legacy_inverse_complete_status(data: dict) -> str:
     """Return a status summary for the resource endpoint."""
-    data = _COMPLETE.load()
     stack = data["projection_stack"]
     return (
         "## Inverse Crystal Complete\n\n"
@@ -199,3 +197,17 @@ def _format_clock(data: dict) -> str:
         w = data["weave_operators"][key]
         lines.append(f"\n- **{key}**: period {w['period']}, clock period {w['clock_period']}")
     return "\n".join(lines)
+
+
+def query_projection_stack(direction: str = "all") -> str:
+    """Read current catalog; archive:<component> explicitly reads pinned descriptions."""
+    return query_registry("inverse_crystal_complete.json", _COMPLETE, direction, _legacy_query_projection_stack)
+
+
+def query_weave_operator(weave: str = "all") -> str:
+    """Read current catalog; archive:<component> explicitly reads pinned descriptions."""
+    return query_registry("inverse_crystal_complete.json", _COMPLETE, weave, _legacy_query_weave_operator)
+
+
+def inverse_complete_status() -> str:
+    return query_registry("inverse_crystal_complete.json", _COMPLETE, "all", lambda data, _: _legacy_inverse_complete_status(data))

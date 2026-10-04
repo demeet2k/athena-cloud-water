@@ -10,18 +10,100 @@ from ._cache import JsonCache
 
 _laws = JsonCache("conservation_laws.json")
 
-def query_conservation(motion_json: str) -> str:
-    """
-    Check the 6 conservation laws against a proposed motion, or list all laws.
 
-    Pass 'list' to see all 6 laws and round-trip classes.
+def _v2_law_report(data):
+    try:
+        laws = data['laws']
+        if not isinstance(laws, list) or {law['id'] for law in laws} != {f'CL{i}' for i in range(1, 7)} or len(laws) != 6:
+            raise ValueError('six unique source law IDs are required')
+        lines = ['## Conservation Laws (source descriptions)']
+        for law in laws:
+            if not all(isinstance(law[key], str) and law[key].strip() for key in ('id', 'name', 'statement', 'invariant')):
+                raise ValueError('law descriptions must be nonempty strings')
+            lines += [f"### {law['id']}: {law['name']}", f"- Statement: {law['statement']}",
+                      f"- Source Invariant: `{law['invariant']}`"]
+        frequency = data['verification_frequency']
+        if not isinstance(frequency, str) or not frequency.strip():
+            raise ValueError('verification frequency description is missing')
+        lines += [f'**Declared Verification Frequency**: {frequency}',
+                  'HOLD: descriptions supply no executable evaluator, measured state or proof. Legacy delta/parity checks do not verify these v2 invariants.']
+        return '\n'.join(lines) + '\n'
+    except (KeyError, TypeError, ValueError) as exc:
+        return f'HOLD: conservation registry has missing or conflicting source fields ({exc}).'
+
+
+def _motion_error(motion):
+    if not isinstance(motion, dict) or not motion:
+        return 'Invalid motion: expected a nonempty JSON object with explicit measurements.'
+    return None
+
+
+def _legacy_motion_error(motion):
+    fields = ('shell_deltas', 'zoom_deltas', 'wreath_rotations', 'archetype_shifts', 'face_shifts')
+    for field in fields:
+        values = motion.get(field)
+        if not isinstance(values, list) or not values:
+            return f'Invalid motion: {field} must be an explicit nonempty numeric list.'
+        if any(type(v) is not int for v in values):
+            return f'Invalid motion: {field} requires integer deltas (booleans and fractional or nonfinite values are invalid).'
+    flips = motion.get('mobius_flips')
+    if type(flips) is not int or flips < 0:
+        return 'Invalid motion: mobius_flips must be an explicit nonnegative integer.'
+    return None
+
+
+def query_conservation(motion_json: str, source: str = "current") -> str:
+    """
+    Read conservation laws, or check explicit supported legacy-v1 measurements.
+
+    The v2 catalog is descriptive; motion evaluation returns HOLD without an evaluator.
+
+    Pass 'list' to see source laws (legacy registries also declare round-trip classes).
 
     For checking, pass JSON: {"shell_deltas": [1,-1], "wreath_rotations": [1,1,1],
-    "face_shifts": [1,1,1,1], "mobius_flips": 2, "zoom_deltas": [1,-1]}
-    """
-    data = _laws.load()
+    "face_shifts": [1,1,1,1], "archetype_shifts": [0],
+    "mobius_flips": 2, "zoom_deltas": [1,-1]}
 
-    if motion_json.strip().lower() in ("list", "help", "laws"):
+    Source: current (default), or explicit archive for pinned historical
+    descriptions and clock MODEL only. Archive results never certify runtime.
+    """
+    if source == "archive":
+        from .core_archive import render_core_archive
+        return render_core_archive("conservation_laws.json", lambda data: _render_query_conservation(data, motion_json), motion_json)
+    if source != "current":
+        return "HOLD: source must be current or explicit archive."
+    try:
+        data = _laws.load()
+    except (OSError, ValueError, TypeError) as exc:
+        return f'HOLD: conservation source is unavailable or unreadable ({exc}).'
+    return _render_query_conservation(data, motion_json)
+
+
+def _render_query_conservation(data: dict, motion_json: str) -> str:
+    """
+    Read conservation laws, or check explicit supported legacy-v1 measurements.
+
+    The v2 catalog is descriptive; motion evaluation returns HOLD without an evaluator.
+
+    Pass 'list' to see source laws (legacy registries also declare round-trip classes).
+
+    For checking, pass JSON: {"shell_deltas": [1,-1], "wreath_rotations": [1,1,1],
+    "face_shifts": [1,1,1,1], "archetype_shifts": [0],
+    "mobius_flips": 2, "zoom_deltas": [1,-1]}
+    """
+    if not isinstance(data, dict) or not isinstance(data.get('meta'), dict):
+        return 'HOLD: conservation source requires a registry object and metadata object.'
+
+    if not isinstance(motion_json, str) or not motion_json.strip():
+        return 'Invalid motion: expected JSON text or list/help/laws.'
+    listing = motion_json.strip().lower() in ('list', 'help', 'laws')
+    meta = data.get('meta')
+    v2 = (not isinstance(meta, dict) or meta.get('version') == '2.0'
+          or (isinstance(data.get('laws'), list)
+              and any(isinstance(law, dict) and 'id' in law for law in data['laws'])))
+    if listing and v2:
+        return _v2_law_report(data)
+    if listing:
         lines = ["## 6 Conservation Laws\n"]
         lines.append(f"**Master**: `{data['meta']['master_invariant']}`\n")
         for law in data["laws"]:
@@ -48,8 +130,31 @@ def query_conservation(motion_json: str) -> str:
         return (
             "Invalid JSON. Expected:\n"
             '{"shell_deltas": [...], "wreath_rotations": [...], '
-            '"face_shifts": [...], "mobius_flips": N, "zoom_deltas": [...]}'
+            '"archetype_shifts": [...], "face_shifts": [...], '
+            '"mobius_flips": N, "zoom_deltas": [...]}'
         )
+
+    error = _motion_error(motion)
+    if error:
+        return error
+    if v2:
+        return _v2_law_report(data)
+    if meta.get('version') != '1.0':
+        return 'HOLD: no supported legacy conservation version is declared.'
+    # Do not apply the archived predicates to an unknown or incomplete registry.
+    try:
+        laws = data['laws']
+        if (not isinstance(laws, list) or len(laws) != 6
+                or any(type(law['index']) is not int for law in laws)
+                or {law['index'] for law in laws} != set(range(1, 7))
+                or not all(isinstance(law['check_rule'], str) and law['check_rule'].strip() for law in laws)
+                or not isinstance(data['meta']['master_invariant'], str)):
+            return 'HOLD: legacy conservation predicate registry is incomplete or unknown.'
+    except (KeyError, TypeError):
+        return 'HOLD: legacy conservation predicate registry is incomplete or unknown.'
+    error = _legacy_motion_error(motion)
+    if error:
+        return error
 
     results = []
     all_pass = True

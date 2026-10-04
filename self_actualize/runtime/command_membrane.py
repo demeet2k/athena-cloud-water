@@ -2,7 +2,7 @@
 # METRO: Me,Cc
 # BRIDGES: Xi108:W2:A10:S26→Xi108:W2:A10:S28→Xi108:W1:A10:S27→Xi108:W3:A10:S27→Xi108:W2:A9:S27→Xi108:W2:A11:S27
 
-﻿from __future__ import annotations
+from __future__ import annotations
 
 import argparse
 import json

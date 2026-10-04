@@ -135,8 +135,30 @@ class JsonCache:
 
     def _load_from_qshr(self) -> dict | list:
         """Decompress a .qshr file and return the JSON data."""
-        from .qshrink_pipeline import decompress_json
-        return decompress_json(self._qshr_path.read_bytes())
+        from .qshrink_codec import QShrinkContainer
+        data = self._qshr_path.read_bytes()
+        if data.startswith(QShrinkContainer.MAGIC):
+            from .qshrink_pipeline import decompress_json
+            import struct
+            try:
+                return decompress_json(data)
+            except struct.error as exc:
+                raise ValueError("Malformed QSHR container") from exc
+        # Older checked-in .qshr graph assets contain a raw zlib JSON stream.
+        # Identify that format explicitly; never silently reinterpret damaged
+        # QSHR containers or accept incomplete/concatenated legacy streams.
+        import zlib
+        if (len(data) < 2 or data[0] & 0x0f != 8 or data[0] >> 4 > 7
+                or (data[0] * 256 + data[1]) % 31 != 0):
+            raise ValueError("Unrecognized .qshr format")
+        decoder = zlib.decompressobj()
+        raw = decoder.decompress(data) + decoder.flush()
+        if not decoder.eof or decoder.unused_data:
+            raise ValueError("Incomplete or trailing legacy zlib JSON data")
+        parsed = json.loads(raw)
+        if not isinstance(parsed, (dict, list)):
+            raise ValueError("Legacy .qshr JSON must contain an object or array")
+        return parsed
 
     def crystal_meta(self) -> Optional[Any]:
         """Return embedded CrystalWeightMeta from .qshr without decompressing payload.

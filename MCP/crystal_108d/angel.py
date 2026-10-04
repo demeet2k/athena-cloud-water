@@ -11,13 +11,14 @@ Source: I'M an ANGEL.docx
 """
 
 from ._cache import JsonCache
+from .registry_sources import query_registry
+import json
 
 _angel = JsonCache("angel_object.json")
 
-def query_angel(component: str = "all") -> str:
+def _legacy_query_angel(d: dict, component: str = "all") -> str:
     """Query the Angel formal self-model. Components: all, pieces, piece_N (1-12),
     observability, lenses, dynamics, selves, modes, self_reference."""
-    d = _angel.load()
     component = component.strip().lower()
 
     if component == "all" or component == "overview":
@@ -61,17 +62,18 @@ def query_angel(component: str = "all") -> str:
 
     # Individual piece
     if component.startswith("piece"):
-        try:
-            idx = int(component.replace("piece_", "").replace("piece", ""))
-            for p in d["structural_pieces"]:
-                if p["index"] == idx:
-                    lines = [f"## Piece {p['index']}: {p['symbol']} — {p['name']}\n"]
-                    lines.append(f"**Definition**: `{p['definition']}`")
-                    lines.append(f"**Description**: {p['description']}")
-                    return "\n".join(lines)
-            return f"Piece index {idx} not found. Range: 1-12."
-        except ValueError:
-            return "Use piece_N where N is 1-12."
+        digits = component[6:] if component.startswith('piece_') else component[5:]
+        normalized = digits.lstrip('0') or '0'
+        if not digits.isascii() or not digits.isdecimal() or len(normalized) > 2 or not 1 <= int(normalized) <= 12:
+            return 'Invalid piece selector: use piece_N where N is 1-12.'
+        idx = int(normalized)
+        for p in d["structural_pieces"]:
+            if p["index"] == idx:
+                lines = [f"## Piece {p['index']}: {p['symbol']} - {p['name']}\n"]
+                lines.append(f"**Definition**: `{p['definition']}`")
+                lines.append(f"**Description**: {p['description']}")
+                return "\n".join(lines)
+        return f"Piece index {idx} not found. Range: 1-12."
 
     if component in ("observability", "lenses", "lens"):
         obs = d["four_lens_observability"]
@@ -90,10 +92,13 @@ def query_angel(component: str = "all") -> str:
         return "\n".join(lines)
 
     if component in ("dynamics", "dynamical", "laws"):
-        dyn = d["dynamical_laws"]
-        lines = ["## Dynamical Laws\n"]
+        field = 'dynamical_laws' if 'dynamical_laws' in d else 'state_evolution_dynamics'
+        dyn = d[field]
+        if not isinstance(dyn, dict):
+            raise ValueError('selected source dynamics must be a record mapping')
+        lines = ["## Dynamical Laws\n", f"**Source Field**: {field}"]
         for name, law in dyn.items():
-            lines.append(f"  **{name.replace('_', ' ').title()}**: `{law}`")
+            lines.append(f"  **{name.replace('_', ' ').title()}**: `{json.dumps(law, ensure_ascii=False, sort_keys=True)}`")
         return "\n".join(lines)
 
     if component == "selves":
@@ -126,3 +131,8 @@ def query_angel(component: str = "all") -> str:
 
     return (f"Component '{component}' not recognized. "
             "Available: all, pieces, piece_N (1-12), observability, dynamics, selves, modes, self_reference")
+
+
+def query_angel(component: str = 'all') -> str:
+    """Read current self-model pieces or explicit archive:<component> descriptions."""
+    return query_registry('angel_object.json', _angel, component, _legacy_query_angel)

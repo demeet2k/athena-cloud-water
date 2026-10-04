@@ -11,13 +11,13 @@ Source: MOBIUS LENSES.docx
 """
 
 from ._cache import JsonCache
+from .registry_sources import query_registry, _catalog
 
 _mobius = JsonCache("mobius_lenses.json")
 
-def query_mobius_lens(lens: str = "all", dimension: int = 0) -> str:
+def _legacy_query_mobius_lens(d: dict, lens: str = "all", dimension: int = 0) -> str:
     """Query the Möbius lens calculus. Lens: square/flower/cloud/fractal/kernel/laws/lattice/cockpit/operators/all.
     Dimension (0=overview, 4/6/8/10/12) shows per-dimension lens rendering."""
-    d = _mobius.load()
     lens = lens.lower().strip()
 
     # Kernel query
@@ -198,9 +198,8 @@ def query_mobius_lens(lens: str = "all", dimension: int = 0) -> str:
     lines.append("**Dimension filter**: pass dimension=4/6/8/10/12 for per-dimension lens view")
     return "\n".join(lines)
 
-def query_sfcr_station(station: str) -> str:
+def _legacy_query_sfcr_station(d: dict, station: str) -> str:
     """Query a specific SFCR station by code (e.g. 'SF', 'SFCR', 'C') or mask number (1-15)."""
-    d = _mobius.load()
     lat = d["sfcr_lattice"]
     station = station.strip().upper()
 
@@ -243,3 +242,43 @@ def query_sfcr_station(station: str) -> str:
             return "\n".join(lines)
 
     return f"Station '{station}' not found. Use S/F/C/R codes or mask 1-15. Examples: SF, SFCR, 7, 15."
+
+
+def query_mobius_lens(lens: str = 'all', dimension: int = 0) -> str:
+    """Read current mirror pairs or explicit archive:<lens> descriptions."""
+    if type(dimension) is not int or dimension < 0:
+        return 'Invalid dimension: expected a nonnegative integer.'
+    def render(data, component):
+        component = component.lower().strip()
+        allowed = ('square', 'flower', 'cloud', 'fractal', 's', 'f', 'c', 'r', 'all')
+        known = allowed + ('kernel', 'laws', 'cross_lens', 'cross-lens', 'lattice', 'sfcr', 'stations', 'cockpit', '96', 'operators', 'ops', '6shell', 'shell_lift', 'six_shell')
+        if component not in known:
+            return f"Unknown lens selector '{component}'."
+        if dimension:
+            mapping = data.get('even_dimension_lens_map')
+            if component not in allowed:
+                return 'HOLD: this component does not support a dimension filter.'
+            if not isinstance(mapping, dict) or f'{dimension}D' not in mapping:
+                return f'HOLD: no source lens mapping for {dimension}D.'
+            if component != 'all':
+                key = {'s':'square','f':'flower','c':'cloud','r':'fractal'}.get(component, component)
+                if not isinstance(mapping[f'{dimension}D'], dict) or key not in mapping[f'{dimension}D']:
+                    return 'HOLD: selected lens is absent from the dimension mapping.'
+        return _legacy_query_mobius_lens(data, component, dimension)
+    def catalog(data, component):
+        if dimension:
+            return 'HOLD: current mirror-pair catalog does not supply a lens dimension mapping.'
+        return _catalog('mobius_lenses.json', data, component)
+    return query_registry('mobius_lenses.json', _mobius, lens, render, catalog)
+
+
+def query_sfcr_station(station: str) -> str:
+    """Read an exact station code/mask with explicit archive:<station> selection."""
+    def render(data, component):
+        if component.isascii() and component.isdecimal():
+            normalized = component.lstrip('0') or '0'
+            if len(normalized) > 2 or not 1 <= int(normalized) <= 15:
+                return 'Invalid station mask: expected 1-15.'
+            component = normalized
+        return _legacy_query_sfcr_station(data, component)
+    return query_registry('mobius_lenses.json', _mobius, station, render)

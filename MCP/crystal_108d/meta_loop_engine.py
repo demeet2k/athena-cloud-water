@@ -21,6 +21,7 @@ Replaces: self_play.py (1,337 lines), n3_alchemy.py (763 lines),
 
 from __future__ import annotations
 
+import logging
 import math
 import random
 import time
@@ -39,6 +40,8 @@ from .constants import TOTAL_SHELLS
 from .weight_feedback import (
     update_edge_weights, _forward_result_to_feedback_input, _GRAPH_CACHE,
 )
+
+_log = logging.getLogger(__name__)
 
 # 4D Upgrade imports
 from .inverse_engine import get_inverse_engine
@@ -369,7 +372,7 @@ class MetaLoopEngine:
         Instead of 2 forward passes per query (before + after), uses:
           1. Single forward pass → observe in 12D
           2. Analytical gradient toward attractor (no re-observation needed)
-          3. Trust the gradient if observation score > 0.3 (always keep)
+          3. Apply the gradient only if observation score >= 0.1
 
         This is valid because META LOOP^3 proved the attractor is stable:
         all trajectories converge to S=F=C=R=0.25 regardless of path.
@@ -391,7 +394,10 @@ class MetaLoopEngine:
             # compute direction toward known attractor state
             gradients = self.loss.compute_all_gradients(obs)
 
-            # Apply gradients to momentum field (no snapshot/rollback needed)
+            # Preserve the full momentum state if this observation is rejected.
+            snapshot = self.momentum.snapshot()
+
+            # Apply gradients to momentum field.
             home_shell = result.query.home_shell
             for face in FACES:
                 if face == "C":
@@ -414,6 +420,7 @@ class MetaLoopEngine:
                 except Exception:
                     pass  # graph feedback is best-effort
             else:
+                self.momentum.restore(snapshot)
                 discarded += 1
 
             resonances.append(result.resonance)
@@ -685,9 +692,12 @@ class MetaLoopEngine:
 
         # Persist Hebbian edge weight updates to graph
         try:
-            _GRAPH_CACHE.save()
-        except Exception:
-            pass  # graph persistence is best-effort
+            _GRAPH_CACHE.save(
+                _GRAPH_CACHE.load(), agent_id="meta_loop_engine",
+                task_summary="persist Hebbian edge weight updates",
+            )
+        except Exception as exc:
+            _log.warning("Hebbian graph persistence failed: %s", exc)
 
         # Conservation watchdog: check invariants + enforce Water lock
         try:

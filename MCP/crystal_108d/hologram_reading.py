@@ -11,11 +11,12 @@ Rosetta overlay (Egypt/Maya/China/Sanskrit).
 """
 
 from ._cache import JsonCache
+from .registry_sources import query_registry
 
 _HOLOGRAM = JsonCache("hologram_reading.json")
 _ROSETTA = JsonCache("hologram_rosetta.json")
 
-def query_hologram(component: str = "all") -> str:
+def _legacy_query_hologram(data: dict, component: str) -> str:
     """
     Query the hologram reading protocol.
 
@@ -30,7 +31,6 @@ def query_hologram(component: str = "all") -> str:
       - layers      : Four nested layers of the hologram
       - body        : 12-axis symbolic body and odd fields
     """
-    data = _HOLOGRAM.load()
     comp = component.strip().lower()
 
     if comp == "all":
@@ -57,7 +57,7 @@ def query_hologram(component: str = "all") -> str:
             "grammar, storage, compression, anomalies, layers, body"
         )
 
-def query_hologram_rosetta(component: str = "all") -> str:
+def _legacy_query_hologram_rosetta(data: dict, component: str) -> str:
     """
     Query the cross-cultural hologram Rosetta.
 
@@ -70,7 +70,6 @@ def query_hologram_rosetta(component: str = "all") -> str:
       - sigma60     : 60-dimensional observation body
       - voynich     : Voynich metamorphic language layer
     """
-    data = _ROSETTA.load()
     comp = component.strip().lower()
 
     if comp == "all":
@@ -93,9 +92,8 @@ def query_hologram_rosetta(component: str = "all") -> str:
             "triadic, wheel, surface, sigma60, voynich"
         )
 
-def hologram_status() -> str:
+def _legacy_hologram_status(data: dict) -> str:
     """Return a status summary for the resource endpoint."""
-    data = _HOLOGRAM.load()
     return (
         "## Hologram Reading Protocol\n\n"
         f"**Seed**: `{data['seed_equation']['generator']}`\n"
@@ -106,9 +104,8 @@ def hologram_status() -> str:
         f"**Key Insight**: {data['meta']['key_insight']}\n"
     )
 
-def rosetta_status() -> str:
+def _legacy_rosetta_status(data: dict) -> str:
     """Return a status summary for the Rosetta resource endpoint."""
-    data = _ROSETTA.load()
     civs = [c["name"] for c in data["quaternary_basis"]["civilizations"]]
     return (
         "## Hologram Rosetta\n\n"
@@ -347,3 +344,21 @@ def _format_voynich(data: dict) -> str:
         f"**VML Formula**: {v['vml_formula']}\n"
         f"\n{v['description']}"
     )
+
+
+def query_hologram(component: str = "all") -> str:
+    """Read current catalog; archive:<component> explicitly reads pinned descriptions."""
+    return query_registry("hologram_reading.json", _HOLOGRAM, component, _legacy_query_hologram)
+
+
+def query_hologram_rosetta(component: str = "all") -> str:
+    """Read current catalog; archive:<component> explicitly reads pinned descriptions."""
+    return query_registry("hologram_rosetta.json", _ROSETTA, component, _legacy_query_hologram_rosetta)
+
+
+def hologram_status() -> str:
+    return query_registry("hologram_reading.json", _HOLOGRAM, "all", lambda data, _: _legacy_hologram_status(data))
+
+
+def rosetta_status() -> str:
+    return query_registry("hologram_rosetta.json", _ROSETTA, "all", lambda data, _: _legacy_rosetta_status(data))
