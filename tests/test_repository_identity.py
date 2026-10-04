@@ -59,5 +59,23 @@ class RepositoryIdentityTests(unittest.TestCase):
             with self.assertRaises(ValueError):
                 validate_identity(invalid, EXPECTED_REPOSITORY)
 
+
+class GitlinkMetadataTests(unittest.TestCase):
+    def test_autoresearch_mapping_is_exact(self):
+        modules = ROOT / '.gitmodules'
+        self.assertTrue(modules.is_file())
+        for key, expected in (
+            ('submodule.autoresearch.path', 'autoresearch'),
+            ('submodule.autoresearch.url', 'https://github.com/demeet2k/autoresearch.git'),
+        ):
+            value = subprocess.check_output(['git', 'config', '--file', str(modules), '--get', key], text=True).strip()
+            self.assertEqual(value, expected)
+
+    def test_original_gitlink_and_checkout_cleanup_are_preserved(self):
+        link = subprocess.check_output(['git', '-C', str(ROOT), 'ls-tree', 'HEAD', 'autoresearch'], text=True).strip()
+        self.assertEqual(link, '160000 commit f032120010c570e56451023a8b28a26f401850d8\tautoresearch')
+        subprocess.run(['git', '-C', str(ROOT), 'submodule', 'foreach', '--recursive', 'true'],
+                       check=True, capture_output=True, text=True, timeout=10)
+
 if __name__ == '__main__':
     unittest.main()
